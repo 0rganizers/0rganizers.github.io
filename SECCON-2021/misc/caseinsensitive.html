@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Case-insensitive | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Case-insensitive" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/SECCON-2021/misc/caseinsensitive.html" />
+<meta property="og:url" content="https://org.anize.rs/SECCON-2021/misc/caseinsensitive.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Case-insensitive" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"Case-insensitive","url":"https://org.anize.rs/SECCON-2021/misc/caseinsensitive.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="case-insensitive">Case-insensitive</h1>
+
+<p><strong>Authors</strong>: <a href="https://twitter.com/Spittfires_">Spittfire</a>, Aylmao, dd</p>
+
+<p><strong>Tags</strong>: misc, crypto</p>
+
+<p><strong>Points</strong>: 305 (8 solves)</p>
+
+<blockquote>
+  <p>I implemented bcrypt-based signing. Can you expose the key?</p>
+
+  <p><code class="language-plaintext highlighter-rouge">nc case-insensitive.quals.seccon.jp 8080</code></p>
+</blockquote>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>Last weekend we played SECCON and ended up 2nd overall. It was very fun ! We will present how we solved case-insensitive, a challenge made by <a href="https://twitter.com/fwarashi">kurenaif</a>. This challenge was the least solved misc challenge with only 8 solves.</p>
+
+<h2 id="challenge-structure">Challenge structure</h2>
+
+<p>We are provided with a single python file named <code class="language-plaintext highlighter-rouge">problem.py</code>. It contains the code that is run remotely. The code simply hashes a provided message appended to the flag using bcrypt and returns the resulting hash. There is also a functionality to verify that a provided hash corresponds to the hash  of a provided message appended to the flag. We rapidly concluded that bruteforcing the hash made out of a single message + flag would be impossible as the flag length could easily be more then 32 bytes and that the hashing algorithm used was bcrypt with 5 round salts.</p>
+
+<h2 id="bcrypt-library-code-analysis">Bcrypt Library code analysis</h2>
+
+<p>By inspecting the bcrypt library <a href="https://github.com/pyca/bcrypt">source code</a>  of the used functions we notices that the function <code class="language-plaintext highlighter-rouge">hashpw</code> only hashed the first 72 bytes of the provided password which is our message appended to the flag.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">password</span> <span class="o">=</span> <span class="n">password</span><span class="p">[:</span><span class="mi">72</span><span class="p">]</span>
+</code></pre></div></div>
+<p>This is looks promising as we can use this in our advantage. By providing a long enough message we can compute a hash containing the message we provide appended to only the first few bytes of the hash. In this way we can bruteforce it.
+For example, to leak the first byte of the flag we can provide a message containing 71 bytes. Then, the flag would be appended to the end of the message and the <code class="language-plaintext highlighter-rouge">hashpw</code> would get called. We know that only the 72 first bytes are taken which would mean that the resulting hash can be bruteforced by simply computing the hash of every single possible printable character append to our provided message.</p>
+
+<h2 id="length-check-bypass">Length check bypass</h2>
+
+<p>The above presented idea has only one problem. There is a check that bounds the message size to 24 characters. From a <a href="https://polygl0ts.ch/writeups/2021/b01lers/pyjail3/README.html">challenge</a> of <a href="https://b01lers.net/">b01lers CTF 2021</a>  , we knew that it was possible to mess with the length of a string by using ligatures in python. By trying out with the ligature <code class="language-plaintext highlighter-rouge">ﬂ</code>. We noticed that we were able to provide a message having length 24 but that would in the end be made of 48 bytes. We then found a ligature made of 3 characters : <code class="language-plaintext highlighter-rouge">ﬄ</code> to reach 72 bytes with a message of 24 characters. This works because the call to upper messes up the actual length of the message. This is an expected behaviour according to the unicode conventions. Calling <code class="language-plaintext highlighter-rouge">upper()</code> on <code class="language-plaintext highlighter-rouge">ﬂ</code> is actually well defined. In the <a href="https://www.unicode.org/Public/UCD/latest/ucd/SpecialCasing.txt">unicode specification</a> we can see that :</p>
+
+<p><code class="language-plaintext highlighter-rouge">FB02; FB02; 0046 006C; 0046 004C</code> shows that the character with code <code class="language-plaintext highlighter-rouge">FB02</code> is represented in lower as <code class="language-plaintext highlighter-rouge">FB02</code> and as <code class="language-plaintext highlighter-rouge">0046 006C</code> in upper case.</p>
+
+<h2 id="solution-script">Solution script</h2>
+
+<p>Using the gathered knowledge we started to write a script that would leak 1 byte of the flag at a time and then find the corresponding character by bruteforcing it over the set of all printable characters.</p>
+
+<p>Here is our solution script :</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Imports
+</span><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span> <span class="c1"># To interact with the server
+</span><span class="kn">import</span> <span class="nn">bcrypt</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span> <span class="nn">string</span> <span class="c1"># To bruteforce on
+</span>
+<span class="n">char_3</span> <span class="o">=</span> <span class="s">"ﬃ"</span>
+<span class="n">char_2</span> <span class="o">=</span> <span class="s">"ﬂ"</span>
+
+<span class="k">def</span> <span class="nf">make_to_length</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+    <span class="n">nb_of_3</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">nb_of_2</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">l</span><span class="o">-</span><span class="n">nb_of_3</span><span class="o">*</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">remaining</span> <span class="o">=</span> <span class="n">l</span> <span class="o">-</span> <span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">nb_of_3</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">nb_of_2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">char_3</span><span class="o">*</span><span class="n">nb_of_3</span> <span class="o">+</span> <span class="n">char_2</span><span class="o">*</span><span class="n">nb_of_2</span> <span class="o">+</span> <span class="n">remaining</span><span class="o">*</span><span class="s">"A"</span>
+
+
+<span class="c1"># Phase 1 : Getting all the hashes
+#remote = process('./problem.py')
+</span><span class="n">remote</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="s">'case-insensitive.quals.seccon.jp'</span><span class="p">,</span><span class="mi">8080</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">sign</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+    <span class="n">conn</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">"1"</span><span class="p">)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">conn</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">'message: '</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="n">conn</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="n">encode</span><span class="p">())</span>
+    <span class="n">raw</span> <span class="o">=</span> <span class="n">conn</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">raw</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s">": "</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># Hashing all the combinations
+</span><span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">salts</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">48</span><span class="p">,</span> <span class="mi">72</span><span class="p">)):</span>
+    <span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sign</span><span class="p">(</span><span class="n">remote</span><span class="p">,</span> <span class="n">make_to_length</span><span class="p">(</span><span class="n">i</span><span class="p">)).</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">salts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">29</span><span class="p">]</span>
+<span class="n">flag</span> <span class="o">=</span> <span class="s">""</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">48</span><span class="p">,</span> <span class="mi">72</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"bruteforcing : "</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">salts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">found</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">string</span><span class="p">.</span><span class="n">printable</span><span class="p">:</span>
+        <span class="n">leading</span> <span class="o">=</span> <span class="n">make_to_length</span><span class="p">(</span><span class="n">i</span><span class="p">).</span><span class="n">upper</span><span class="p">()</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="p">(</span><span class="n">leading</span> <span class="o">+</span> <span class="n">flag</span> <span class="o">+</span> <span class="n">c</span><span class="p">).</span><span class="n">encode</span><span class="p">()</span>
+        <span class="n">attempt</span> <span class="o">=</span> <span class="n">bcrypt</span><span class="p">.</span><span class="n">hashpw</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">r</span> <span class="o">==</span> <span class="n">attempt</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">"FOUND !"</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+            <span class="n">found</span> <span class="o">=</span> <span class="n">c</span>
+            <span class="k">break</span>
+    <span class="n">flag</span> <span class="o">+=</span> <span class="n">found</span>
+    <span class="k">if</span> <span class="s">"}"</span> <span class="ow">in</span> <span class="n">flag</span><span class="p">:</span>
+        <span class="k">break</span>
+<span class="k">print</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Flag: <code class="language-plaintext highlighter-rouge">SECCON{uPPEr_is_M4g1c}</code></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>It was a really nice challenge to remember us how unsafe <code class="language-plaintext highlighter-rouge">len()</code> can be in python ^^.</p>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

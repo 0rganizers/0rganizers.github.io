@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>fea | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="fea" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/0CTF-2021/rev/fea.html" />
+<meta property="og:url" content="https://org.anize.rs/0CTF-2021/rev/fea.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="fea" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"fea","url":"https://org.anize.rs/0CTF-2021/rev/fea.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="fea">fea</h1>
+
+<p><strong>Authors:</strong> gallileo, null
+<strong>Tags:</strong> rev, obfuscation
+<strong>Points:</strong> 458
+<strong>Description:</strong></p>
+<blockquote>
+  <p>nc 111.186.58.164 30212</p>
+</blockquote>
+
+<p>Only a netcat connection as description for a rev challenge, off to a good start I see. After connecting and solving the POW<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>, we receive the following:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[1/3]
+Here is your challenge:
+
+f0VMRgIBAQAAAAAAAAAAAAIAPgAB...
+
+Plz beat me in 10 seconds X3 :)
+</code></pre></div></div>
+
+<p>So it seems that this is a twist on the old automatic exploitation challenge :).
+I wrote a quick script to collect as many samples as possible, thinking that maybe they were just cycling a few different binaries:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">chal_info</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">md5</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">md5</span> <span class="o">=</span> <span class="n">md5</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">occurrences</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span>
+
+    <span class="k">def</span> <span class="nf">did_see</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">occurrences</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="o">@</span><span class="nb">property</span>
+    <span class="k">def</span> <span class="nf">filename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="s">"samples"</span><span class="p">,</span> <span class="sa">f</span><span class="s">"chal_</span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">idx</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+<span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">chals</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">chal_info</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">io</span> <span class="o">=</span> <span class="n">start</span><span class="p">()</span>
+
+        <span class="n">proof_of_work_line</span> <span class="o">=</span> <span class="n">io</span><span class="p">.</span><span class="n">recvline</span><span class="p">(</span><span class="n">keepends</span><span class="o">=</span><span class="bp">False</span><span class="p">).</span><span class="n">decode</span><span class="p">(</span><span class="s">"utf-8"</span><span class="p">)</span>
+        <span class="n">io</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+        <span class="n">hashable_suffix</span> <span class="o">=</span> <span class="n">re</span><span class="p">.</span><span class="n">search</span><span class="p">(</span><span class="s">'sha256\(XXXX\+(.*)\) =='</span><span class="p">,</span> <span class="n">proof_of_work_line</span><span class="p">).</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="nb">hash</span> <span class="o">=</span> <span class="n">re</span><span class="p">.</span><span class="n">search</span><span class="p">(</span><span class="s">'== (.*)'</span><span class="p">,</span> <span class="n">proof_of_work_line</span><span class="p">).</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Solving POW %s for %s"</span><span class="p">,</span> <span class="n">hashable_suffix</span><span class="p">,</span> <span class="nb">hash</span><span class="p">)</span>
+        <span class="n">proof</span> <span class="o">=</span> <span class="n">solve_proof_of_work</span><span class="p">(</span><span class="n">hashable_suffix</span><span class="p">,</span> <span class="nb">hash</span><span class="p">)</span>
+        <span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">proof</span><span class="p">)</span>
+        <span class="n">io</span><span class="p">:</span> <span class="n">tube</span>
+
+        <span class="kn">import</span> <span class="nn">base64</span>
+
+        <span class="k">def</span> <span class="nf">read_challenge</span><span class="p">():</span>
+            <span class="n">io</span><span class="p">.</span><span class="n">readuntil</span><span class="p">(</span><span class="s">"Here is your challenge:"</span><span class="p">)</span>
+            <span class="c1"># swallow 2 newlines
+</span>            <span class="n">io</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+            <span class="n">io</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+            <span class="n">challenge</span> <span class="o">=</span> <span class="n">io</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">base64</span><span class="p">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">challenge</span><span class="p">)</span>
+
+        <span class="n">chal</span> <span class="o">=</span> <span class="n">read_challenge</span><span class="p">()</span>
+
+        <span class="n">chal_md5</span> <span class="o">=</span> <span class="n">hashlib</span><span class="p">.</span><span class="n">md5</span><span class="p">(</span><span class="n">chal</span><span class="p">).</span><span class="n">hexdigest</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">chal_md5</span> <span class="ow">in</span> <span class="n">chals</span><span class="p">:</span>
+            <span class="n">chals</span><span class="p">[</span><span class="n">chal_md5</span><span class="p">].</span><span class="n">did_see</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">info</span> <span class="o">=</span> <span class="n">chal_info</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">chal_md5</span><span class="p">)</span>
+            <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">chals</span><span class="p">[</span><span class="n">chal_md5</span><span class="p">]</span> <span class="o">=</span> <span class="n">info</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">info</span><span class="p">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">chal</span><span class="p">)</span>
+
+        <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Statistics:"</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">chal</span> <span class="ow">in</span> <span class="n">chals</span><span class="p">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="se">\t</span><span class="si">{</span><span class="n">chal</span><span class="p">.</span><span class="n">filename</span><span class="si">}</span><span class="s">: #</span><span class="si">{</span><span class="n">chal</span><span class="p">.</span><span class="n">occurrences</span><span class="si">}</span><span class="s"> (</span><span class="si">{</span><span class="n">chal</span><span class="p">.</span><span class="n">md5</span><span class="si">}</span><span class="s">)"</span><span class="p">)</span>
+
+
+        <span class="n">io</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">log</span><span class="p">.</span><span class="n">warning</span><span class="p">(</span><span class="s">"Had an error"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>I started analyzing one of the binaries in my favourite disassembler. <code class="language-plaintext highlighter-rouge">main</code> looked pretty bad and the other functions didn’t look pretty either:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">__int64</span> <span class="kr">__fastcall</span> <span class="nf">main</span><span class="p">(</span><span class="n">__int64</span> <span class="n">a1</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">a2</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">a3</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">int</span> <span class="n">v3</span><span class="p">;</span> <span class="c1">// esi</span>
+  <span class="kt">int</span> <span class="n">v4</span><span class="p">;</span> <span class="c1">// ecx</span>
+  <span class="kt">int</span> <span class="n">v5</span><span class="p">;</span> <span class="c1">// eax</span>
+  <span class="kt">int</span> <span class="n">v6</span><span class="p">;</span> <span class="c1">// ecx</span>
+  <span class="kt">int</span> <span class="n">v7</span><span class="p">;</span> <span class="c1">// ecx</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span> <span class="c1">// [rsp+4Ch] [rbp-34h]</span>
+  <span class="kt">int</span> <span class="n">v10</span><span class="p">;</span> <span class="c1">// [rsp+5Ch] [rbp-24h]</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">s</span><span class="p">;</span> <span class="c1">// [rsp+60h] [rbp-20h]</span>
+
+  <span class="n">sub_400D90</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">);</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">mmap</span><span class="p">(</span><span class="mi">0LL</span><span class="p">,</span> <span class="mh">0x100000uLL</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0LL</span><span class="p">);</span>
+  <span class="n">memset</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mh">0x100000uLL</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">911436592</span><span class="p">;</span> <span class="p">;</span> <span class="n">i</span> <span class="o">=</span> <span class="n">v4</span> <span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">while</span> <span class="p">(</span> <span class="mi">1</span> <span class="p">)</span>
+    <span class="p">{</span>
+      <span class="k">while</span> <span class="p">(</span> <span class="mi">1</span> <span class="p">)</span>
+      <span class="p">{</span>
+        <span class="k">while</span> <span class="p">(</span> <span class="mi">1</span> <span class="p">)</span>
+        <span class="p">{</span>
+          <span class="k">while</span> <span class="p">(</span> <span class="mi">1</span> <span class="p">)</span>
+          <span class="p">{</span>
+            <span class="k">while</span> <span class="p">(</span> <span class="mi">1</span> <span class="p">)</span>
+            <span class="p">{</span>
+              <span class="k">while</span> <span class="p">(</span> <span class="mi">1</span> <span class="p">)</span>
+              <span class="p">{</span>
+                <span class="k">while</span> <span class="p">(</span> <span class="mi">1</span> <span class="p">)</span>
+                <span class="p">{</span>
+                  <span class="k">if</span> <span class="p">(</span> <span class="n">i</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1611068981</span> <span class="p">)</span>
+                  <span class="p">{</span>
+                    <span class="n">perror</span><span class="p">(</span><span class="n">aPu</span><span class="p">);</span>
+                    <span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+                  <span class="p">}</span>
+                  <span class="k">if</span> <span class="p">(</span> <span class="n">i</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1554549674</span> <span class="p">)</span>
+                    <span class="k">break</span><span class="p">;</span>
+                  <span class="n">i</span> <span class="o">=</span> <span class="mi">1518786008</span><span class="p">;</span>
+                  <span class="n">usleep</span><span class="p">(</span><span class="mh">0x186A0u</span><span class="p">);</span>
+                <span class="p">}</span>
+                <span class="k">if</span> <span class="p">(</span> <span class="n">i</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1535510725</span> <span class="p">)</span>
+                  <span class="k">break</span><span class="p">;</span>
+                <span class="n">v10</span> <span class="o">=</span> <span class="n">sub_404740</span><span class="p">(</span><span class="o">&amp;</span><span class="n">unk_6060D0</span><span class="p">,</span> <span class="mi">73569LL</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="mh">0xFFFFFFLL</span><span class="p">);</span>
+                <span class="n">v7</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1085199925</span><span class="p">;</span>
+                <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">v10</span> <span class="p">)</span>
+                  <span class="n">v7</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1611068981</span><span class="p">;</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">v7</span><span class="p">;</span>
+              <span class="p">}</span>
+              <span class="k">if</span> <span class="p">(</span> <span class="n">i</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1297152665</span> <span class="p">)</span>
+              <span class="p">{</span>
+                <span class="n">perror</span><span class="p">(</span><span class="n">a1P</span><span class="p">);</span>
+                <span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+              <span class="p">}</span>
+              <span class="k">if</span> <span class="p">(</span> <span class="n">i</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1085199925</span> <span class="p">)</span>
+                <span class="k">break</span><span class="p">;</span>
+              <span class="n">sub_400EC0</span><span class="p">();</span>
+              <span class="n">i</span> <span class="o">=</span> <span class="mi">1628391944</span><span class="p">;</span>
+              <span class="p">((</span><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">void</span><span class="p">))</span><span class="o">&amp;</span><span class="n">s</span><span class="p">[</span><span class="n">dword_6060C0</span><span class="p">])();</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span> <span class="n">i</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">122192319</span> <span class="p">)</span>
+              <span class="k">break</span><span class="p">;</span>
+            <span class="n">sub_400EC0</span><span class="p">();</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">1518786008</span><span class="p">;</span>
+          <span class="p">}</span>
+          <span class="k">if</span> <span class="p">(</span> <span class="n">i</span> <span class="o">!=</span> <span class="mi">610093714</span> <span class="p">)</span>
+            <span class="k">break</span><span class="p">;</span>
+          <span class="n">v5</span> <span class="o">=</span> <span class="n">sub_4014E0</span><span class="p">();</span>
+          <span class="n">v6</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1554549674</span><span class="p">;</span>
+          <span class="k">if</span> <span class="p">(</span> <span class="n">v5</span> <span class="o">!=</span> <span class="n">dword_6180D0</span> <span class="p">)</span>
+            <span class="n">v6</span> <span class="o">=</span> <span class="mi">620693745</span><span class="p">;</span>
+          <span class="n">i</span> <span class="o">=</span> <span class="n">v6</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="n">i</span> <span class="o">!=</span> <span class="mi">620693745</span> <span class="p">)</span>
+          <span class="k">break</span><span class="p">;</span>
+        <span class="p">((</span><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">void</span><span class="p">))</span><span class="n">loc_400AC0</span><span class="p">)();</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1554549674</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="n">i</span> <span class="o">!=</span> <span class="mi">911436592</span> <span class="p">)</span>
+        <span class="k">break</span><span class="p">;</span>
+      <span class="n">v3</span> <span class="o">=</span> <span class="o">-</span><span class="mi">122192319</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="n">s</span> <span class="o">==</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="o">-</span><span class="mi">1LL</span> <span class="p">)</span>
+        <span class="n">v3</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1297152665</span><span class="p">;</span>
+      <span class="n">i</span> <span class="o">=</span> <span class="n">v3</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="n">i</span> <span class="o">!=</span> <span class="mi">1518786008</span> <span class="p">)</span>
+      <span class="k">break</span><span class="p">;</span>
+    <span class="n">v4</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1535510725</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">dword_6180CC</span> <span class="p">)</span>
+      <span class="n">v4</span> <span class="o">=</span> <span class="mi">610093714</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">munmap</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mh">0x100000uLL</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">0LL</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>I also noticed that the strings must be encrypted, because one of the functions was doing a <code class="language-plaintext highlighter-rouge">sprintf</code> without any format specifiers in a weird looking string:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">snprintf</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mh">0x400uLL</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">byte_618040</span><span class="p">,</span> <span class="n">v8</span><span class="p">);</span>
+<span class="kt">char</span> <span class="n">byte_618040</span><span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">=</span>
+<span class="p">{</span>
+  <span class="sc">'\xE6'</span><span class="p">,</span> <span class="sc">'\xB9'</span><span class="p">,</span> <span class="sc">'\xBB'</span><span class="p">,</span> <span class="sc">'\xA6'</span><span class="p">,</span> <span class="sc">'\xAA'</span><span class="p">,</span> <span class="sc">'\xE6'</span><span class="p">,</span> <span class="sc">'\xEC'</span><span class="p">,</span> <span class="sc">'\xAD'</span><span class="p">,</span> <span class="sc">'\xE6'</span><span class="p">,</span> <span class="sc">'\xAA'</span><span class="p">,</span> <span class="sc">'\xA4'</span><span class="p">,</span> <span class="sc">'\xAD'</span><span class="p">,</span> <span class="sc">'\xA5'</span><span class="p">,</span> <span class="sc">'\xA0'</span><span class="p">,</span> <span class="sc">'\xA7'</span><span class="p">,</span> <span class="sc">'\xAC'</span>
+<span class="p">};</span>
+
+</code></pre></div></div>
+
+<p>One xref later, we found an init function that decrypts the string. Some IDA scripting later, and we can decrypt the strings in the binary:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">idaapi</span>
+<span class="kn">import</span> <span class="nn">ida_segment</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="p">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">"decrypt_strings"</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">do_init_array</span><span class="p">():</span>
+    <span class="n">seg</span><span class="p">:</span> <span class="n">idaapi</span><span class="p">.</span><span class="n">segment_t</span> <span class="o">=</span> <span class="n">ida_segment</span><span class="p">.</span><span class="n">get_segm_by_name</span><span class="p">(</span><span class="s">".init_array"</span><span class="p">)</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Found init_array: 0x%x - 0x%x"</span><span class="p">,</span> <span class="n">seg</span><span class="p">.</span><span class="n">start_ea</span><span class="p">,</span> <span class="n">seg</span><span class="p">.</span><span class="n">end_ea</span><span class="p">)</span>
+    <span class="n">funcs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">ea</span> <span class="o">=</span> <span class="n">seg</span><span class="p">.</span><span class="n">start_ea</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">ea</span> <span class="o">!=</span> <span class="n">idaapi</span><span class="p">.</span><span class="n">BADADDR</span> <span class="ow">and</span> <span class="n">ea</span> <span class="o">&lt;</span> <span class="n">seg</span><span class="p">.</span><span class="n">end_ea</span><span class="p">:</span>
+        <span class="n">func_addr</span> <span class="o">=</span> <span class="n">idaapi</span><span class="p">.</span><span class="n">get_qword</span><span class="p">(</span><span class="n">ea</span><span class="p">)</span>
+        <span class="n">funcs</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">func_addr</span><span class="p">)</span>
+        <span class="n">idaapi</span><span class="p">.</span><span class="n">set_name</span><span class="p">(</span><span class="n">func_addr</span><span class="p">,</span> <span class="sa">f</span><span class="s">"init</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+        <span class="n">ea</span> <span class="o">+=</span> <span class="mi">8</span>
+        <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">funcs</span>
+
+<span class="n">init_funcs</span> <span class="o">=</span> <span class="n">do_init_array</span><span class="p">()</span>
+
+<span class="n">dec_loop_size</span> <span class="o">=</span> <span class="mh">0x43</span>
+<span class="n">dec_addr_off</span> <span class="o">=</span> <span class="mh">0x12</span>
+<span class="n">dec_key_off</span> <span class="o">=</span> <span class="mh">0x18</span>
+<span class="n">dec_size_off</span> <span class="o">=</span> <span class="mh">0x26</span>
+<span class="kn">import</span> <span class="nn">idc</span>
+
+<span class="k">def</span> <span class="nf">decrypt_string</span><span class="p">(</span><span class="n">loop_start</span><span class="p">):</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Decrypting string@0x%x"</span><span class="p">,</span> <span class="n">loop_start</span><span class="p">)</span>
+    <span class="n">mov_insn</span> <span class="o">=</span> <span class="n">idaapi</span><span class="p">.</span><span class="n">insn_t</span><span class="p">()</span>
+    <span class="n">xor_insn</span> <span class="o">=</span> <span class="n">idaapi</span><span class="p">.</span><span class="n">insn_t</span><span class="p">()</span>
+    <span class="n">sub_insn</span> <span class="o">=</span> <span class="n">idaapi</span><span class="p">.</span><span class="n">insn_t</span><span class="p">()</span>
+    <span class="n">idaapi</span><span class="p">.</span><span class="n">decode_insn</span><span class="p">(</span><span class="n">mov_insn</span><span class="p">,</span> <span class="n">loop_start</span><span class="o">+</span><span class="n">dec_addr_off</span><span class="p">)</span>
+    <span class="n">idaapi</span><span class="p">.</span><span class="n">decode_insn</span><span class="p">(</span><span class="n">xor_insn</span><span class="p">,</span> <span class="n">loop_start</span><span class="o">+</span><span class="n">dec_key_off</span><span class="p">)</span>
+    <span class="n">idaapi</span><span class="p">.</span><span class="n">decode_insn</span><span class="p">(</span><span class="n">sub_insn</span><span class="p">,</span> <span class="n">loop_start</span><span class="o">+</span><span class="n">dec_size_off</span><span class="p">)</span>
+    <span class="n">addr</span> <span class="o">=</span> <span class="n">mov_insn</span><span class="p">.</span><span class="n">Op2</span><span class="p">.</span><span class="n">addr</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">xor_insn</span><span class="p">.</span><span class="n">Op2</span><span class="p">.</span><span class="n">value</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">sub_insn</span><span class="p">.</span><span class="n">Op2</span><span class="p">.</span><span class="n">value</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Decrypting string @ 0x%x of size 0x%x"</span><span class="p">,</span> <span class="n">addr</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+    <span class="n">dec_str</span> <span class="o">=</span> <span class="s">""</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">car</span> <span class="o">=</span> <span class="n">idaapi</span><span class="p">.</span><span class="n">get_byte</span><span class="p">(</span><span class="n">addr</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span>
+        <span class="n">dec_car</span> <span class="o">=</span> <span class="p">(</span><span class="n">car</span> <span class="o">^</span> <span class="n">key</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xff</span>
+        <span class="n">dec_str</span> <span class="o">+=</span> <span class="nb">chr</span><span class="p">(</span><span class="n">dec_car</span><span class="p">)</span>
+        <span class="n">idaapi</span><span class="p">.</span><span class="n">patch_byte</span><span class="p">(</span><span class="n">addr</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">dec_car</span><span class="p">)</span>
+
+    <span class="n">idaapi</span><span class="p">.</span><span class="n">create_strlit</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Decrypted string: %s"</span><span class="p">,</span> <span class="n">dec_str</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">decrypt_strings</span><span class="p">():</span>
+    <span class="n">decrypt_string_func</span> <span class="o">=</span> <span class="n">init_funcs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Decrypt strings@0x%x"</span><span class="p">,</span> <span class="n">decrypt_string_func</span><span class="p">)</span>
+    <span class="n">curr</span> <span class="o">=</span> <span class="n">decrypt_string_func</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+        <span class="n">decrypt_string</span><span class="p">(</span><span class="n">curr</span><span class="p">)</span>
+        <span class="n">curr</span> <span class="o">+=</span> <span class="n">dec_loop_size</span>
+
+<span class="n">decrypt_strings</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Turns out the strings were not so useful after all, they are just used for anti debugging. Basically, the binary checks whether the command line is one of <code class="language-plaintext highlighter-rouge">gdb</code>, <code class="language-plaintext highlighter-rouge">strace</code>, <code class="language-plaintext highlighter-rouge">ltrace</code> or <code class="language-plaintext highlighter-rouge">linux_server64</code>, and if yes, enters infinite recursion.</p>
+
+<p>However, I also found another interesting looking init function:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">__int64</span> <span class="nf">init4</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="n">__int64</span> <span class="n">result</span><span class="p">;</span> <span class="c1">// rax</span>
+  <span class="kt">int</span> <span class="n">v1</span><span class="p">;</span> <span class="c1">// esi</span>
+  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">i</span><span class="p">;</span> <span class="c1">// [rsp+2Ch] [rbp-14h]</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">s</span><span class="p">;</span> <span class="c1">// [rsp+30h] [rbp-10h]</span>
+
+  <span class="n">signal</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="n">sub_400AF0</span><span class="p">);</span>
+  <span class="n">alarm</span><span class="p">(</span><span class="mi">1u</span><span class="p">);</span>
+  <span class="n">dword_6180D0</span> <span class="o">=</span> <span class="n">sub_4014E0</span><span class="p">();</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">((</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="mh">0xDEAD0000LL</span><span class="p">,</span> <span class="mh">0x1000uLL</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0LL</span><span class="p">);</span>
+  <span class="n">memset</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mh">0x1000uLL</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">691787201</span><span class="p">;</span> <span class="p">;</span> <span class="n">i</span> <span class="o">=</span> <span class="n">v1</span> <span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="n">i</span> <span class="o">==</span> <span class="o">-</span><span class="mi">794482235</span> <span class="p">)</span>
+      <span class="k">break</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">397321255</span> <span class="p">)</span>
+    <span class="p">{</span>
+      <span class="n">perror</span><span class="p">(</span><span class="n">a1P</span><span class="p">);</span>
+      <span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">v1</span> <span class="o">=</span> <span class="o">-</span><span class="mi">794482235</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="n">s</span> <span class="o">==</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">-</span><span class="mi">1LL</span> <span class="p">)</span>
+      <span class="n">v1</span> <span class="o">=</span> <span class="mi">397321255</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+<p>It seems to install a SIGALARM handler and also mmaps <code class="language-plaintext highlighter-rouge">0xDEAD0000</code>. The SIGALARM handler basically just sets a variable, such that main can advance. While this looked a lot nicer, it was still clearly obfuscated. I remembered reading about similar obfuscation and there being an IDA plugin that can help with that.</p>
+
+<p>I found the plugin again and it proved to be quite useful: https://eshard.com/posts/d810_blog_post_1/</p>
+
+<p>With the plugin installed and configured correctly (make sure to turn off the rules about global variables), functions suddenly looked perfectly fine again:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">__int64</span> <span class="kr">__fastcall</span> <span class="nf">main</span><span class="p">(</span><span class="n">__int64</span> <span class="n">a1</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">a2</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">a3</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">s</span><span class="p">;</span> <span class="c1">// [rsp+60h] [rbp-20h]</span>
+
+  <span class="n">sub_400D90</span><span class="p">();</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">mmap</span><span class="p">(</span><span class="mi">0LL</span><span class="p">,</span> <span class="mh">0x100000uLL</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0LL</span><span class="p">);</span>
+  <span class="n">memset</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mh">0x100000uLL</span><span class="p">);</span>
+  <span class="n">sub_400EC0</span><span class="p">();</span>
+  <span class="k">while</span> <span class="p">(</span> <span class="o">!</span><span class="n">dword_6180CC</span> <span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">sub_4014E0</span><span class="p">()</span> <span class="o">!=</span> <span class="n">dword_6180D0</span> <span class="p">)</span>
+      <span class="p">((</span><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">void</span><span class="p">))</span><span class="n">loc_400AC0</span><span class="p">)();</span>
+    <span class="n">usleep</span><span class="p">(</span><span class="mh">0x186A0u</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="n">sub_404740</span><span class="p">(</span><span class="o">&amp;</span><span class="n">unk_6060D0</span><span class="p">,</span> <span class="mi">73569LL</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="mh">0xFFFFFFLL</span><span class="p">);</span>
+  <span class="n">sub_400EC0</span><span class="p">();</span>
+  <span class="p">((</span><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">void</span><span class="p">))</span><span class="o">&amp;</span><span class="n">s</span><span class="p">[</span><span class="n">dword_6060C0</span><span class="p">])();</span>
+  <span class="n">munmap</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mh">0x100000uLL</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">0LL</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>After some basic analysis using our newly found powers, we can see that main is very simple:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">__int64</span> <span class="kr">__fastcall</span> <span class="nf">main</span><span class="p">(</span><span class="n">__int64</span> <span class="n">a1</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">a2</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">a3</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">void</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="n">s</span><span class="p">)(</span><span class="n">__int64</span><span class="p">);</span> <span class="c1">// [rsp+60h] [rbp-20h]</span>
+
+  <span class="n">setup</span><span class="p">();</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">))</span><span class="n">mmap</span><span class="p">(</span><span class="mi">0LL</span><span class="p">,</span> <span class="mh">0x100000uLL</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0LL</span><span class="p">);</span>
+  <span class="n">memset</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mh">0x100000uLL</span><span class="p">);</span>
+  <span class="n">check_for_debugger</span><span class="p">();</span>
+  <span class="k">while</span> <span class="p">(</span> <span class="o">!</span><span class="n">did_alarm</span> <span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">count_breakpoints</span><span class="p">()</span> <span class="o">!=</span> <span class="n">init_num_bps</span> <span class="p">)</span>
+      <span class="p">((</span><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">void</span><span class="p">))</span><span class="n">probably_crash</span><span class="p">)();</span>
+    <span class="n">usleep</span><span class="p">(</span><span class="mh">0x186A0u</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="n">unpack</span><span class="p">(</span><span class="n">some_buf</span><span class="p">,</span> <span class="mi">72638</span><span class="p">,</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">s</span><span class="p">,</span> <span class="mh">0xFFFFFF</span><span class="p">);</span>
+  <span class="n">check_for_debugger</span><span class="p">();</span>
+  <span class="p">((</span><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">void</span><span class="p">))((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">s</span> <span class="o">+</span> <span class="n">entry_off</span><span class="p">))();</span>
+  <span class="n">munmap</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mh">0x100000uLL</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">0LL</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">setup</code> sets up buffering, gets pid and checks the command line. It also installs the following interesting SIGTRAP handler:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">handler</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="n">MEMORY</span><span class="p">[</span><span class="mh">0xDEAD0000</span><span class="p">]</span> <span class="o">^=</span> <span class="mh">0xDEADBEEF</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>At first, I thought this was just another anti debugging technique, but as it turns out later, this is used in the binary.
+Next, we see that it just waits for the first alarm, then unpacks a buffer and executes it (at an offset). My team mate started working on an unpacker. He said “the source code is self documenting”, so here you go ;):</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env python3
+</span>
+
+<span class="k">def</span> <span class="nf">unpack</span><span class="p">(</span><span class="n">binary</span><span class="p">):</span>
+    <span class="n">packed_full</span> <span class="o">=</span> <span class="n">binary</span><span class="p">[</span><span class="mh">0x60d0</span><span class="p">:]</span> <span class="c1"># TODO: find real size
+</span>    <span class="n">unpacked</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+
+    <span class="c1"># the packed data is always consumed linearly, so just "eat" prefixes to avoid annoying index calc
+</span>    <span class="n">packed</span> <span class="o">=</span> <span class="n">packed_full</span>
+
+    <span class="k">def</span> <span class="nf">eat</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">nonlocal</span> <span class="n">packed</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">packed</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span>
+        <span class="n">packed</span> <span class="o">=</span> <span class="n">packed</span><span class="p">[</span><span class="n">n</span><span class="p">:]</span>
+        <span class="k">return</span> <span class="n">val</span>
+
+    <span class="k">def</span> <span class="nf">eat_byte</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">eat</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">firsthigh</span> <span class="o">=</span> <span class="n">packed</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="mi">5</span>
+    <span class="k">assert</span> <span class="n">firsthigh</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">firsthigh</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="n">big_chungus</span> <span class="o">=</span> <span class="p">(</span><span class="n">firsthigh</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">big_chungus</span> <span class="c1"># could remove this assert, but it seems like every chal is actually big chungus
+</span>
+    <span class="c1"># remove high bits from very first byte to treat it like a regular memcpy
+</span>    <span class="n">packed</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">([</span><span class="n">packed</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x1f</span><span class="p">])</span> <span class="o">+</span> <span class="n">packed</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+    <span class="k">def</span> <span class="nf">eat_size</span><span class="p">():</span>
+        <span class="c1"># yeah, this is shitty code
+</span>        <span class="k">if</span> <span class="n">big_chungus</span><span class="p">:</span>
+            <span class="n">eaten</span> <span class="o">=</span> <span class="n">eat_byte</span><span class="p">()</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">eaten</span>
+            <span class="k">while</span> <span class="n">eaten</span> <span class="o">==</span> <span class="mh">0xff</span><span class="p">:</span>
+                <span class="c1"># print("BIG CHUNGUS SIZE")
+</span>                <span class="n">eaten</span> <span class="o">=</span> <span class="n">eat_byte</span><span class="p">()</span>
+                <span class="n">result</span> <span class="o">+=</span> <span class="n">eaten</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">eat_byte</span><span class="p">()</span>
+            
+
+    <span class="c1"># this ends up reading more than the size of the original packed buffer, which means it produces garbage at the end.
+</span>    <span class="c1"># we probably don't care, but TODO: possibly fix this
+</span>    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">packed</span><span class="p">):</span>
+        <span class="n">firstbyte</span> <span class="o">=</span> <span class="n">eat_byte</span><span class="p">()</span>
+        <span class="n">high</span><span class="p">,</span> <span class="n">low</span> <span class="o">=</span> <span class="n">firstbyte</span> <span class="o">&gt;&gt;</span> <span class="mi">5</span><span class="p">,</span> <span class="n">firstbyte</span> <span class="o">&amp;</span> <span class="mh">0x1f</span>
+        <span class="c1"># print(high, low) 
+</span>        <span class="k">if</span> <span class="n">high</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># simple memcpy
+</span>            <span class="n">size</span> <span class="o">=</span> <span class="n">low</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">unpacked</span> <span class="o">+=</span> <span class="n">eat</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">high</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span> <span class="c1"># all bits set
+</span>                <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">high</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">eat_size</span><span class="p">()</span> <span class="o">+</span> <span class="mi">3</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">high</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">3</span>
+            <span class="n">least_sig_offset</span> <span class="o">=</span> <span class="n">eat_byte</span><span class="p">()</span>
+            <span class="n">rel_offset</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">least_sig_offset</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="mh">0x100</span><span class="o">*</span><span class="n">low</span><span class="p">)</span>
+            <span class="c1"># print("size ", size)
+</span>            <span class="k">if</span> <span class="n">big_chungus</span> <span class="ow">and</span> <span class="n">least_sig_offset</span> <span class="o">==</span> <span class="mh">0xff</span> <span class="ow">and</span> <span class="n">low</span> <span class="o">==</span> <span class="mh">0x1f</span><span class="p">:</span>
+                <span class="c1"># print("BIG CHUNGUS OFFSET")
+</span>                <span class="n">most_sig</span> <span class="o">=</span> <span class="n">eat_byte</span><span class="p">()</span>
+                <span class="n">least_sig</span> <span class="o">=</span> <span class="n">eat_byte</span><span class="p">()</span>
+                <span class="n">rel_offset</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="mh">0x2000</span> <span class="o">+</span> <span class="p">(</span><span class="n">most_sig</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="n">least_sig</span><span class="p">)</span>
+            
+            <span class="c1"># print("rel offset ", rel_offset, "; size", size, "; copied", len(unpacked))
+</span>            <span class="k">assert</span> <span class="o">-</span><span class="n">rel_offset</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">unpacked</span><span class="p">)</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="n">rel_offset</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">unpacked</span><span class="p">)</span>
+            <span class="c1"># existing = unpacked[offset:offset+size]
+</span>            <span class="c1"># unpacked += existing.ljust(size, b"\x00")
+</span>            <span class="c1"># weird memmove aliasing behavior means we need to copy byte by byte
+</span>            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+                <span class="n">unpacked</span> <span class="o">+=</span> <span class="nb">bytes</span><span class="p">([</span><span class="n">unpacked</span><span class="p">[</span><span class="n">offset</span> <span class="o">+</span> <span class="n">i</span><span class="p">]])</span>
+    <span class="k">return</span> <span class="n">unpacked</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="s">"chals/chal_16"</span>
+    <span class="n">binary</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">'rb'</span><span class="p">).</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">unpacked</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+    <span class="nb">open</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s">"__unpacked"</span><span class="p">,</span> <span class="s">"wb"</span><span class="p">).</span><span class="n">write</span><span class="p">(</span><span class="n">unpacked</span><span class="p">)</span>
+
+
+</code></pre></div></div>
+
+<p>In case the source code isn’t quite as self-documenting as he claimed:</p>
+
+<ul>
+  <li>In every binary, the packed data always starts at a constant offset <code class="language-plaintext highlighter-rouge">0x60d0</code>. This makes it easy to extract. While the length varies by some amount (and could be extracted from the binary), it turned out to be sufficient to simply decode as much as we can and ignore the excess.</li>
+  <li>We’re not sure if the format of the packed data is well-known somehow (or a variant of something well-known), but it’s fairly simple either way.</li>
+  <li>The packed data consists of a sequence of what we will call <em>chunks</em>. The 3 most significant bits of the  first byte of a chunk determine its type:
+    <ul>
+      <li>If they’re 0, this is a simple “constant” chunk. The size is determined by least significant 5 bits plus 1, i.e. <code class="language-plaintext highlighter-rouge">(firstbyte &amp; 0x1f) + 1</code> bytes of data follow, which are copied into the output.</li>
+      <li>If they’re non-zero, the chunk references a certain amount of bytes <em>from the output that was already written, relative to the end of the output buffer</em>. Both the size and the relative offset are encoded in a variable-length scheme.
+        <ul>
+          <li>The contents of the output buffer are <code class="language-plaintext highlighter-rouge">memmove</code>d instead of <code class="language-plaintext highlighter-rouge">memcpy</code>‘d. Special care has to be taken for cases where the source and destination memory ranges overlap, which can and does happen.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>The very first chunk is always treated as constant data. Its 5 most significant bits instead set what we call the <code class="language-plaintext highlighter-rouge">big_chungus</code> flag (<code class="language-plaintext highlighter-rouge">True</code> if they are equal to 1, <code class="language-plaintext highlighter-rouge">False</code> if 0, error of they’re set to anything else). This flag appears to enable some additional variable-length encoding of sizes and offsets, and always seems to be set to true in the binaries we were given. The unpacking function in the binary, <code class="language-plaintext highlighter-rouge">sub_404740</code>, in fact calls two different functions; the big-chungus-enabled <code class="language-plaintext highlighter-rouge">sub_403E50</code> or the apparently unused <code class="language-plaintext highlighter-rouge">sub_402760</code>.</li>
+</ul>
+
+<p>I patched out the anti debugging checks and signal handlers and started debugging.
+I dumped the unpacked code into a binary file and loaded it into IDA once again.
+I also continued debugging the unpacked code. It was really annyoing to debug and statically analyze, since most functions have the following snippet interspersed every few instructions:</p>
+
+<pre><code class="language-x86asm">nullsub_428:
+    ret
+
+call    nullsub_428
+call    sub_2258E
+
+sub_2258E:
+    add     qword ptr [rsp+0], 1
+    retn
+</code></pre>
+
+<p>Basically, this skips over the byte after the second call and hence IDA cannot really reconstruct the control flow / figure out where instructions are. However, this is nothing a little IDA scripting can’t fix ;):</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">binascii</span>
+<span class="kn">import</span> <span class="nn">idaapi</span>
+<span class="kn">import</span> <span class="nn">ida_funcs</span>
+<span class="kn">import</span> <span class="nn">ida_bytes</span>
+<span class="kn">import</span> <span class="nn">idc</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="p">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">"patching"</span><span class="p">)</span>
+
+<span class="n">shitty_func</span> <span class="o">=</span> <span class="n">binascii</span><span class="p">.</span><span class="n">unhexlify</span><span class="p">(</span><span class="s">"4883042401C3"</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Running from 0x%x - 0x%x"</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+    <span class="n">curr</span> <span class="o">=</span> <span class="n">start</span>
+    <span class="k">while</span> <span class="n">curr</span> <span class="o">!=</span> <span class="n">idaapi</span><span class="p">.</span><span class="n">BADADDR</span> <span class="ow">and</span> <span class="n">curr</span> <span class="o">&lt;</span> <span class="n">end</span><span class="p">:</span>
+        <span class="c1"># make code
+</span>        <span class="c1"># idaapi.del_items(curr)
+</span>        <span class="n">insn</span> <span class="o">=</span> <span class="n">idaapi</span><span class="p">.</span><span class="n">insn_t</span><span class="p">()</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">idaapi</span><span class="p">.</span><span class="n">create_insn</span><span class="p">(</span><span class="n">curr</span><span class="p">,</span> <span class="n">insn</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ret</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">idaapi</span><span class="p">.</span><span class="n">del_items</span><span class="p">(</span><span class="n">curr</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+            <span class="n">idaapi</span><span class="p">.</span><span class="n">del_items</span><span class="p">(</span><span class="n">curr</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">idaapi</span><span class="p">.</span><span class="n">create_insn</span><span class="p">(</span><span class="n">curr</span><span class="p">,</span> <span class="n">insn</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ret</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">log</span><span class="p">.</span><span class="n">error</span><span class="p">(</span><span class="s">"Failed to create instruction at 0x%x"</span><span class="p">,</span> <span class="n">curr</span><span class="p">)</span>
+                <span class="k">return</span>
+        <span class="c1"># insn_size = ret
+</span>        <span class="n">next_ea</span> <span class="o">=</span> <span class="n">idaapi</span><span class="p">.</span><span class="n">get_first_cref_from</span><span class="p">(</span><span class="n">curr</span><span class="p">)</span>
+        <span class="c1"># if call, check if skip next byte
+</span>        <span class="k">if</span> <span class="n">idaapi</span><span class="p">.</span><span class="n">is_call_insn</span><span class="p">(</span><span class="n">insn</span><span class="p">):</span>
+            <span class="n">call_addr</span> <span class="o">=</span> <span class="n">insn</span><span class="p">.</span><span class="n">Op1</span><span class="p">.</span><span class="n">addr</span>
+            <span class="n">is_skip</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Shitty func: %s"</span><span class="p">,</span> <span class="n">shitty_func</span><span class="p">.</span><span class="nb">hex</span><span class="p">())</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">shitty_func</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">idaapi</span><span class="p">.</span><span class="n">get_byte</span><span class="p">(</span><span class="n">call_addr</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">!=</span> <span class="n">c</span><span class="p">:</span>
+                    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Mismatched"</span><span class="p">)</span>
+                    <span class="n">is_skip</span> <span class="o">=</span> <span class="bp">False</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="n">is_skip</span><span class="p">:</span>
+                <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Identified skip call @ 0x%x"</span><span class="p">,</span> <span class="n">curr</span><span class="p">)</span>
+                <span class="n">idaapi</span><span class="p">.</span><span class="n">patch_byte</span><span class="p">(</span><span class="n">curr</span><span class="p">,</span> <span class="mh">0xe9</span><span class="p">)</span>
+                <span class="n">idaapi</span><span class="p">.</span><span class="n">patch_byte</span><span class="p">(</span><span class="n">curr</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mh">0x01</span><span class="p">)</span>
+                <span class="n">idaapi</span><span class="p">.</span><span class="n">del_items</span><span class="p">(</span><span class="n">curr</span><span class="p">)</span>
+                <span class="n">idaapi</span><span class="p">.</span><span class="n">create_insn</span><span class="p">(</span><span class="n">curr</span><span class="p">,</span> <span class="n">insn</span><span class="p">)</span>
+                <span class="n">next_ea</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Next ea: 0x%x"</span><span class="p">,</span> <span class="n">next_ea</span><span class="p">)</span>
+                <span class="c1"># return
+</span>        <span class="n">curr</span> <span class="o">=</span> <span class="n">next_ea</span>
+        <span class="c1"># patch to jmp rel
+</span>        <span class="c1"># else inc curr
+</span>
+<span class="n">run</span><span class="p">(</span><span class="mh">0x0</span><span class="p">,</span> <span class="mh">0x222C8</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Basically, this goes through the instructions and if it sees a call to such a function, it patches it with a jmp to the next byte. Armed with this and debugging some more, it becomes apparent what the function does (manual decompilation):</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">user</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="kt">int</span> <span class="n">final</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{};</span>
+
+<span class="n">read</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="mi">8</span><span class="p">);</span>
+<span class="n">sub_223F3</span><span class="p">(</span><span class="n">user</span><span class="p">);</span>
+<span class="n">sub_0</span><span class="p">(</span><span class="n">final</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">user</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">final</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">user</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="p">{</span>
+    <span class="n">puts</span><span class="p">(</span><span class="s">"Right!"</span><span class="p">);</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="n">puts</span><span class="p">(</span><span class="s">"Wrong!"</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Unfortunately, for the longest time, I thought that sub_0 was getting called with our input and not zeroes (more on that later). In any case, I tried running angr on it, but it seemed to not really work. One issue was that sub_0 actually has a lot of int 3 instructions. I tried doing the following to implement the sighandler from the binary, but I still didn’t get an answer<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup>:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">SimEngineFailure</span><span class="p">(</span><span class="n">angr</span><span class="p">.</span><span class="n">engines</span><span class="p">.</span><span class="n">engine</span><span class="p">.</span><span class="n">SuccessorsMixin</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">process_successors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">successors</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">state</span>
+        <span class="n">jumpkind</span> <span class="o">=</span> <span class="n">state</span><span class="p">.</span><span class="n">history</span><span class="p">.</span><span class="n">parent</span><span class="p">.</span><span class="n">jumpkind</span> <span class="k">if</span> <span class="n">state</span><span class="p">.</span><span class="n">history</span> <span class="ow">and</span> <span class="n">state</span><span class="p">.</span><span class="n">history</span><span class="p">.</span><span class="n">parent</span> <span class="k">else</span> <span class="bp">None</span>
+
+        <span class="k">if</span> <span class="n">jumpkind</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">jumpkind</span> <span class="o">==</span> <span class="s">"Ijk_SigTRAP"</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">state</span><span class="p">.</span><span class="n">mem</span><span class="p">[</span><span class="mh">0xDEAD0000</span><span class="p">].</span><span class="n">dword</span>
+                <span class="n">state</span><span class="p">.</span><span class="n">mem</span><span class="p">[</span><span class="mh">0xDEAD0000</span><span class="p">].</span><span class="n">dword</span> <span class="o">=</span> <span class="n">val</span><span class="p">.</span><span class="n">resolved</span> <span class="o">^</span> <span class="mh">0xDEADBEEF</span>
+                <span class="bp">self</span><span class="p">.</span><span class="n">successors</span><span class="p">.</span><span class="n">add_successor</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">state</span><span class="p">.</span><span class="n">regs</span><span class="p">.</span><span class="n">rip</span><span class="p">,</span> <span class="n">state</span><span class="p">.</span><span class="n">solver</span><span class="p">.</span><span class="n">true</span><span class="p">,</span> <span class="s">'Ijk_Boring'</span><span class="p">)</span>
+                <span class="bp">self</span><span class="p">.</span><span class="n">successors</span><span class="p">.</span><span class="n">processed</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="k">return</span>
+
+        <span class="k">return</span> <span class="nb">super</span><span class="p">().</span><span class="n">process_successors</span><span class="p">(</span><span class="n">successors</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">UberUberEngine</span><span class="p">(</span><span class="n">SimEngineFailure</span><span class="p">,</span><span class="n">angr</span><span class="p">.</span><span class="n">engines</span><span class="p">.</span><span class="n">UberEngine</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+</code></pre></div></div>
+
+<p>So I started reving sub_0 manually (still thinking it depended on our input and hence we would need to know what it does). Unfortunately, even with the patched binary, IDA still didn’t want to include all of the function in the function, so some more scripting later, I was finally able to hit decompile on the whole thing:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">find_prev_next</span><span class="p">(</span><span class="n">addr</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">idaapi</span><span class="p">.</span><span class="n">BADADDR</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">idaapi</span><span class="p">.</span><span class="n">get_first_cref_from</span><span class="p">(</span><span class="n">addr</span><span class="o">-</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span> <span class="o">!=</span> <span class="n">idaapi</span><span class="p">.</span><span class="n">BADADDR</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">res</span>
+    <span class="k">return</span> <span class="n">res</span>
+    
+<span class="k">def</span> <span class="nf">append_chunk</span><span class="p">(</span><span class="n">curr</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">idaapi</span><span class="p">.</span><span class="n">append_func_tail</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">curr</span><span class="p">,</span> <span class="n">idaapi</span><span class="p">.</span><span class="n">BADADDR</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="p">.</span><span class="n">tails</span><span class="p">.</span><span class="n">count</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="p">.</span><span class="n">tails</span><span class="p">[</span><span class="n">f</span><span class="p">.</span><span class="n">tails</span><span class="p">.</span><span class="n">count</span><span class="o">-</span><span class="mi">1</span><span class="p">].</span><span class="n">start_ea</span><span class="p">)</span>
+        <span class="n">end_ea</span> <span class="o">=</span> <span class="n">f</span><span class="p">.</span><span class="n">tails</span><span class="p">[</span><span class="n">f</span><span class="p">.</span><span class="n">tails</span><span class="p">.</span><span class="n">count</span><span class="o">-</span><span class="mi">1</span><span class="p">].</span><span class="n">end_ea</span>
+        <span class="k">print</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="n">end_ea</span><span class="p">))</span>
+        <span class="n">next_ea</span> <span class="o">=</span> <span class="n">find_prev_next</span><span class="p">(</span><span class="n">end_ea</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">next_ea</span>
+    <span class="k">return</span> <span class="bp">None</span>
+    
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">400</span><span class="p">):</span>
+    <span class="n">curr</span> <span class="o">=</span> <span class="n">append_chunk</span><span class="p">(</span><span class="n">curr</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">curr</span> <span class="o">==</span> <span class="n">idaapi</span><span class="p">.</span><span class="n">BADADDR</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"ERROR"</span><span class="p">)</span>
+        <span class="k">break</span>
+</code></pre></div></div>
+
+<p>Before being able to hit F5 and see something, I had to increase the max function size in IDA (this was already very promising), but I finally got to see it in all it’s glory:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">__int64</span> <span class="kr">__fastcall</span> <span class="nf">sub_0</span><span class="p">(</span><span class="n">__int64</span> <span class="n">a1</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">v603</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">a1</span> <span class="o">^</span> <span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">a1</span> <span class="o">+</span> <span class="mi">4</span><span class="p">);</span>
+  <span class="n">nullsub_1</span><span class="p">(</span><span class="n">a1</span><span class="p">);</span>
+  <span class="n">dword_DEAD0000</span> <span class="o">=</span> <span class="n">v603</span> <span class="o">-</span> <span class="mi">471</span> <span class="o">+</span> <span class="mi">261</span><span class="p">;</span>
+  <span class="n">__debugbreak</span><span class="p">();</span>
+  <span class="n">v604</span> <span class="o">=</span> <span class="p">(((</span><span class="n">dword_DEAD0000</span> <span class="o">-</span> <span class="mi">396</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x7D</span> <span class="o">^</span> <span class="mh">0xCA</span> <span class="o">|</span> <span class="mh">0x1E1u</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="o">|</span> <span class="p">(((</span><span class="n">dword_DEAD0000</span> <span class="o">-</span> <span class="mi">396</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x7D</span> <span class="o">^</span> <span class="mh">0xCA</span> <span class="o">|</span> <span class="mh">0x1E1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">6</span><span class="p">);</span>
+  <span class="n">nullsub_2</span><span class="p">();</span>
+  <span class="n">nullsub_3</span><span class="p">();</span>
+  <span class="n">dword_DEAD0000</span> <span class="o">=</span> <span class="n">v604</span> <span class="o">/</span> <span class="mh">0x1DF</span> <span class="o">/</span> <span class="mh">0x2E</span> <span class="o">%</span> <span class="mh">0x34</span><span class="p">;</span>
+  <span class="n">__debugbreak</span><span class="p">();</span>
+  <span class="n">v605</span> <span class="o">=</span> <span class="p">(((</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">dword_DEAD0000</span> <span class="o">&gt;&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">dword_DEAD0000</span> <span class="o">&lt;&lt;</span> <span class="mi">6</span><span class="p">))</span> <span class="o">%</span> <span class="mh">0x25</span><span class="p">;</span>
+  <span class="n">nullsub_4</span><span class="p">();</span>
+  <span class="n">dword_DEAD0000</span> <span class="o">=</span> <span class="p">((((</span><span class="n">v605</span> <span class="o">-</span> <span class="mi">292</span><span class="p">)</span> <span class="o">%</span> <span class="mh">0x16A</span><span class="p">)</span> <span class="o">|</span> <span class="mh">0x30</span><span class="p">)</span> <span class="o">+</span> <span class="mi">208</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x22</span><span class="p">;</span>
+  <span class="n">__debugbreak</span><span class="p">();</span>
+  <span class="n">dword_DEAD0000</span> <span class="o">=</span> <span class="p">(((</span><span class="n">dword_DEAD0000</span> <span class="o">+</span> <span class="mi">137</span><span class="p">)</span> <span class="o">|</span> <span class="mh">0xB9</span><span class="p">)</span> <span class="o">^</span> <span class="mh">0x166</span><span class="p">)</span> <span class="o">+</span> <span class="mi">67</span><span class="p">;</span>
+  <span class="n">__debugbreak</span><span class="p">();</span>
+  <span class="n">dword_DEAD0000</span> <span class="o">=</span> <span class="p">(</span><span class="mi">8</span> <span class="o">*</span> <span class="p">(</span><span class="n">dword_DEAD0000</span> <span class="o">&amp;</span> <span class="mh">0x19E</span><span class="p">))</span> <span class="o">|</span> <span class="p">((</span><span class="kt">unsigned</span> <span class="kr">__int16</span><span class="p">)(</span><span class="n">dword_DEAD0000</span> <span class="o">&amp;</span> <span class="mh">0x19E</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">5</span><span class="p">);</span>
+  <span class="n">__debugbreak</span><span class="p">();</span>
+  <span class="n">v1</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">dword_DEAD0000</span> <span class="o">&gt;&gt;</span> <span class="mi">5</span><span class="p">;</span>
+  <span class="n">v606</span> <span class="o">=</span> <span class="p">((((((</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">v1</span> <span class="o">|</span> <span class="p">(</span><span class="mi">8</span> <span class="o">*</span> <span class="n">dword_DEAD0000</span><span class="p">))</span> <span class="o">^</span> <span class="mh">0x1D8</span> <span class="o">|</span> <span class="mh">0x33</span><span class="p">)</span> <span class="o">+</span> <span class="mi">87</span><span class="p">)</span> <span class="o">%</span> <span class="mh">0x2A</span> <span class="o">/</span> <span class="mh">0x1C5</span><span class="p">)</span> <span class="o">^</span> <span class="mh">0x25</span><span class="p">)</span> <span class="o">%</span> <span class="mh">0x7B</span><span class="p">;</span>
+  <span class="c1">// ---------------------------------</span>
+  <span class="c1">// ... around 2500 lines of this lol</span>
+  <span class="c1">// ---------------------------------</span>
+  <span class="n">v602</span> <span class="o">=</span> <span class="p">((</span><span class="mi">797940</span> <span class="o">*</span> <span class="p">((((</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">v251</span> <span class="o">|</span> <span class="p">(</span><span class="mi">16</span> <span class="o">*</span> <span class="n">v601</span><span class="p">))</span> <span class="o">+</span> <span class="mi">293</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x1B6</span><span class="p">)</span> <span class="o">-</span> <span class="mi">477</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">6</span><span class="p">)</span> <span class="o">|</span> <span class="p">((</span><span class="mi">797940</span>
+                                                                                        <span class="o">*</span> <span class="p">((((</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">v251</span> <span class="o">|</span> <span class="p">(</span><span class="mi">16</span> <span class="o">*</span> <span class="n">v601</span><span class="p">))</span>
+                                                                                          <span class="o">+</span> <span class="mi">293</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x1B6</span><span class="p">)</span>
+                                                                                        <span class="o">-</span> <span class="mi">477</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">2</span><span class="p">);</span>
+  <span class="n">v723</span> <span class="o">=</span> <span class="p">(((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">v602</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">v602</span> <span class="o">&gt;&gt;</span> <span class="mi">7</span><span class="p">))</span> <span class="o">&gt;&gt;</span> <span class="mi">6</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">v602</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">v602</span> <span class="o">&gt;&gt;</span> <span class="mi">7</span><span class="p">)));</span>
+  <span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">a1</span> <span class="o">=</span> <span class="n">v723</span> <span class="o">-</span> <span class="mh">0x50EF943B</span><span class="p">;</span>
+  <span class="n">result</span> <span class="o">=</span> <span class="n">a1</span> <span class="o">+</span> <span class="mi">4</span><span class="p">;</span>
+  <span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">a1</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span> <span class="o">=</span> <span class="n">v723</span> <span class="o">-</span> <span class="mh">0x6F1DB3B</span><span class="p">;</span>
+  <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Obviously, this was not going to be possible to reverse by hand. However, it seemed to be just constant operations. Just for the fun of it, I added two rules to the aforementiond deobfuscation plugin:</p>
+
+<ul>
+  <li>replace nullsubs with nops</li>
+  <li>replace __debugbreak with <code class="language-plaintext highlighter-rouge">*0xDEAD0000 ^= 0xDEADBEEF</code></li>
+</ul>
+
+<p>I did this by adding the following to <code class="language-plaintext highlighter-rouge">chain_rules.py</code>:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">NullSubChain</span><span class="p">(</span><span class="n">ChainSimplificationRule</span><span class="p">):</span>
+    <span class="n">DESCRIPTION</span> <span class="o">=</span> <span class="s">"Replace calls to nullsubs with nops"</span>
+
+    <span class="k">def</span> <span class="nf">check_and_replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blk</span><span class="p">:</span> <span class="n">mblock_t</span><span class="p">,</span> <span class="n">ins</span><span class="p">:</span> <span class="n">minsn_t</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">blk</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="n">mba</span><span class="p">:</span> <span class="n">mba_t</span> <span class="o">=</span> <span class="n">blk</span><span class="p">.</span><span class="n">mba</span>
+        <span class="k">if</span> <span class="n">mba</span><span class="p">.</span><span class="n">maturity</span> <span class="o">!=</span> <span class="n">MMAT_PREOPTIMIZED</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">ins</span><span class="p">.</span><span class="n">opcode</span> <span class="o">==</span> <span class="n">m_call</span><span class="p">:</span>
+            <span class="n">left</span><span class="p">:</span> <span class="n">mop_t</span> <span class="o">=</span> <span class="n">ins</span><span class="p">.</span><span class="n">l</span>
+            <span class="k">if</span> <span class="n">left</span><span class="p">.</span><span class="n">t</span> <span class="o">==</span> <span class="n">mop_v</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">idaapi</span><span class="p">.</span><span class="n">get_name</span><span class="p">(</span><span class="n">left</span><span class="p">.</span><span class="n">g</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s">"nullsub"</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+                    <span class="n">chain_logger</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Found nullsub call at 0x%x"</span><span class="p">,</span> <span class="n">ins</span><span class="p">.</span><span class="n">ea</span><span class="p">)</span>
+                    <span class="n">blk</span><span class="p">.</span><span class="n">make_nop</span><span class="p">(</span><span class="n">ins</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="bp">None</span> <span class="c1">#??
+</span>                
+        <span class="k">return</span> <span class="nb">super</span><span class="p">().</span><span class="n">check_and_replace</span><span class="p">(</span><span class="n">blk</span><span class="p">,</span> <span class="n">ins</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">DebugBreakChain</span><span class="p">(</span><span class="n">ChainSimplificationRule</span><span class="p">):</span>
+    <span class="n">DESCRIPTION</span> <span class="o">=</span> <span class="s">"Replace calls to debugbreak with sigtrap handler implementation"</span>
+
+    <span class="k">def</span> <span class="nf">check_and_replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blk</span><span class="p">:</span> <span class="n">mblock_t</span><span class="p">,</span> <span class="n">ins</span><span class="p">:</span> <span class="n">minsn_t</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">blk</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="n">mba</span><span class="p">:</span> <span class="n">mba_t</span> <span class="o">=</span> <span class="n">blk</span><span class="p">.</span><span class="n">mba</span>
+        <span class="k">if</span> <span class="n">mba</span><span class="p">.</span><span class="n">maturity</span> <span class="o">!=</span> <span class="n">MMAT_PREOPTIMIZED</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">ins</span><span class="p">.</span><span class="n">opcode</span> <span class="o">==</span> <span class="n">m_call</span><span class="p">:</span>
+            <span class="n">left</span><span class="p">:</span> <span class="n">mop_t</span> <span class="o">=</span> <span class="n">ins</span><span class="p">.</span><span class="n">l</span>
+            <span class="k">if</span> <span class="n">left</span><span class="p">.</span><span class="n">t</span> <span class="o">==</span> <span class="n">mop_h</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">left</span><span class="p">.</span><span class="n">helper</span> <span class="o">==</span> <span class="s">"__debugbreak"</span><span class="p">:</span>
+                    <span class="n">chain_logger</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Found debugbreak at 0x%x"</span><span class="p">,</span> <span class="n">ins</span><span class="p">.</span><span class="n">ea</span><span class="p">)</span>
+                    <span class="n">new_insn</span> <span class="o">=</span> <span class="n">minsn_t</span><span class="p">(</span><span class="n">ins</span><span class="p">.</span><span class="n">ea</span><span class="p">)</span>
+                    <span class="n">new_insn</span><span class="p">.</span><span class="n">opcode</span> <span class="o">=</span> <span class="n">m_xor</span>
+                    <span class="n">new_insn</span><span class="p">.</span><span class="n">l</span><span class="p">.</span><span class="n">make_gvar</span><span class="p">(</span><span class="mh">0xdead0000</span><span class="p">)</span>
+                    <span class="n">new_insn</span><span class="p">.</span><span class="n">l</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="mi">4</span>
+                    <span class="n">new_insn</span><span class="p">.</span><span class="n">r</span><span class="p">.</span><span class="n">make_number</span><span class="p">(</span><span class="mh">0xdeadbeef</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+                    <span class="n">new_insn</span><span class="p">.</span><span class="n">d</span><span class="p">.</span><span class="n">make_gvar</span><span class="p">(</span><span class="mh">0xdead0000</span><span class="p">)</span>
+                    <span class="n">new_insn</span><span class="p">.</span><span class="n">d</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="mi">4</span>
+                    <span class="k">return</span> <span class="n">new_insn</span>
+
+        <span class="k">return</span> <span class="nb">super</span><span class="p">().</span><span class="n">check_and_replace</span><span class="p">(</span><span class="n">blk</span><span class="p">,</span> <span class="n">ins</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>I was not expecting that much, but after hitting F5 (and waiting like 2 minutes):</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">__int64</span> <span class="kr">__fastcall</span> <span class="nf">sub_0</span><span class="p">(</span><span class="n">__int64</span> <span class="n">a1</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">__int64</span> <span class="n">result</span><span class="p">;</span> <span class="c1">// rax</span>
+
+  <span class="n">dword_DEAD0000</span> <span class="o">=</span> <span class="mh">0xDEADBEE0</span><span class="p">;</span>
+  <span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">a1</span> <span class="o">=</span> <span class="mh">0x2B106BC4</span><span class="p">;</span>
+  <span class="n">result</span> <span class="o">=</span> <span class="n">a1</span> <span class="o">+</span> <span class="mi">4</span><span class="p">;</span>
+  <span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">a1</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0x750E24C4</span><span class="p">;</span>
+  <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>And then I realized, oh our input is constant and hence this just sets our input to the constants seen above. My teammate wrote a quick binary, that mmaps the unpacked shellcode, runs the sub_0 function and prints the resulting values:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;err.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;sysexits.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;fcntl.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;sys/mman.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;signal.h&gt;</span><span class="cp">
+</span>
+<span class="k">static</span> <span class="kt">int</span><span class="o">*</span> <span class="k">const</span> <span class="n">deadpage</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="mh">0xdead0000</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">handler</span><span class="p">(</span><span class="kt">int</span> <span class="n">sig</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">*</span><span class="n">deadpage</span> <span class="o">^=</span> <span class="mh">0xdeadbeef</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">errx</span><span class="p">(</span><span class="n">EX_USAGE</span><span class="p">,</span> <span class="s">"usage: %s &lt;unpacked-blob&gt;"</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+    <span class="p">}</span>
+
+    <span class="kt">int</span> <span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">O_RDONLY</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">fd</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err</span><span class="p">(</span><span class="n">EX_NOINPUT</span><span class="p">,</span> <span class="s">"couldn't open file"</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kt">void</span> <span class="o">*</span><span class="n">mem</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="mh">0x100000</span><span class="p">,</span> <span class="n">PROT_READ</span> <span class="o">|</span> <span class="n">PROT_EXEC</span><span class="p">,</span> <span class="n">MAP_FILE</span> <span class="o">|</span> <span class="n">MAP_PRIVATE</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">mem</span> <span class="o">==</span> <span class="n">MAP_FAILED</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err</span><span class="p">(</span><span class="n">EX_OSERR</span><span class="p">,</span> <span class="s">"couldn't map file"</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kt">void</span> <span class="o">*</span><span class="n">deadmapping</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">(</span><span class="n">deadpage</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">PROT_READ</span> <span class="o">|</span> <span class="n">PROT_WRITE</span><span class="p">,</span> <span class="n">MAP_ANON</span> <span class="o">|</span> <span class="n">MAP_PRIVATE</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">deadmapping</span> <span class="o">==</span> <span class="n">MAP_FAILED</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err</span><span class="p">(</span><span class="n">EX_OSERR</span><span class="p">,</span> <span class="s">"couldn't map 0xdead...."</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">deadmapping</span> <span class="o">!=</span> <span class="n">deadpage</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// what is MAP_FIXED lol</span>
+        <span class="n">errx</span><span class="p">(</span><span class="n">EX_OSERR</span><span class="p">,</span> <span class="s">"couldn't actualy map 0xdead...."</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">signal</span><span class="p">(</span><span class="n">SIGTRAP</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err</span><span class="p">(</span><span class="n">EX_OSERR</span><span class="p">,</span> <span class="s">"couldn't install signal handler"</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kt">int</span> <span class="n">buf</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+    <span class="p">((</span><span class="kt">void</span><span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">int</span><span class="o">*</span><span class="p">))</span><span class="n">mem</span><span class="p">)(</span><span class="n">buf</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%08x %08x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">buf</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The final piece of the puzzle left, was function <code class="language-plaintext highlighter-rouge">sub_223F3</code>, which actually does something with our input. Fortunately, it seems it was exactly the same for every binary. I translated it into z3 and was able to solve for our input (after wasting some time debugging why it wasn’t working, because I mistyped v1 as v4):</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">z3</span>
+<span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">def</span> <span class="nf">hiword</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">z3</span><span class="p">.</span><span class="n">Extract</span><span class="p">(</span><span class="mi">31</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">loword</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">z3</span><span class="p">.</span><span class="n">Extract</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">toint</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="n">val</span><span class="p">.</span><span class="n">size</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">num</span> <span class="o">==</span> <span class="mi">32</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">val</span>
+    <span class="k">return</span> <span class="n">z3</span><span class="p">.</span><span class="n">ZeroExt</span><span class="p">(</span><span class="mi">32</span><span class="o">-</span><span class="n">num</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">thingy</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">cond</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">z3</span><span class="p">.</span><span class="n">If</span><span class="p">(</span><span class="n">cond</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">toint</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">-</span> <span class="n">toint</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">z3</span><span class="p">.</span><span class="n">LShR</span><span class="p">(</span><span class="n">toint</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">-</span> <span class="n">toint</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="mi">16</span><span class="p">)),</span>
+        <span class="n">toint</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">wtf</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">z3</span><span class="p">.</span><span class="n">BitVecVal</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">z3</span><span class="p">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">toint</span><span class="p">(</span><span class="n">loword</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">-</span> <span class="n">toint</span><span class="p">(</span><span class="n">hiword</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">-</span> <span class="p">(</span><span class="n">z3</span><span class="p">.</span><span class="n">LShR</span><span class="p">(</span><span class="n">toint</span><span class="p">(</span><span class="n">loword</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">-</span> <span class="n">toint</span><span class="p">(</span><span class="n">hiword</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="mi">16</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">res</span><span class="p">.</span><span class="n">as_long</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">do_solve</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">):</span>
+    <span class="n">inp</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+        <span class="n">inp</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">z3</span><span class="p">.</span><span class="n">BitVec</span><span class="p">(</span><span class="sa">f</span><span class="s">'inp_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s">'</span><span class="p">,</span> <span class="mi">32</span><span class="p">))</span>
+    <span class="n">a1</span> <span class="o">=</span> <span class="n">inp</span>
+    <span class="n">v1</span> <span class="o">=</span> <span class="n">a1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">v2</span> <span class="o">=</span> <span class="mi">7</span> <span class="o">*</span> <span class="n">toint</span><span class="p">(</span><span class="n">hiword</span><span class="p">(</span><span class="n">a1</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">v3</span> <span class="o">=</span> <span class="n">thingy</span><span class="p">(</span><span class="n">loword</span><span class="p">(</span><span class="n">v2</span><span class="p">),</span> <span class="n">hiword</span><span class="p">(</span><span class="n">v2</span><span class="p">),</span> <span class="n">v2</span><span class="p">,</span> <span class="o">-</span><span class="mi">6</span> <span class="o">-</span> <span class="n">toint</span><span class="p">(</span><span class="n">hiword</span><span class="p">(</span><span class="n">a1</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+    <span class="n">v4</span> <span class="o">=</span> <span class="n">a1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">6</span>
+    <span class="n">v5</span> <span class="o">=</span> <span class="n">toint</span><span class="p">(</span><span class="n">hiword</span><span class="p">(</span><span class="n">v1</span><span class="p">))</span> <span class="o">+</span> <span class="mi">5</span>
+    <span class="n">v6</span> <span class="o">=</span> <span class="n">toint</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">toint</span><span class="p">(</span><span class="n">loword</span><span class="p">(</span><span class="n">v1</span><span class="p">)))</span>
+
+    <span class="n">v1</span> <span class="o">=</span> <span class="n">thingy</span><span class="p">(</span><span class="n">loword</span><span class="p">(</span><span class="n">v6</span><span class="p">),</span> <span class="n">hiword</span><span class="p">(</span><span class="n">v6</span><span class="p">),</span> <span class="n">v6</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span> <span class="o">-</span> <span class="n">toint</span><span class="p">(</span><span class="n">loword</span><span class="p">(</span><span class="n">v1</span><span class="p">)))</span>
+
+    <span class="n">v7</span> <span class="o">=</span> <span class="n">toint</span><span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">toint</span><span class="p">(</span><span class="n">loword</span><span class="p">(</span><span class="n">v3</span> <span class="o">^</span> <span class="n">v5</span><span class="p">)))</span>
+    <span class="n">v8</span> <span class="o">=</span> <span class="n">thingy</span><span class="p">(</span><span class="n">loword</span><span class="p">(</span><span class="n">v7</span><span class="p">),</span> <span class="n">hiword</span><span class="p">(</span><span class="n">v7</span><span class="p">),</span> <span class="n">v7</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span> <span class="o">-</span> <span class="n">toint</span><span class="p">(</span><span class="n">loword</span><span class="p">(</span><span class="n">v3</span> <span class="o">^</span> <span class="n">v5</span><span class="p">)))</span>
+
+    <span class="n">v9</span> <span class="o">=</span> <span class="n">toint</span><span class="p">(</span><span class="n">loword</span><span class="p">(</span><span class="n">v8</span> <span class="o">+</span> <span class="p">(</span><span class="n">v1</span> <span class="o">^</span> <span class="n">v4</span><span class="p">)))</span>
+    <span class="n">r1</span> <span class="o">=</span> <span class="n">loword</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">v9</span><span class="p">)</span>
+    <span class="n">r2</span> <span class="o">=</span> <span class="n">loword</span><span class="p">(</span><span class="n">z3</span><span class="p">.</span><span class="n">LShR</span><span class="p">(</span><span class="n">toint</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">v9</span><span class="p">),</span> <span class="mi">16</span><span class="p">))</span>
+    <span class="n">v10</span> <span class="o">=</span> <span class="n">thingy</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">v9</span><span class="p">,</span> <span class="o">~</span><span class="n">v9</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">z3</span><span class="p">.</span><span class="n">Solver</span><span class="p">()</span>
+    <span class="n">res1</span> <span class="o">=</span> <span class="p">(</span><span class="n">z3</span><span class="p">.</span><span class="n">ZeroExt</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="n">loword</span><span class="p">(</span><span class="n">v5</span> <span class="o">^</span> <span class="n">v10</span><span class="p">))</span> <span class="o">|</span> <span class="p">((</span><span class="n">v10</span> <span class="o">^</span> <span class="n">v3</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">))</span>
+    <span class="n">res2</span> <span class="o">=</span> <span class="p">((</span><span class="n">toint</span><span class="p">(</span><span class="n">loword</span><span class="p">((</span><span class="n">v10</span> <span class="o">+</span> <span class="n">v8</span><span class="p">)</span> <span class="o">^</span> <span class="n">v1</span><span class="p">)))</span> <span class="o">|</span> <span class="p">(((</span><span class="n">v10</span> <span class="o">+</span> <span class="n">v8</span><span class="p">)</span> <span class="o">^</span> <span class="n">v4</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">))</span>
+    <span class="n">s</span><span class="p">.</span><span class="n">assert_and_track</span><span class="p">(</span><span class="n">t1</span> <span class="o">==</span> <span class="n">res1</span><span class="p">,</span> <span class="s">"res1"</span><span class="p">)</span>
+    <span class="n">s</span><span class="p">.</span><span class="n">assert_and_track</span><span class="p">(</span><span class="n">t2</span> <span class="o">==</span> <span class="n">res2</span><span class="p">,</span> <span class="s">"res2"</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">s</span><span class="p">.</span><span class="n">check</span><span class="p">()</span> <span class="o">==</span> <span class="n">z3</span><span class="p">.</span><span class="n">sat</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">s</span><span class="p">.</span><span class="n">model</span><span class="p">()</span>
+    <span class="n">nums</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="n">i</span><span class="p">).</span><span class="n">as_long</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">inp</span><span class="p">]</span>
+    <span class="n">in_val</span> <span class="o">=</span> <span class="sa">b</span><span class="s">""</span>
+    <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">nums</span><span class="p">:</span>
+        <span class="n">in_val</span> <span class="o">+=</span> <span class="n">p32</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">in_val</span>
+</code></pre></div></div>
+
+<p>With all of that done, we can now write our exploit script and get the flag :):</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# This exploit template was generated via:
+# $ pwn template --host 111.186.58.164 --port 30212
+</span><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">sha256</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">pwnlib.tubes.tube</span> <span class="kn">import</span> <span class="n">tube</span>
+<span class="c1"># import pow
+</span>
+<span class="c1"># Set up pwntools for the correct architecture
+</span><span class="n">context</span><span class="p">.</span><span class="n">update</span><span class="p">(</span><span class="n">arch</span><span class="o">=</span><span class="s">'i386'</span><span class="p">)</span>
+<span class="n">exe</span> <span class="o">=</span> <span class="s">'./path/to/binary'</span>
+
+<span class="c1"># Many built-in settings can be controlled on the command-line and show up
+# in "args".  For example, to dump all data sent/received, and disable ASLR
+# for all created processes...
+# ./exploit.py DEBUG NOASLR
+# ./exploit.py GDB HOST=example.com PORT=4141
+</span><span class="n">host</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">HOST</span> <span class="ow">or</span> <span class="s">'111.186.58.164'</span>
+<span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">PORT</span> <span class="ow">or</span> <span class="mi">30212</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">local</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="p">[],</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+    <span class="s">'''Execute the target binary locally'''</span>
+    <span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="n">GDB</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">gdb</span><span class="p">.</span><span class="n">debug</span><span class="p">([</span><span class="n">exe</span><span class="p">]</span> <span class="o">+</span> <span class="n">argv</span><span class="p">,</span> <span class="n">gdbscript</span><span class="o">=</span><span class="n">gdbscript</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">process</span><span class="p">([</span><span class="n">exe</span><span class="p">]</span> <span class="o">+</span> <span class="n">argv</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">remote</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="p">[],</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+    <span class="s">'''Connect to the process on the remote host'''</span>
+    <span class="n">io</span> <span class="o">=</span> <span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="n">GDB</span><span class="p">:</span>
+        <span class="n">gdb</span><span class="p">.</span><span class="n">attach</span><span class="p">(</span><span class="n">io</span><span class="p">,</span> <span class="n">gdbscript</span><span class="o">=</span><span class="n">gdbscript</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">io</span>
+
+<span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="p">[],</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+    <span class="s">'''Start the exploit against the target.'''</span>
+    <span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="n">LOCAL</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">local</span><span class="p">(</span><span class="n">argv</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">remote</span><span class="p">(</span><span class="n">argv</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+<span class="c1"># Specify your GDB script here for debugging
+# GDB will be launched if the exploit is run via e.g.
+# ./exploit.py GDB
+</span><span class="n">gdbscript</span> <span class="o">=</span> <span class="s">'''
+continue
+'''</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
+
+<span class="c1">#===========================================================
+#                    EXPLOIT GOES HERE
+#===========================================================
+</span>
+<span class="k">def</span> <span class="nf">solve_proof_of_work</span><span class="p">(</span><span class="n">hashable_suffix</span><span class="p">,</span> <span class="nb">hash</span><span class="p">)</span> <span class="p">:</span>
+    <span class="n">alphabet</span> <span class="o">=</span> <span class="p">(</span><span class="n">string</span><span class="p">.</span><span class="n">ascii_letters</span> <span class="o">+</span> <span class="n">string</span><span class="p">.</span><span class="n">digits</span> <span class="o">+</span> <span class="s">'!#$%&amp;*-?'</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">hashable_prefix</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="n">alphabet</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> <span class="p">:</span>
+        <span class="n">current_hash_in_hex</span> <span class="o">=</span> <span class="n">sha256</span><span class="p">((</span><span class="s">''</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">hashable_prefix</span><span class="p">)</span> <span class="o">+</span> <span class="n">hashable_suffix</span><span class="p">).</span><span class="n">encode</span><span class="p">()).</span><span class="n">hexdigest</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">current_hash_in_hex</span> <span class="o">==</span> <span class="nb">hash</span> <span class="p">:</span>
+            <span class="k">return</span> <span class="s">''</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">hashable_prefix</span><span class="p">)</span>
+
+
+<span class="n">io</span> <span class="o">=</span> <span class="n">start</span><span class="p">()</span>
+
+<span class="n">proof_of_work_line</span> <span class="o">=</span> <span class="n">io</span><span class="p">.</span><span class="n">recvline</span><span class="p">(</span><span class="n">keepends</span><span class="o">=</span><span class="bp">False</span><span class="p">).</span><span class="n">decode</span><span class="p">(</span><span class="s">"utf-8"</span><span class="p">)</span>
+<span class="n">io</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+<span class="n">hashable_suffix</span> <span class="o">=</span> <span class="n">re</span><span class="p">.</span><span class="n">search</span><span class="p">(</span><span class="s">'sha256\(XXXX\+(.*)\) =='</span><span class="p">,</span> <span class="n">proof_of_work_line</span><span class="p">).</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">hash</span> <span class="o">=</span> <span class="n">re</span><span class="p">.</span><span class="n">search</span><span class="p">(</span><span class="s">'== (.*)'</span><span class="p">,</span> <span class="n">proof_of_work_line</span><span class="p">).</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Solving POW %s for %s"</span><span class="p">,</span> <span class="n">hashable_suffix</span><span class="p">,</span> <span class="nb">hash</span><span class="p">)</span>
+<span class="n">proof</span> <span class="o">=</span> <span class="n">solve_proof_of_work</span><span class="p">(</span><span class="n">hashable_suffix</span><span class="p">,</span> <span class="nb">hash</span><span class="p">)</span>
+<span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">proof</span><span class="p">)</span>
+<span class="n">io</span><span class="p">:</span> <span class="n">tube</span>
+
+<span class="kn">import</span> <span class="nn">base64</span>
+
+<span class="k">def</span> <span class="nf">read_challenge</span><span class="p">():</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">readuntil</span><span class="p">(</span><span class="s">"Here is your challenge:"</span><span class="p">)</span>
+    <span class="c1"># swallow 2 newlines
+</span>    <span class="n">io</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+    <span class="n">challenge</span> <span class="o">=</span> <span class="n">io</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">base64</span><span class="p">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">challenge</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Downloading challenge %d"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+    <span class="n">chal1</span> <span class="o">=</span> <span class="n">read_challenge</span><span class="p">()</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s">"chal</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s">"</span><span class="p">,</span> <span class="s">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">chal1</span><span class="p">)</span>
+
+    <span class="kn">import</span> <span class="nn">unpack</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Unpacking challenge"</span><span class="p">)</span>
+    <span class="n">unpacked</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">chal1</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s">"chal</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s">_unpacked"</span><span class="p">,</span> <span class="s">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">unpacked</span><span class="p">)</span>
+
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Running wrapper"</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">process</span><span class="p">([</span><span class="s">"./wrapper"</span><span class="p">,</span> <span class="sa">f</span><span class="s">"chal</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s">_unpacked"</span><span class="p">])</span>
+    <span class="n">res1</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">readuntil</span><span class="p">(</span><span class="s">" "</span><span class="p">)</span>
+    <span class="n">res1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">res1</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+    <span class="n">res2</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">readuntil</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+    <span class="n">res2</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">res2</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Targets: 0x%x, 0x%x"</span><span class="p">,</span> <span class="n">res1</span><span class="p">,</span> <span class="n">res2</span><span class="p">)</span>
+
+    <span class="kn">import</span> <span class="nn">do_solve</span>
+    <span class="n">sender</span> <span class="o">=</span> <span class="n">do_solve</span><span class="p">.</span><span class="n">do_solve</span><span class="p">(</span><span class="n">res1</span><span class="p">,</span> <span class="n">res2</span><span class="p">)</span>
+
+    <span class="n">io</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">sender</span><span class="p">)</span>
+
+<span class="n">io</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>For some reason I tried making a fast GPU based POW solver, turns out it’s slower than just python hashlib :face_palm: <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p>This was probably for other reasons, angr did manage to work later on. <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

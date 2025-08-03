@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>simplemod | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="simplemod" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/SECCON-2022/pwn/simplemod.html" />
+<meta property="og:url" content="https://org.anize.rs/SECCON-2022/pwn/simplemod.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="simplemod" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"simplemod","url":"https://org.anize.rs/SECCON-2022/pwn/simplemod.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="simplemod">simplemod</h1>
+
+<p><strong>Author</strong>: <a href="https://twitter.com/galli_leo_">gallileo</a></p>
+
+<p><strong>Tags</strong>: pwn, eldritch magic</p>
+
+<p><strong>Points</strong>: 470</p>
+
+<p>After having a blast playing Codegate finals in Seoul the weekend before, we decided it would be fun to play SECCON Quals while <a href="https://twitter.com/galli_leo_/status/1591329716187058176?s=20&amp;t=FAqezxrJFtNrXLsi52Syrw">on vacation in Osaka</a>.
+Little did I know, what eldritch horror would await me in such an innocently named challenge.</p>
+
+<h2 id="setup">Setup</h2>
+
+<p>The challenge consists of a very simple main binary called <code class="language-plaintext highlighter-rouge">chall</code> and a dynamic library <code class="language-plaintext highlighter-rouge">libmod.so</code> which <code class="language-plaintext highlighter-rouge">chall</code> links against.
+The source code for both is provided<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup> and <code class="language-plaintext highlighter-rouge">chall</code> is indeed very simple:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">getint</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">modify</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="n">__attribute__</span><span class="p">((</span><span class="n">noreturn</span><span class="p">))</span> <span class="kt">void</span> <span class="nf">exit_imm</span><span class="p">(</span><span class="kt">int</span> <span class="n">status</span><span class="p">);</span>
+
+<span class="n">__attribute__</span><span class="p">((</span><span class="n">constructor</span><span class="p">))</span>
+<span class="k">static</span> <span class="kt">int</span> <span class="nf">init</span><span class="p">(){</span>
+	<span class="n">alarm</span><span class="p">(</span><span class="mi">30</span><span class="p">);</span>
+	<span class="n">setbuf</span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+	<span class="n">setbuf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">__attribute__</span><span class="p">((</span><span class="n">destructor</span><span class="p">))</span>
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">fini</span><span class="p">(){</span>
+	<span class="n">exit_imm</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">int</span> <span class="nf">menu</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+	<span class="n">puts</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">MENU</span><span class="se">\n</span><span class="s">"</span>
+			<span class="s">"1. Modify</span><span class="se">\n</span><span class="s">"</span>
+			<span class="s">"0. Exit</span><span class="se">\n</span><span class="s">"</span>
+			<span class="s">"&gt; "</span><span class="p">);</span>
+
+	<span class="k">return</span> <span class="n">getint</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+	<span class="n">puts</span><span class="p">(</span><span class="s">"You can operate 30 times."</span><span class="p">);</span>
+	<span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">30</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
+		<span class="k">switch</span><span class="p">(</span><span class="n">menu</span><span class="p">()){</span>
+			<span class="k">case</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="k">goto</span> <span class="n">end</span><span class="p">;</span>
+			<span class="k">case</span> <span class="mi">1</span><span class="p">:</span>
+				<span class="n">modify</span><span class="p">();</span>
+				<span class="n">puts</span><span class="p">(</span><span class="s">"Done."</span><span class="p">);</span>
+				<span class="k">break</span><span class="p">;</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+
+<span class="nl">end:</span>
+	<span class="n">puts</span><span class="p">(</span><span class="s">"Bye."</span><span class="p">);</span>
+	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>You have access to a simple menu allowing you to call <code class="language-plaintext highlighter-rouge">modify</code> up to 30 times, after which the binary will simply exit.
+The three functions <code class="language-plaintext highlighter-rouge">getint</code>, <code class="language-plaintext highlighter-rouge">modify</code>, <code class="language-plaintext highlighter-rouge">exit_imm</code> are provided by <code class="language-plaintext highlighter-rouge">libmod</code> and hence dynamically linked.
+<code class="language-plaintext highlighter-rouge">fini</code> immediately pops out as looking a bit suspicious.
+It is a destructor, meaning it will be called before we exit.</p>
+
+<p><code class="language-plaintext highlighter-rouge">libmod</code> is not much more complex and looks as follows:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span>
+<span class="cp">#define write_str(s) write(STDOUT_FILENO, s, sizeof(s)-1)
+</span>
+<span class="kt">char</span> <span class="n">gbuf</span><span class="p">[</span><span class="mh">0x100</span><span class="p">];</span>
+
+<span class="k">static</span> <span class="kt">int</span> <span class="nf">getnline</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">int</span> <span class="n">size</span><span class="p">){</span>
+	<span class="kt">int</span> <span class="n">len</span><span class="p">;</span>
+
+	<span class="k">if</span><span class="p">(</span><span class="n">size</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="o">||</span> <span class="p">(</span><span class="n">len</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">STDIN_FILENO</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span>
+		<span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+
+	<span class="k">if</span><span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="n">len</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="sc">'\n'</span><span class="p">)</span>
+		<span class="n">len</span><span class="o">--</span><span class="p">;</span>
+	<span class="n">buf</span><span class="p">[</span><span class="n">len</span><span class="p">]</span> <span class="o">=</span> <span class="sc">'\0'</span><span class="p">;</span>
+
+	<span class="k">return</span> <span class="n">len</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">getint</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+	<span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mh">0x10</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+
+	<span class="n">getnline</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">));</span>
+	<span class="k">return</span> <span class="n">atoi</span><span class="p">(</span><span class="n">buf</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">modify</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+	<span class="kt">uint64_t</span> <span class="n">ofs</span><span class="p">;</span>
+
+	<span class="n">write_str</span><span class="p">(</span><span class="s">"offset: "</span><span class="p">);</span>
+	<span class="k">if</span><span class="p">((</span><span class="n">ofs</span> <span class="o">=</span> <span class="n">getint</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mh">0x2000</span><span class="p">)</span>
+		<span class="k">return</span><span class="p">;</span>
+
+	<span class="n">write_str</span><span class="p">(</span><span class="s">"value: "</span><span class="p">);</span>
+	<span class="n">gbuf</span><span class="p">[</span><span class="n">ofs</span><span class="p">]</span> <span class="o">=</span> <span class="n">getint</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="n">__attribute__</span><span class="p">((</span><span class="kr">naked</span><span class="p">))</span>
+<span class="kt">void</span> <span class="nf">exit_imm</span><span class="p">(</span><span class="kt">int</span> <span class="n">status</span><span class="p">){</span>
+	<span class="n">asm</span><span class="p">(</span>
+		<span class="s">"xor rax, rax</span><span class="se">\n</span><span class="s">"</span>
+		<span class="s">"mov al, 0x3c</span><span class="se">\n</span><span class="s">"</span>
+		<span class="s">"syscall"</span>
+	   <span class="p">);</span>
+	<span class="n">__builtin_unreachable</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>We now know the purpose of modify, it allows us to write a single byte at an offset <code class="language-plaintext highlighter-rouge">&lt; 0x2000</code> from the start of <code class="language-plaintext highlighter-rouge">gbuf</code>.
+However, <code class="language-plaintext highlighter-rouge">gbuf</code> only has a size of <code class="language-plaintext highlighter-rouge">0x100</code> bytes, so we have a trivial out-of-bounds write in modify!
+We now also see what <code class="language-plaintext highlighter-rouge">exit_imm</code> does.
+It directly calls the <code class="language-plaintext highlighter-rouge">exit</code> syscall, which might seem a bit peculiar.
+Furthermore, both its declaration in <code class="language-plaintext highlighter-rouge">chall</code> and its definition here have some uncommon attributes.</p>
+
+<p>The reason for directly calling the <code class="language-plaintext highlighter-rouge">exit</code> syscall is likely to force an immediate termination (as the name implies).
+Calling libc’s <code class="language-plaintext highlighter-rouge">exit</code> would instead result in the rest of the destructors etc. to run.
+The various attributes are likely to cause a similar situation as in a previous CTF challenge, <a href="https://blog.pepsipu.com/posts/nightmare">nightmare</a>.
+Indeed, disassembling <code class="language-plaintext highlighter-rouge">chall</code> we see the following:</p>
+
+<pre><code class="language-asm">fini:
+    endbr64
+    push    rbp
+    mov     rbp, rsp
+    mov     edi, 0
+    call    _exit_imm
+
+menu:
+    endbr64
+    push    rbp
+    mov     rbp, rsp
+    lea     rdi, s          ; "\nMENU\n1. Modify\n0. Exit\n&gt; "
+    call    _puts
+    call    _getint
+    pop     rbp
+    retn
+</code></pre>
+
+<p>Therefore, if somehow <code class="language-plaintext highlighter-rouge">_exit_imm</code> would return instead of terminate the process immediately, we would end up back in the <code class="language-plaintext highlighter-rouge">menu</code> function, since there is no <code class="language-plaintext highlighter-rouge">ret</code> at the end of <code class="language-plaintext highlighter-rouge">fini</code>!
+But there is some more work to be done, before we can get there.</p>
+
+<h2 id="finding-a-useful-target-for-our-oob-write">Finding a Useful Target for our OOB Write</h2>
+
+<p>As explained before, we have an OOB write of up to 30 bytes, up to <code class="language-plaintext highlighter-rouge">0x2000</code> away from <code class="language-plaintext highlighter-rouge">gbuf</code>.
+<code class="language-plaintext highlighter-rouge">gbuf</code> is located in the data section of <code class="language-plaintext highlighter-rouge">libmod</code>, so what could we overwrite with this primitive?
+A quick look at <code class="language-plaintext highlighter-rouge">vmmap</code> in gdb:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gef</span><span class="err">➤</span>  <span class="n">vmmap</span>
+<span class="p">[</span> <span class="n">Legend</span><span class="p">:</span>  <span class="n">Code</span> <span class="o">|</span> <span class="n">Heap</span> <span class="o">|</span> <span class="n">Stack</span> <span class="p">]</span>
+<span class="n">Start</span>              <span class="n">End</span>                <span class="n">Offset</span>             <span class="n">Perm</span> <span class="n">Path</span>
+<span class="mh">0x0000555555554000</span> <span class="mh">0x0000555555555000</span> <span class="mh">0x0000000000000000</span> <span class="n">r</span><span class="o">--</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">CTF</span><span class="o">/</span><span class="n">seccon</span><span class="o">/</span><span class="n">simplemod</span><span class="o">/</span><span class="n">chall</span>
+<span class="mh">0x0000555555555000</span> <span class="mh">0x0000555555556000</span> <span class="mh">0x0000000000001000</span> <span class="n">r</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">CTF</span><span class="o">/</span><span class="n">seccon</span><span class="o">/</span><span class="n">simplemod</span><span class="o">/</span><span class="n">chall</span>
+<span class="mh">0x0000555555556000</span> <span class="mh">0x0000555555557000</span> <span class="mh">0x0000000000002000</span> <span class="n">r</span><span class="o">--</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">CTF</span><span class="o">/</span><span class="n">seccon</span><span class="o">/</span><span class="n">simplemod</span><span class="o">/</span><span class="n">chall</span>
+<span class="mh">0x0000555555557000</span> <span class="mh">0x0000555555558000</span> <span class="mh">0x0000000000002000</span> <span class="n">r</span><span class="o">--</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">CTF</span><span class="o">/</span><span class="n">seccon</span><span class="o">/</span><span class="n">simplemod</span><span class="o">/</span><span class="n">chall</span>
+<span class="mh">0x0000555555558000</span> <span class="mh">0x0000555555559000</span> <span class="mh">0x0000000000003000</span> <span class="n">rw</span><span class="o">-</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">CTF</span><span class="o">/</span><span class="n">seccon</span><span class="o">/</span><span class="n">simplemod</span><span class="o">/</span><span class="n">chall</span>
+<span class="mh">0x00007ffff7d8b000</span> <span class="mh">0x00007ffff7d8e000</span> <span class="mh">0x0000000000000000</span> <span class="n">rw</span><span class="o">-</span>
+<span class="mh">0x00007ffff7d8e000</span> <span class="mh">0x00007ffff7db6000</span> <span class="mh">0x0000000000000000</span> <span class="n">r</span><span class="o">--</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">CTF</span><span class="o">/</span><span class="n">seccon</span><span class="o">/</span><span class="n">simplemod</span><span class="o">/</span><span class="n">libc</span><span class="p">.</span><span class="n">so</span><span class="p">.</span><span class="mi">6</span>
+<span class="mh">0x00007ffff7db6000</span> <span class="mh">0x00007ffff7f4b000</span> <span class="mh">0x0000000000028000</span> <span class="n">r</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">CTF</span><span class="o">/</span><span class="n">seccon</span><span class="o">/</span><span class="n">simplemod</span><span class="o">/</span><span class="n">libc</span><span class="p">.</span><span class="n">so</span><span class="p">.</span><span class="mi">6</span>
+<span class="mh">0x00007ffff7f4b000</span> <span class="mh">0x00007ffff7fa3000</span> <span class="mh">0x00000000001bd000</span> <span class="n">r</span><span class="o">--</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">CTF</span><span class="o">/</span><span class="n">seccon</span><span class="o">/</span><span class="n">simplemod</span><span class="o">/</span><span class="n">libc</span><span class="p">.</span><span class="n">so</span><span class="p">.</span><span class="mi">6</span>
+<span class="mh">0x00007ffff7fa3000</span> <span class="mh">0x00007ffff7fa7000</span> <span class="mh">0x0000000000214000</span> <span class="n">r</span><span class="o">--</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">CTF</span><span class="o">/</span><span class="n">seccon</span><span class="o">/</span><span class="n">simplemod</span><span class="o">/</span><span class="n">libc</span><span class="p">.</span><span class="n">so</span><span class="p">.</span><span class="mi">6</span>
+<span class="mh">0x00007ffff7fa7000</span> <span class="mh">0x00007ffff7fa9000</span> <span class="mh">0x0000000000218000</span> <span class="n">rw</span><span class="o">-</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">CTF</span><span class="o">/</span><span class="n">seccon</span><span class="o">/</span><span class="n">simplemod</span><span class="o">/</span><span class="n">libc</span><span class="p">.</span><span class="n">so</span><span class="p">.</span><span class="mi">6</span>
+<span class="mh">0x00007ffff7fa9000</span> <span class="mh">0x00007ffff7fb6000</span> <span class="mh">0x0000000000000000</span> <span class="n">rw</span><span class="o">-</span>
+<span class="mh">0x00007ffff7fb6000</span> <span class="mh">0x00007ffff7fb7000</span> <span class="mh">0x0000000000000000</span> <span class="n">r</span><span class="o">--</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">CTF</span><span class="o">/</span><span class="n">seccon</span><span class="o">/</span><span class="n">simplemod</span><span class="o">/</span><span class="n">libmod</span><span class="p">.</span><span class="n">so</span>
+<span class="mh">0x00007ffff7fb7000</span> <span class="mh">0x00007ffff7fb8000</span> <span class="mh">0x0000000000001000</span> <span class="n">r</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">CTF</span><span class="o">/</span><span class="n">seccon</span><span class="o">/</span><span class="n">simplemod</span><span class="o">/</span><span class="n">libmod</span><span class="p">.</span><span class="n">so</span>
+<span class="mh">0x00007ffff7fb8000</span> <span class="mh">0x00007ffff7fb9000</span> <span class="mh">0x0000000000002000</span> <span class="n">r</span><span class="o">--</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">CTF</span><span class="o">/</span><span class="n">seccon</span><span class="o">/</span><span class="n">simplemod</span><span class="o">/</span><span class="n">libmod</span><span class="p">.</span><span class="n">so</span>
+<span class="mh">0x00007ffff7fb9000</span> <span class="mh">0x00007ffff7fba000</span> <span class="mh">0x0000000000002000</span> <span class="n">r</span><span class="o">--</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">CTF</span><span class="o">/</span><span class="n">seccon</span><span class="o">/</span><span class="n">simplemod</span><span class="o">/</span><span class="n">libmod</span><span class="p">.</span><span class="n">so</span>
+<span class="mh">0x00007ffff7fba000</span> <span class="mh">0x00007ffff7fbb000</span> <span class="mh">0x0000000000003000</span> <span class="n">rw</span><span class="o">-</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">CTF</span><span class="o">/</span><span class="n">seccon</span><span class="o">/</span><span class="n">simplemod</span><span class="o">/</span><span class="n">libmod</span><span class="p">.</span><span class="n">so</span> <span class="c1"># data section
+</span><span class="mh">0x00007ffff7fbb000</span> <span class="mh">0x00007ffff7fbd000</span> <span class="mh">0x0000000000000000</span> <span class="n">rw</span><span class="o">-</span> <span class="c1"># could likely overwrite into here
+</span><span class="mh">0x00007ffff7fbd000</span> <span class="mh">0x00007ffff7fc1000</span> <span class="mh">0x0000000000000000</span> <span class="n">r</span><span class="o">--</span> <span class="p">[</span><span class="n">vvar</span><span class="p">]</span>
+<span class="mh">0x00007ffff7fc1000</span> <span class="mh">0x00007ffff7fc3000</span> <span class="mh">0x0000000000000000</span> <span class="n">r</span><span class="o">-</span><span class="n">x</span> <span class="p">[</span><span class="n">vdso</span><span class="p">]</span>
+<span class="mh">0x00007ffff7fc3000</span> <span class="mh">0x00007ffff7fc5000</span> <span class="mh">0x0000000000000000</span> <span class="n">r</span><span class="o">--</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">x86_64</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">gnu</span><span class="o">/</span><span class="n">ld</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">x86</span><span class="o">-</span><span class="mf">64.</span><span class="n">so</span><span class="p">.</span><span class="mi">2</span>
+<span class="mh">0x00007ffff7fc5000</span> <span class="mh">0x00007ffff7fef000</span> <span class="mh">0x0000000000002000</span> <span class="n">r</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">x86_64</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">gnu</span><span class="o">/</span><span class="n">ld</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">x86</span><span class="o">-</span><span class="mf">64.</span><span class="n">so</span><span class="p">.</span><span class="mi">2</span>
+<span class="mh">0x00007ffff7fef000</span> <span class="mh">0x00007ffff7ffa000</span> <span class="mh">0x000000000002c000</span> <span class="n">r</span><span class="o">--</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">x86_64</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">gnu</span><span class="o">/</span><span class="n">ld</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">x86</span><span class="o">-</span><span class="mf">64.</span><span class="n">so</span><span class="p">.</span><span class="mi">2</span>
+<span class="mh">0x00007ffff7ffb000</span> <span class="mh">0x00007ffff7ffd000</span> <span class="mh">0x0000000000037000</span> <span class="n">r</span><span class="o">--</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">x86_64</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">gnu</span><span class="o">/</span><span class="n">ld</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">x86</span><span class="o">-</span><span class="mf">64.</span><span class="n">so</span><span class="p">.</span><span class="mi">2</span>
+<span class="mh">0x00007ffff7ffd000</span> <span class="mh">0x00007ffff7fff000</span> <span class="mh">0x0000000000039000</span> <span class="n">rw</span><span class="o">-</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">x86_64</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">gnu</span><span class="o">/</span><span class="n">ld</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">x86</span><span class="o">-</span><span class="mf">64.</span><span class="n">so</span><span class="p">.</span><span class="mi">2</span>
+<span class="mh">0x00007ffffffde000</span> <span class="mh">0x00007ffffffff000</span> <span class="mh">0x0000000000000000</span> <span class="n">rw</span><span class="o">-</span> <span class="p">[</span><span class="n">stack</span><span class="p">]</span>
+<span class="mh">0xffffffffff600000</span> <span class="mh">0xffffffffff601000</span> <span class="mh">0x0000000000000000</span> <span class="o">--</span><span class="n">x</span> <span class="p">[</span><span class="n">vsyscall</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>We only have access to the data section and an unnamed region of memory right afterwards.
+Since <code class="language-plaintext highlighter-rouge">libmod</code> is partial RELRO, its <code class="language-plaintext highlighter-rouge">got</code> is placed right in front of the data section, so we cannot overwrite anything in it<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup>.
+Additionally, there is nothing else of interest in the data section.</p>
+
+<p>To figure out if there could be anything interesting to overwrite, I just overwrite the whole region I had access to with my primitive with <code class="language-plaintext highlighter-rouge">0x41</code> in gdb:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gef</span><span class="err">➤</span> <span class="n">set</span> <span class="o">*</span><span class="p">(</span><span class="kt">char</span> <span class="p">[</span><span class="mh">0x2001</span><span class="p">]</span><span class="o">*</span><span class="p">)</span><span class="mh">0x00007ffff7fba0c0</span> <span class="o">=</span> <span class="s">"AAAAA...A"</span>
+</code></pre></div></div>
+
+<p>I then told the binary to exit and was greeted with a nice <code class="language-plaintext highlighter-rouge">SIGSEGV</code>:</p>
+
+<p><img src="/SECCON-2022/pwn/img/segv.png" alt="SIGSEGV in gdb" /></p>
+
+<p>Clearly I was messing with some linker data structures!
+I downloaded glibc source code (just assuming for now it was 2.34, more on that later) and started to look at where the crash occurred.
+It was happening on some access to the passed in <code class="language-plaintext highlighter-rouge">l</code>, a <code class="language-plaintext highlighter-rouge">link_map</code> structure.
+Indeed, by printing <code class="language-plaintext highlighter-rouge">l</code> in gdb I could see that I completely overwrite it with <code class="language-plaintext highlighter-rouge">0x41</code>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gef</span><span class="err">➤</span>  <span class="n">p</span> <span class="o">*</span><span class="n">l</span>
+<span class="err">$</span><span class="mi">2</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="n">l_addr</span> <span class="o">=</span> <span class="mh">0x4141414141414141</span><span class="p">,</span>
+  <span class="n">l_name</span> <span class="o">=</span> <span class="mh">0x4141414141414141</span> <span class="o">&lt;</span><span class="n">error</span><span class="o">:</span> <span class="n">Cannot</span> <span class="n">access</span> <span class="n">memory</span> <span class="n">at</span> <span class="n">address</span> <span class="mh">0x4141414141414141</span><span class="o">&gt;</span><span class="p">,</span>
+  <span class="n">l_ld</span> <span class="o">=</span> <span class="mh">0x4141414141414141</span><span class="p">,</span>
+<span class="c1">// ...</span>
+  <span class="n">l_relro_size</span> <span class="o">=</span> <span class="mh">0x4141414141414141</span><span class="p">,</span>
+  <span class="n">l_serial</span> <span class="o">=</span> <span class="mh">0x4141414141414141</span>
+<span class="p">}</span>
+<span class="n">gef</span><span class="err">➤</span>
+</code></pre></div></div>
+
+<p>With some more debugging, I figured out that the <code class="language-plaintext highlighter-rouge">link_map</code> I was overwriting belonged to <code class="language-plaintext highlighter-rouge">libmod</code> and was at an offset of <code class="language-plaintext highlighter-rouge">0x1160</code> from <code class="language-plaintext highlighter-rouge">gbuf</code>.
+Having previously looked at similar challenges (such as <code class="language-plaintext highlighter-rouge">nightmare</code>), it was clear that I had to cleverly overwrite the <code class="language-plaintext highlighter-rouge">link_map</code> to mess with the dynamic linker during runtime and cause it to somehow give me a shell (or equivalent to get the flag).
+This was easier said than done of course and so we first have to understand how some internals of the dynamic linker on linux work.</p>
+
+<h2 id="link_map-internals"><code class="language-plaintext highlighter-rouge">link_map</code> Internals</h2>
+
+<p>For this writeup, it is not necessary to fully grasp all the details of the dynamic linker and I will try to describe the important bits as best as I can.</p>
+
+<h3 id="_dl_fixup"><code class="language-plaintext highlighter-rouge">_dl_fixup</code></h3>
+
+<p>First, we have to have a basic understanding, of how the got and friends work.
+<a href="https://ypl.coffee/dl-resolve/">Understanding <code class="language-plaintext highlighter-rouge">_dl_runtime_resolve()</code></a> has a great in depth description, but we do not actually need to know some of the details provided, and some of the later steps are not described.</p>
+
+<p>We all know that an external dynamic symbol creates an entry in the <code class="language-plaintext highlighter-rouge">got</code> and a relocation.
+When the symbol is called for the first time, this symbol needs to be then resolved.
+Further invocations use the stored resolved value, found in the <code class="language-plaintext highlighter-rouge">.got.plt</code> section.
+To resolve the symbol during the first invocation, a stub function is called instead.
+This stub function pushes the index of the relocation (index into the <code class="language-plaintext highlighter-rouge">JMPREL</code> table) as well as the address of the <code class="language-plaintext highlighter-rouge">link_map</code> of the current binary to the stack, then finally calls into the dynamic linker.
+At some point, the dynamic linker will call into <code class="language-plaintext highlighter-rouge">_dl_fixup</code>, with the <code class="language-plaintext highlighter-rouge">link_map</code> and relocation index as arguments (the previous arguments will have been saved, so they can be used once the function has been resolved).</p>
+
+<p><code class="language-plaintext highlighter-rouge">_dl_fixup</code> will now do the following, assuming that we called <code class="language-plaintext highlighter-rouge">atoi</code> as an example, in <code class="language-plaintext highlighter-rouge">libmod</code>:</p>
+
+<ol>
+  <li>Use <code class="language-plaintext highlighter-rouge">link_map</code> to determine the location of a bunch of important tables / sections, such as <code class="language-plaintext highlighter-rouge">SYMTAB</code> (table of all symbols in the binary, both external and internal), <code class="language-plaintext highlighter-rouge">STRTAB</code> (table of names used by symbols) and <code class="language-plaintext highlighter-rouge">JMPREL</code> (containing the aforementioned relocation information)</li>
+  <li>Read the relocation from <code class="language-plaintext highlighter-rouge">JMPREL</code> (<code class="language-plaintext highlighter-rouge">+0x680</code>) based on the passed in index (<code class="language-plaintext highlighter-rouge">4</code>). This contains the following things:
+    <ul>
+      <li>Type of relocation (e.g. <code class="language-plaintext highlighter-rouge">ELF_MACHINE_JMP_SLOT</code> for a <code class="language-plaintext highlighter-rouge">got</code> relocation)</li>
+      <li>Index into the symbol table <code class="language-plaintext highlighter-rouge">SYMTAB</code> (<code class="language-plaintext highlighter-rouge">6</code>)</li>
+      <li>Offset from binary, where to write the resolved address to<sup id="fnref:4" role="doc-noteref"><a href="#fn:4" class="footnote" rel="footnote">3</a></sup> (<code class="language-plaintext highlighter-rouge">+0x4038</code>), the location of <code class="language-plaintext highlighter-rouge">atoi</code> in <code class="language-plaintext highlighter-rouge">.got.plt</code> in our case.</li>
+    </ul>
+  </li>
+  <li>Read the symbol (named <code class="language-plaintext highlighter-rouge">ref</code> hereinafter) that should be resolved, by using the index from the relocation. This contains the following things (only relevant ones listed):
+    <ul>
+      <li>Index into the string table <code class="language-plaintext highlighter-rouge">STRTAB</code> (<code class="language-plaintext highlighter-rouge">0x66</code>) giving the name of the symbol.</li>
+      <li>Type of the symbol (e.g. <code class="language-plaintext highlighter-rouge">STT_FUNC</code> since <code class="language-plaintext highlighter-rouge">atoi</code> is a function).</li>
+      <li>Linkage visibility (e.g. <code class="language-plaintext highlighter-rouge">STB_GLOBAL</code>)</li>
+      <li>Section where the symbol can be found</li>
+      <li>Value (i.e. offset where the symbol can be found, in most cases)</li>
+    </ul>
+  </li>
+  <li>Read the name of the symbol from <code class="language-plaintext highlighter-rouge">STRTAB</code> by using <code class="language-plaintext highlighter-rouge">ref.st_name</code>.</li>
+  <li>Iterate over all currently loaded libraries, by iterating over all <code class="language-plaintext highlighter-rouge">link_map</code>s. For each <code class="language-plaintext highlighter-rouge">link_map</code>, do the following:
+    <ol>
+      <li>Use some hash table magic to quickly determine if the name of the symbol is exported by this library.</li>
+      <li>Use this to retrieve the symbol (named <code class="language-plaintext highlighter-rouge">sym</code> hereinafter) defined in the <code class="language-plaintext highlighter-rouge">SYMTAB</code> of the current <code class="language-plaintext highlighter-rouge">link_map</code>.</li>
+      <li>Check that the name originally retrieved in 4. matches the name found at <code class="language-plaintext highlighter-rouge">STRTAB[sym.st_name]</code> of the current <code class="language-plaintext highlighter-rouge">link_map</code>.</li>
+      <li>If yes, then return the found <code class="language-plaintext highlighter-rouge">sym</code>.</li>
+    </ol>
+  </li>
+  <li>If we found the symbol in the previous step (let it be <code class="language-plaintext highlighter-rouge">sym</code> in <code class="language-plaintext highlighter-rouge">link_map</code> <code class="language-plaintext highlighter-rouge">map</code>), write <code class="language-plaintext highlighter-rouge">map.l_addr + sym.st_value</code> where the relocation told us to (<code class="language-plaintext highlighter-rouge">atoi@.got.plt</code> in the example), where <code class="language-plaintext highlighter-rouge">map.l_addr</code> specifies the base address of the library described by <code class="language-plaintext highlighter-rouge">map</code>.</li>
+  <li>Return <code class="language-plaintext highlighter-rouge">map.l_addr + sym.st_value</code>, so that the caller can also call into the resolved symbol (remember, originally we wanted to call e.g. <code class="language-plaintext highlighter-rouge">atoi</code> and to first resolve it).</li>
+</ol>
+
+<p>Some of the referenced structures for the example <code class="language-plaintext highlighter-rouge">atoi</code> look as follows:</p>
+
+<ul>
+  <li>Relocation for <code class="language-plaintext highlighter-rouge">atoi</code> in <code class="language-plaintext highlighter-rouge">libmod</code>:
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Elf64_Rela</span> <span class="p">{</span>
+  <span class="n">r_offset</span> <span class="o">=</span> <span class="mh">0x4038</span><span class="p">,</span>
+  <span class="n">r_info</span> <span class="o">=</span> <span class="n">ELF64_R_INFO</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">ELF_MACHINE_JMP_SLOT</span><span class="p">),</span>
+  <span class="n">r_addend</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="p">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Symbol for <code class="language-plaintext highlighter-rouge">atoi</code> in <code class="language-plaintext highlighter-rouge">libmod</code> (most fields are empty, since it is an external symbol):
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Elf64_Sym</span> <span class="p">{</span>
+  <span class="n">st_name</span> <span class="o">=</span> <span class="mh">0x66</span><span class="p">,</span>
+  <span class="n">st_info</span> <span class="o">=</span> <span class="n">ELF64_ST_INFO</span><span class="p">(</span><span class="n">STB_GLOBAL</span><span class="p">,</span> <span class="n">STT_FUNC</span><span class="p">),</span>
+  <span class="n">st_other</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="n">st_shndx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="n">st_value</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="n">st_size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Symbol for <code class="language-plaintext highlighter-rouge">atoi</code> in <code class="language-plaintext highlighter-rouge">libc</code> (will be used to fill in <code class="language-plaintext highlighter-rouge">atoi@.got.plt</code>, when <code class="language-plaintext highlighter-rouge">atoi</code> called the first time in <code class="language-plaintext highlighter-rouge">libmod</code>):
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Elf64_Sym</span> <span class="p">{</span>
+  <span class="n">st_name</span> <span class="o">=</span> <span class="mh">0x4f60</span><span class="p">,</span>
+  <span class="n">st_info</span> <span class="o">=</span> <span class="n">ELF64_ST_INFO</span><span class="p">(</span><span class="n">STB_GLOBAL</span><span class="p">,</span> <span class="n">STT_FUNC</span><span class="p">),</span>
+  <span class="n">st_other</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="n">st_shndx</span> <span class="o">=</span> <span class="mh">0xf</span><span class="p">,</span>
+  <span class="n">st_value</span> <span class="o">=</span> <span class="mh">0x43640</span><span class="p">,</span>
+  <span class="n">st_size</span> <span class="o">=</span> <span class="mh">0x19</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p>Hopefully, this gives you enough of an understanding to follow the rest of the writeup.
+However, we are unfortunately not quite done yet with linker internals.</p>
+
+<h3 id="_dl_fini"><code class="language-plaintext highlighter-rouge">_dl_fini</code></h3>
+
+<p>Fortunately, this part should be a lot simpler to understand.
+Whenever a dynamically linked binary terminates normally (e.g. calling <code class="language-plaintext highlighter-rouge">exit</code> or just returning from <code class="language-plaintext highlighter-rouge">main</code>), <code class="language-plaintext highlighter-rouge">_dl_fini</code> will be invoked first, to cleanup all the dynamically loaded libraries and call their registered destructors.
+This looks something like this:</p>
+
+<ol>
+  <li>Collect all loaded libraries in a list, by iterating through all <code class="language-plaintext highlighter-rouge">link_map</code>s.</li>
+  <li>Sort them based on dependencies, but the main binary must always be first.</li>
+  <li>Iterate over the sorted list and for every <code class="language-plaintext highlighter-rouge">link_map</code>:
+    <ol>
+      <li>Load the array specified by the <code class="language-plaintext highlighter-rouge">FINI_ARRAY</code> table from <code class="language-plaintext highlighter-rouge">link_map</code>.</li>
+      <li>Call all functions in that array.</li>
+      <li>Call the function specified by the <code class="language-plaintext highlighter-rouge">FINI</code> item from <code class="language-plaintext highlighter-rouge">link_map</code>, if it exists.</li>
+    </ol>
+  </li>
+</ol>
+
+<h3 id="link_mapl_info"><code class="language-plaintext highlighter-rouge">link_map.l_info</code></h3>
+
+<p>The locations of these tables / sections (e.g. <code class="language-plaintext highlighter-rouge">SYMTAB</code>, <code class="language-plaintext highlighter-rouge">STRTAB</code>, <code class="language-plaintext highlighter-rouge">JMPREL</code>, <code class="language-plaintext highlighter-rouge">FINI_ARRAY</code>, <code class="language-plaintext highlighter-rouge">FINI</code>) are all stored in the <code class="language-plaintext highlighter-rouge">l_info</code> member of a <code class="language-plaintext highlighter-rouge">link_map</code>.
+In particular, an entry in <code class="language-plaintext highlighter-rouge">l_info</code> is a pointer to a <code class="language-plaintext highlighter-rouge">struct Elf64_Dyn</code>, which is defined as follows:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">typedef</span> <span class="k">struct</span>
+<span class="p">{</span>
+  <span class="n">Elf64_Sxword</span>	<span class="n">d_tag</span><span class="p">;</span>			<span class="cm">/* Dynamic entry type */</span>
+  <span class="k">union</span>
+    <span class="p">{</span>
+      <span class="n">Elf64_Xword</span> <span class="n">d_val</span><span class="p">;</span>		<span class="cm">/* Integer value */</span>
+      <span class="n">Elf64_Addr</span> <span class="n">d_ptr</span><span class="p">;</span>			<span class="cm">/* Address value */</span>
+    <span class="p">}</span> <span class="n">d_un</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">Elf64_Dyn</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Since the <code class="language-plaintext highlighter-rouge">d_tag</code> is never checked in any of the interesting <code class="language-plaintext highlighter-rouge">dl_*</code> functions, we can safely ignore that part and only worry about <code class="language-plaintext highlighter-rouge">d_un</code>.
+<code class="language-plaintext highlighter-rouge">d_un</code> then stores a pointer to the relevant section / table in memory<sup id="fnref:5" role="doc-noteref"><a href="#fn:5" class="footnote" rel="footnote">4</a></sup>.</p>
+
+<p>With all this knowledge about dynamic linker internals out of the way, we can now finally delve into the actual exploit.</p>
+
+<h2 id="fini-is-not-the-end-of-the-line"><code class="language-plaintext highlighter-rouge">fini</code> is not the End of the Line</h2>
+
+<p>My hunch was now that I had to mess with my <code class="language-plaintext highlighter-rouge">link_map</code>, such that <code class="language-plaintext highlighter-rouge">_dl_fixup</code> will incorrectly resolve a symbol.
+I played around a bit more with overwriting only parts of the <code class="language-plaintext highlighter-rouge">link_map</code>, but then I suddenly realized something.
+I was crashing during the resolution of <code class="language-plaintext highlighter-rouge">atoi</code> - which was not resolved yet - since my writes were done entirely in gdb.
+If my writes were done “properly” using <code class="language-plaintext highlighter-rouge">modify</code>, <code class="language-plaintext highlighter-rouge">atoi</code> would have been already resolved and I would not be crashing there.
+I quickly retried, this time first doing one useless write of <code class="language-plaintext highlighter-rouge">0</code> to offset <code class="language-plaintext highlighter-rouge">0</code>, then overwriting in gdb and finally exiting:</p>
+
+<p><img src="/SECCON-2022/pwn/img/segv2.png" alt="SIGSEGV at the correct place" /></p>
+
+<p>It seems that my initial idea would be a bit harder to pull off, since all functions would be resolved already, right?
+Not entirely, since <code class="language-plaintext highlighter-rouge">fini</code> of the main binary calls <code class="language-plaintext highlighter-rouge">exit_imm</code>, which of course has not been resolved yet.
+By setting a breakpoint at <code class="language-plaintext highlighter-rouge">_dl_fixup</code> and not modifying the <code class="language-plaintext highlighter-rouge">link_map</code>, I indeed observed the call to <code class="language-plaintext highlighter-rouge">_dl_fixup</code> from inside <code class="language-plaintext highlighter-rouge">fini</code>:</p>
+
+<p><img src="/SECCON-2022/pwn/img/dl_fixup.png" alt="`_dl_fixup` call" /></p>
+
+<p>This lead me to formulate a plan.</p>
+
+<h2 id="stage-1-achieving-calls-of-arbitrary-addresses-relative-libmod">Stage 1: Achieving Calls of Arbitrary Addresses Relative <code class="language-plaintext highlighter-rouge">libmod</code></h2>
+
+<p>By modifying <code class="language-plaintext highlighter-rouge">l_info</code> of the <code class="language-plaintext highlighter-rouge">libmod</code> <code class="language-plaintext highlighter-rouge">link_map</code>, we can influence where the dynamic linker thinks <code class="language-plaintext highlighter-rouge">SYMTAB</code> and <code class="language-plaintext highlighter-rouge">STRTAB</code> are located.
+In particular, we can make them be after the <code class="language-plaintext highlighter-rouge">gbuf</code> and hence arbitrarily attacker controlled.
+We can therefore construct a fake symbol that is named <code class="language-plaintext highlighter-rouge">exit_imm</code>, but has a value (and hence resolved address) of anything we want.
+Since the resolved address will be calculated as the value of the symbol (controlled) plus the base address of <code class="language-plaintext highlighter-rouge">libmod</code>, we can make <code class="language-plaintext highlighter-rouge">exit_imm</code> resolve to any address relative to <code class="language-plaintext highlighter-rouge">libmod</code>.
+Because <code class="language-plaintext highlighter-rouge">exit_imm</code> is called, the resolved address is called and we hence have a call to an arbitrary address, relative to <code class="language-plaintext highlighter-rouge">libmod</code>.</p>
+
+<h3 id="home-grown-vs-store-bought-libc">Home Grown vs. Store Bought libc</h3>
+
+<p>While we do not control the arguments that are passed to <code class="language-plaintext highlighter-rouge">exit_imm</code> (indeed <code class="language-plaintext highlighter-rouge">$rsi</code> is <code class="language-plaintext highlighter-rouge">0</code>, so resolving to e.g. <code class="language-plaintext highlighter-rouge">system</code> would never work), we “just” need to make <code class="language-plaintext highlighter-rouge">exit_imm</code> resolve to a one gadget in libc and we have a shell, right?
+After all, shared libraries are always loaded at a constant offset from each other and so a relative offset from <code class="language-plaintext highlighter-rouge">libmod</code> can also get us addresses to libc gadgets.
+Even though the constant offset is very dependent on the environment and we are not given a docker setup for this challenge, we can always bruteforce the offset in a pinch.</p>
+
+<p>Unfortunately, the libc used on the server is “home-built glibc-2.3x”.
+Therefore, we can likely not use an one gadgets directly.
+We might be able to also bruteforce the one gadget offsets, but it started to sound like this was not the intended way.</p>
+
+<h3 id="it-works-on-my-machine">It Works on my Machine!</h3>
+
+<p>After some discussion with the author over DMs, it was revealed that the remote had a modified dynamic linker, where the individual dynamic libraries were loaded at a random offset!
+My current strategy would definitely not pan out then.
+In my opinion, this crucial detail should have been included in the challenge description.
+Furthermore, there should have been a docker setup, to test the challenge locally, as the offset between <code class="language-plaintext highlighter-rouge">gbuf</code> and <code class="language-plaintext highlighter-rouge">link_map</code> is highly dependent on the environment.
+Therefore, I first had to bruteforce this offset on remote, which felt quite unnecessary.</p>
+
+<p>To bruteforce the offset, I noticed that <code class="language-plaintext highlighter-rouge">_dl_fini</code> has some asserts, if triggered could be a good indicator that we hit the right offset.
+In particular, it makes sure that for all <code class="language-plaintext highlighter-rouge">link_map</code>s, <code class="language-plaintext highlighter-rouge">link_map.l_real == link_map</code>.
+Therefore, we could try to overwrite <code class="language-plaintext highlighter-rouge">link_map.l_real</code> for every possible offset, if we see the assertion message, we have hit the correct one.
+However, if we accidentally overwrite <code class="language-plaintext highlighter-rouge">link_map.l_next</code> instead, then the assertion might still trigger, since the iteration will then use a bogus <code class="language-plaintext highlighter-rouge">link_map</code> next.
+Hence, our actual target is <code class="language-plaintext highlighter-rouge">link_map.l_next</code> and to verify, we make sure that <code class="language-plaintext highlighter-rouge">offset+0x10</code> (i.e. overwriting <code class="language-plaintext highlighter-rouge">link_map.l_real</code>) also triggers the assertion.</p>
+
+<p>This gives us an offset of <code class="language-plaintext highlighter-rouge">0x13e0</code> for the remote.</p>
+
+<h3 id="implementing-the-attack">Implementing the Attack</h3>
+
+<p>As explained before, we change the <code class="language-plaintext highlighter-rouge">link_map</code> such that <code class="language-plaintext highlighter-rouge">SYMTAB</code> and <code class="language-plaintext highlighter-rouge">STRTAB</code> are after <code class="language-plaintext highlighter-rouge">gbuf</code> and hence can be controlled by us as well, with the OOB writes.
+To achieve that, I overwrite the lowest two bytes of the <code class="language-plaintext highlighter-rouge">Elf64_Dyn</code> pointer for <code class="language-plaintext highlighter-rouge">SYMTAB</code> and <code class="language-plaintext highlighter-rouge">STRTAB</code>, such that it now points inside the <code class="language-plaintext highlighter-rouge">l_info</code> array.
+Therefore, <code class="language-plaintext highlighter-rouge">d_un</code> would contain pointers that were pointing somewhere relative to <code class="language-plaintext highlighter-rouge">libmod</code> and I could then overwrite the lowest two bytes of that pointer again to make <code class="language-plaintext highlighter-rouge">SYMTAB</code> and <code class="language-plaintext highlighter-rouge">STRTAB</code> point to after <code class="language-plaintext highlighter-rouge">gbuf</code>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// before overwrite</span>
+<span class="mh">0x7ffff7fb9e98</span><span class="o">:</span> <span class="n">Elf64_Dyn</span> <span class="p">{</span> <span class="n">d_tag</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">d_un</span> <span class="o">=</span> <span class="mh">0x7ffff7fb6460</span> <span class="p">}</span>
+<span class="mh">0x7ffff7fb9ea8</span><span class="o">:</span> <span class="n">Elf64_Dyn</span> <span class="p">{</span> <span class="n">d_tag</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span> <span class="n">d_un</span> <span class="o">=</span> <span class="mh">0x7ffff7fb6328</span> <span class="p">}</span>
+<span class="c1">// ...</span>
+<span class="mh">0x7ffff7fbb220</span><span class="o">:</span> <span class="n">link_map</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+    <span class="n">l_info</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x7ffff7fb9e98</span><span class="p">,</span>
+    <span class="n">l_info</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x7ffff7fb9ea8</span><span class="p">,</span>
+    <span class="c1">// ...</span>
+<span class="mh">0x7ffff7fbb330</span><span class="o">:</span>
+    <span class="n">l_info</span><span class="p">[</span><span class="mi">26</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x7ffff7fb9e68</span><span class="p">,</span>
+    <span class="n">l_info</span><span class="p">[</span><span class="mi">27</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x7ffff7fb9e58</span><span class="p">,</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+
+<span class="c1">// after overwrite</span>
+<span class="mh">0x7ffff7fbb220</span><span class="o">:</span> <span class="n">link_map</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+    <span class="n">l_info</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x7ffff7fbb330</span><span class="p">,</span>
+    <span class="n">l_info</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x7ffff7fbb330</span><span class="p">,</span>
+    <span class="c1">// ...</span>
+<span class="mh">0x7ffff7fbb330</span><span class="o">:</span> <span class="n">Elf64_Dyn</span> <span class="p">{</span> <span class="n">d_tag</span> <span class="o">=</span> <span class="mh">0x7ffff7fb9e68</span><span class="p">,</span> <span class="n">d_un</span> <span class="o">=</span> <span class="mh">0x7ffff7fba098</span> <span class="p">}</span> <span class="c1">// interpretation of two entries below</span>
+    <span class="n">l_info</span><span class="p">[</span><span class="mi">26</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x7ffff7fb9e68</span><span class="p">,</span>
+    <span class="n">l_info</span><span class="p">[</span><span class="mi">27</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x7ffff7fba098</span><span class="p">,</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Note:</strong> Since only the lowest 3 nibbles are not randomized by ASLR, this requires us to bruteforce the 4th nibble. It is only a 4-bit brute force though, so it is fine.
+The official solution has a much better idea. Instead, we can just make the <code class="language-plaintext highlighter-rouge">l_info</code> entires for <code class="language-plaintext highlighter-rouge">SYMTAB</code> and <code class="language-plaintext highlighter-rouge">STRTAB</code> use the entry for a different section, that is much closer to <code class="language-plaintext highlighter-rouge">gbuf</code>, such as the <code class="language-plaintext highlighter-rouge">.got.plt</code> section.</p>
+
+<p>Once we have <code class="language-plaintext highlighter-rouge">SYMTAB</code> and <code class="language-plaintext highlighter-rouge">STRTAB</code> under our control, it becomes pretty simple.
+Observe the index into <code class="language-plaintext highlighter-rouge">SYMTAB</code> used for the <code class="language-plaintext highlighter-rouge">exit_imm</code> resolution, then create a fake symbol at that offset:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Elf64_Sym</span> <span class="p">{</span>
+    <span class="n">st_name</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="c1">// useful, since this means we need to call modify less often</span>
+    <span class="n">st_info</span> <span class="o">=</span> <span class="n">ELF64_ST_INFO</span><span class="p">(</span><span class="n">STB_GLOBAL</span><span class="p">,</span> <span class="n">STT_FUNC</span><span class="p">),</span>
+    <span class="n">st_other</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">st_shndx</span> <span class="o">=</span> <span class="mh">0xe</span><span class="p">,</span>
+    <span class="n">st_value</span> <span class="o">=</span> <span class="mh">0x1054</span><span class="p">,</span> <span class="c1">// whatever we want to call, this specific one will be explained later</span>
+    <span class="n">st_size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>We also need to write <code class="language-plaintext highlighter-rouge">exit_imm</code> to <code class="language-plaintext highlighter-rouge">STRTAB</code> at the fake <code class="language-plaintext highlighter-rouge">STRTAB</code> location.
+With that out of the way, we can proceed with the next stage.</p>
+
+<h2 id="stage-2-achieving-calls-to-arbitrary-functions-by-name-in-libc">Stage 2: Achieving Calls to Arbitrary Functions by Name in libc</h2>
+
+<p>After realizing we could not directly call into libc using stage 1, I assumed we had to further trick the linker into e.g. calling system for us.
+Indeed, I then realized I could use stage 1 to call one of the existing <code class="language-plaintext highlighter-rouge">got</code> stub functions and (even though everything was already resolved), it would try to resolve things again.
+However, since the <code class="language-plaintext highlighter-rouge">link_map</code> is now under our control, we can change which symbol <code class="language-plaintext highlighter-rouge">_dl_fixup</code> will try to resolve.
+Furthermore, since the stub function will call the resolved symbol, this also means we can call an arbitrary symbol, as long as one of the loaded libraries exports it.</p>
+
+<h3 id="implementation">Implementation</h3>
+
+<p><strong>Note:</strong> My exploit during the CTF created a fake relocation entry here. While writing this writeup, I realized this is actually not needed at all as becomes evident later!</p>
+
+<p>First we have to modify <code class="language-plaintext highlighter-rouge">l_info</code> for <code class="language-plaintext highlighter-rouge">JMPREL</code>, such that we can create a fake relocation.
+This is done the exact same way as before and <code class="language-plaintext highlighter-rouge">SYMTAB</code>, <code class="language-plaintext highlighter-rouge">STRTAB</code> and <code class="language-plaintext highlighter-rouge">JMPREL</code> are all at the same place.
+Then, we make the fake relocation refering to a fake symbol which we want to resolve:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Elf64_Rela</span> <span class="p">{</span>
+    <span class="n">r_offset</span> <span class="o">=</span> <span class="mh">0x4038</span><span class="p">,</span> <span class="c1">// explained later why this is necessary</span>
+    <span class="n">r_info</span> <span class="o">=</span> <span class="n">ELF64_R_INFO</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="n">ELF_MACHINE_JMP_SLOT</span><span class="p">),</span> <span class="c1">// the symbol index here was necessary, since I ran out of bytes to write and this happens to point to something that can be interpreted as a valid symbol :)</span>
+    <span class="n">r_addend</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>As explained in the comment, the fake symbol is not really controlled this time around, but that does not matter.
+The only important bit of the symbol is that the name index is not too large (so we can control the name).
+The fake symbol will therefore be:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Elf64_Sym</span> <span class="p">{</span>
+    <span class="n">st_name</span> <span class="o">=</span> <span class="mh">0x1080</span><span class="p">,</span>
+    <span class="c1">// ... some other values, we don't actually care</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="stage-3-achieving-calls-to-arbitrary-addresses-relative-to-libc">Stage 3: Achieving Calls to Arbitrary Addresses Relative to libc?</h2>
+
+<p>At this point I could call arbitrary functions inside libc, but I had no control over the arguments.
+In particular, <code class="language-plaintext highlighter-rouge">rdi</code> was fixed to 0, meaning <code class="language-plaintext highlighter-rouge">system</code> was just returning empty.
+At this point, I was trying to pivot back to using a <code class="language-plaintext highlighter-rouge">one_gadget</code>.
+I noticed that I could also reach libc’s <code class="language-plaintext highlighter-rouge">link_map</code> with my OOB write.
+Therefore, I could change <code class="language-plaintext highlighter-rouge">link_map.l_addr</code> for libc and hence mess with the resolved address for any function by adding a constant offset.
+However, none of the <code class="language-plaintext highlighter-rouge">one_gadget</code>s of my local libc would work with the register state.
+Furthermore, without the remote libc, it would still be very hard to actually exploit this.
+I had to come up with a new idea.</p>
+
+<h2 id="stage-3-achieving-calls-to-arbitrary-addresses-relative-to-libc-rewriting-the-got">Stage 3: <del>Achieving Calls to Arbitrary Addresses Relative to libc?</del> Rewriting the GOT</h2>
+
+<p>Suddenly I remembered an important fact.
+At the end of <code class="language-plaintext highlighter-rouge">_dl_fixup</code>, it would write the resolved address to whatever offset the relocation was specifying.
+Indeed, if I would specify <code class="language-plaintext highlighter-rouge">atoi@.got.plt</code>, it would write whatever address it resolved (e.g. <code class="language-plaintext highlighter-rouge">system</code>) there and any further calls to <code class="language-plaintext highlighter-rouge">atoi</code> from <code class="language-plaintext highlighter-rouge">libmod</code> would instead call into <code class="language-plaintext highlighter-rouge">system</code>!
+As explained at the very beginning, if the call to <code class="language-plaintext highlighter-rouge">exit_imm</code> returns normally instead of exiting immediately, control will flow into the menu function, which incidentally calls <code class="language-plaintext highlighter-rouge">getint</code>, eventually resulting in <code class="language-plaintext highlighter-rouge">atoi(getline())</code>, i.e. calling <code class="language-plaintext highlighter-rouge">atoi</code> with controlled input!
+Therefore, I just had to specify <code class="language-plaintext highlighter-rouge">atoi@.got.plt</code> as the offset for the fake relocation and make sure <code class="language-plaintext highlighter-rouge">exit_imm</code> would return normally.
+Indeed, since I replaced <code class="language-plaintext highlighter-rouge">exit_imm</code> with the call to the got stub function (which in turn calls <code class="language-plaintext highlighter-rouge">system</code>), it would return normally.</p>
+
+<p>Although this idea should have only required minimal changes, during the CTF I had to rework quite a bit of my exploit, since it initially used one byte too much.</p>
+
+<h3 id="no-shell-for-you">No Shell For You</h3>
+
+<p>Unfortunately, when I tried this locally, it would crash during the final call to <code class="language-plaintext highlighter-rouge">system</code> (i.e. with the controlled argument), due to stack alignment.
+My teammate jokingly suggested to just throw it against remote and I naivly assumed he was serious.
+After around 40 attempts (remember it should only be a 4-bit bruteforce), I was just about to kill my tmux panes, when I noticed that one of them spat out the flag!
+Good thing I thought my teammate was serious :P</p>
+
+<h3 id="later-realizations">Later Realizations</h3>
+
+<p>As touched on before, this exploit does not actually need to have a fake relocation.
+Indeed, we can just reuse the <code class="language-plaintext highlighter-rouge">atoi</code> relocation and everything works the same (besides having to create a fake symbol for <code class="language-plaintext highlighter-rouge">system</code>).
+This alone saves around 5 bytes in the exploit.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>In the end, I learned a lot (actually way too much) about the internals of <code class="language-plaintext highlighter-rouge">ld</code>.
+The challenge was kinda fun and invoking some eldritch linker magic to get the shell felt quite satisfying.
+Nevertheless, I still think a local environment would have prevented some pain points, especially since I was not the only one who could not get the full exploit to work locally due to stack alignment.</p>
+
+<p>You can find the original exploit I used during the CTF <a href="https://gist.github.com/galli-leo/ae8ac3c0baa331d408a5de5212aeed76">here</a>.
+You can find a slightly modified version that does not need a fake relocation <a href="https://gist.github.com/galli-leo/31ddf1861a19ffffba9bf1eb7d29aadb">here</a>.</p>
+
+<!-- [^3]: deez nuts, lmao `got`(em). -->
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>Very much appreciated, I think more CTFs should start providing source for pwn challenges that do not need (IMO) unnecessary rev components. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p>Or at least not without some eldritch magic, as you will see later ;) <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:4" role="doc-endnote">
+      <p>This is important and took me way too long to use to my advantage. <a href="#fnref:4" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:5" role="doc-endnote">
+      <p>There is a flag in the <code class="language-plaintext highlighter-rouge">link_map</code> that turns the absolute addresses <code class="language-plaintext highlighter-rouge">d_un.d_ptr</code> into relative offsets from <code class="language-plaintext highlighter-rouge">link_map.l_addr</code>, but that ended up not being useful in my exploit. <a href="#fnref:5" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

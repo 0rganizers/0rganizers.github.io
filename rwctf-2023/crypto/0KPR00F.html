@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>0KPR00F | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="0KPR00F" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/rwctf-2023/crypto/0KPR00F.html" />
+<meta property="og:url" content="https://org.anize.rs/rwctf-2023/crypto/0KPR00F.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="0KPR00F" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"0KPR00F","url":"https://org.anize.rs/rwctf-2023/crypto/0KPR00F.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="0kpr00f">0KPR00F</h1>
+
+<p><strong>Author:</strong> zeski</p>
+
+<p><strong>Tags:</strong> crypto</p>
+
+<p><strong>Points:</strong> 253</p>
+
+<blockquote>
+  <p>Sh0w me the pr00f that y0u understand 0kpr00f. If its 0k, i’ll give y0u what y0u want!</p>
+</blockquote>
+
+<h2 id="challenge-source">Challenge source</h2>
+<p>We are given the following source code, along with source code for py_ecc which we can also find <a href="https://github.com/ethereum/py_pairing">here</a> as an ethereum library.</p>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env python3
+</span>
+<span class="kn">import</span> <span class="nn">signal</span>
+<span class="kn">import</span> <span class="nn">socketserver</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">secret</span> <span class="kn">import</span> <span class="n">flag</span>
+<span class="kn">from</span> <span class="nn">py_ecc</span> <span class="kn">import</span> <span class="n">bn128</span>
+
+<span class="n">lib</span> <span class="o">=</span> <span class="n">bn128</span>
+<span class="n">FQ</span><span class="p">,</span> <span class="n">FQ2</span><span class="p">,</span> <span class="n">FQ12</span><span class="p">,</span> <span class="n">field_modulus</span> <span class="o">=</span> <span class="n">lib</span><span class="p">.</span><span class="n">FQ</span><span class="p">,</span> <span class="n">lib</span><span class="p">.</span><span class="n">FQ2</span><span class="p">,</span> <span class="n">lib</span><span class="p">.</span><span class="n">FQ12</span><span class="p">,</span> <span class="n">lib</span><span class="p">.</span><span class="n">field_modulus</span>
+<span class="n">G1</span><span class="p">,</span> <span class="n">G2</span><span class="p">,</span> <span class="n">G12</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">b2</span><span class="p">,</span> <span class="n">b12</span><span class="p">,</span> <span class="n">is_inf</span><span class="p">,</span> <span class="n">is_on_curve</span><span class="p">,</span> <span class="n">eq</span><span class="p">,</span> <span class="n">add</span><span class="p">,</span> <span class="n">double</span><span class="p">,</span> <span class="n">curve_order</span><span class="p">,</span> <span class="n">multiply</span> <span class="o">=</span> \
+  <span class="n">lib</span><span class="p">.</span><span class="n">G1</span><span class="p">,</span> <span class="n">lib</span><span class="p">.</span><span class="n">G2</span><span class="p">,</span> <span class="n">lib</span><span class="p">.</span><span class="n">G12</span><span class="p">,</span> <span class="n">lib</span><span class="p">.</span><span class="n">b</span><span class="p">,</span> <span class="n">lib</span><span class="p">.</span><span class="n">b2</span><span class="p">,</span> <span class="n">lib</span><span class="p">.</span><span class="n">b12</span><span class="p">,</span> <span class="n">lib</span><span class="p">.</span><span class="n">is_inf</span><span class="p">,</span> <span class="n">lib</span><span class="p">.</span><span class="n">is_on_curve</span><span class="p">,</span> <span class="n">lib</span><span class="p">.</span><span class="n">eq</span><span class="p">,</span> <span class="n">lib</span><span class="p">.</span><span class="n">add</span><span class="p">,</span> <span class="n">lib</span><span class="p">.</span><span class="n">double</span><span class="p">,</span> <span class="n">lib</span><span class="p">.</span><span class="n">curve_order</span><span class="p">,</span> <span class="n">lib</span><span class="p">.</span><span class="n">multiply</span>
+<span class="n">pairing</span><span class="p">,</span> <span class="n">neg</span> <span class="o">=</span> <span class="n">lib</span><span class="p">.</span><span class="n">pairing</span><span class="p">,</span> <span class="n">lib</span><span class="p">.</span><span class="n">neg</span>
+
+<span class="n">LENGTH</span> <span class="o">=</span> <span class="mi">7</span>
+
+
+<span class="k">def</span> <span class="nf">Cx</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">length</span><span class="o">=</span><span class="n">LENGTH</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+        <span class="n">res</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">curve_order</span><span class="p">)</span> <span class="o">%</span> <span class="n">curve_order</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span>
+
+<span class="k">def</span> <span class="nf">C</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">length</span><span class="o">=</span><span class="n">LENGTH</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">==</span> <span class="n">length</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">multiply</span><span class="p">(</span><span class="n">G1</span><span class="p">,</span> <span class="n">curve_order</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">multiply</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span><span class="n">res</span><span class="p">)</span> 
+    <span class="k">return</span> <span class="n">res</span> 
+
+<span class="k">def</span> <span class="nf">Z</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">4</span><span class="p">)</span> <span class="o">%</span> <span class="n">curve_order</span>
+
+
+<span class="k">def</span> <span class="nf">genK</span><span class="p">(</span><span class="n">curve_order</span><span class="p">,</span><span class="n">length</span><span class="o">=</span><span class="n">LENGTH</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="p">.</span><span class="n">urandom</span><span class="p">(</span><span class="mi">8</span><span class="p">).</span><span class="nb">hex</span><span class="p">(),</span><span class="mi">16</span><span class="p">)</span> <span class="o">%</span> <span class="n">curve_order</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="p">.</span><span class="n">urandom</span><span class="p">(</span><span class="mi">8</span><span class="p">).</span><span class="nb">hex</span><span class="p">(),</span><span class="mi">16</span><span class="p">)</span> <span class="o">%</span> <span class="n">curve_order</span>
+    <span class="n">Ct</span> <span class="o">=</span> <span class="n">Cx</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">PKC</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ct</span> <span class="ow">in</span> <span class="n">Ct</span><span class="p">:</span>
+        <span class="n">PKC</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">multiply</span><span class="p">(</span><span class="n">G1</span><span class="p">,</span> <span class="n">ct</span><span class="p">))</span>
+    <span class="n">PKCa</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ct</span> <span class="ow">in</span> <span class="n">Ct</span><span class="p">:</span>
+        <span class="n">PKCa</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">multiply</span><span class="p">(</span><span class="n">multiply</span><span class="p">(</span><span class="n">G1</span><span class="p">,</span> <span class="n">ct</span><span class="p">),</span> <span class="n">a</span><span class="p">))</span>
+
+    <span class="n">PK</span> <span class="o">=</span> <span class="p">(</span><span class="n">PKC</span><span class="p">,</span><span class="n">PKCa</span><span class="p">)</span>
+    <span class="n">VKa</span> <span class="o">=</span> <span class="n">multiply</span><span class="p">(</span><span class="n">G2</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+    <span class="n">VKz</span> <span class="o">=</span> <span class="n">multiply</span><span class="p">(</span><span class="n">G2</span><span class="p">,</span> <span class="n">Z</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+    <span class="n">VK</span> <span class="o">=</span> <span class="p">(</span><span class="n">VKa</span><span class="p">,</span><span class="n">VKz</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">PK</span><span class="p">,</span><span class="n">VK</span>
+
+<span class="k">def</span> <span class="nf">verify</span><span class="p">(</span><span class="n">proof</span><span class="p">,</span><span class="n">VK</span><span class="p">):</span>
+    <span class="n">VKa</span><span class="p">,</span><span class="n">VKz</span> <span class="o">=</span> <span class="n">VK</span>
+    <span class="n">PiC</span><span class="p">,</span><span class="n">PiCa</span><span class="p">,</span><span class="n">PiH</span> <span class="o">=</span> <span class="n">proof</span>
+
+    <span class="n">l</span> <span class="o">=</span> <span class="n">pairing</span><span class="p">(</span><span class="n">VKa</span><span class="p">,</span> <span class="n">PiC</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">pairing</span><span class="p">(</span><span class="n">G2</span><span class="p">,</span> <span class="n">PiCa</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">l</span> <span class="o">!=</span><span class="n">r</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">pairing</span><span class="p">(</span><span class="n">G2</span><span class="p">,</span><span class="n">PiC</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">pairing</span><span class="p">(</span><span class="n">VKz</span><span class="p">,</span><span class="n">PiH</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">l</span> <span class="o">!=</span><span class="n">r</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+
+<span class="k">class</span> <span class="nc">Task</span><span class="p">(</span><span class="n">socketserver</span><span class="p">.</span><span class="n">BaseRequestHandler</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">().</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">OKPROOF</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">proof</span><span class="p">,</span><span class="n">VK</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">verify</span><span class="p">(</span><span class="n">proof</span><span class="p">,</span><span class="n">VK</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">dosend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">request</span><span class="p">.</span><span class="n">sendall</span><span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="n">encode</span><span class="p">(</span><span class="s">'latin-1'</span><span class="p">)</span> <span class="o">+</span> <span class="sa">b</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">timeout_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signum</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="nb">TimeoutError</span>
+
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">signal</span><span class="p">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="p">.</span><span class="n">SIGALRM</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">timeout_handler</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">dosend</span><span class="p">(</span><span class="s">'==========================='</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">dosend</span><span class="p">(</span><span class="s">'=WELCOME TO 0KPR00F SYSTEM='</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">dosend</span><span class="p">(</span><span class="s">'==========================='</span><span class="p">)</span>
+            <span class="n">PK</span><span class="p">,</span><span class="n">VK</span> <span class="o">=</span> <span class="n">genK</span><span class="p">(</span><span class="n">curve_order</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">dosend</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">PK</span><span class="p">))</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">dosend</span><span class="p">(</span><span class="s">'now give me your proof'</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">request</span><span class="p">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1024</span><span class="p">).</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span><span class="p">.</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">)</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">msg</span><span class="p">.</span><span class="n">replace</span><span class="p">(</span><span class="s">'('</span><span class="p">,</span><span class="s">''</span><span class="p">).</span><span class="n">replace</span><span class="p">(</span><span class="s">')'</span><span class="p">,</span><span class="s">''</span><span class="p">).</span><span class="n">replace</span><span class="p">(</span><span class="s">','</span><span class="p">,</span><span class="s">''</span><span class="p">)</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">' '</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span>
+            <span class="n">PiC</span> <span class="o">=</span> <span class="p">(</span><span class="n">FQ</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">strip</span><span class="p">())),</span><span class="n">FQ</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">strip</span><span class="p">())))</span>
+            <span class="n">PiCa</span> <span class="o">=</span> <span class="p">(</span><span class="n">FQ</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="mi">2</span><span class="p">].</span><span class="n">strip</span><span class="p">())),</span><span class="n">FQ</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="mi">3</span><span class="p">].</span><span class="n">strip</span><span class="p">())))</span>
+            <span class="n">PiH</span> <span class="o">=</span> <span class="p">(</span><span class="n">FQ</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="mi">4</span><span class="p">].</span><span class="n">strip</span><span class="p">())),</span><span class="n">FQ</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="mi">5</span><span class="p">].</span><span class="n">strip</span><span class="p">())))</span>
+            <span class="n">proof</span> <span class="o">=</span> <span class="p">(</span><span class="n">PiC</span><span class="p">,</span><span class="n">PiCa</span><span class="p">,</span><span class="n">PiH</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="p">.</span><span class="n">OKPROOF</span><span class="p">(</span><span class="n">proof</span><span class="p">,</span><span class="n">VK</span><span class="p">):</span>
+                <span class="bp">self</span><span class="p">.</span><span class="n">dosend</span><span class="p">(</span><span class="s">"Congratulations！Here is flag:"</span><span class="o">+</span><span class="n">flag</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="p">.</span><span class="n">dosend</span><span class="p">(</span><span class="s">"sorry"</span><span class="p">)</span>
+            
+
+        <span class="k">except</span> <span class="nb">TimeoutError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">dosend</span><span class="p">(</span><span class="s">'Timeout!'</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">request</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">dosend</span><span class="p">(</span><span class="s">'Wtf?'</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">request</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">ThreadedServer</span><span class="p">(</span><span class="n">socketserver</span><span class="p">.</span><span class="n">ForkingMixIn</span><span class="p">,</span> <span class="n">socketserver</span><span class="p">.</span><span class="n">TCPServer</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
+    <span class="n">HOST</span><span class="p">,</span> <span class="n">PORT</span> <span class="o">=</span> <span class="s">'0.0.0.0'</span><span class="p">,</span> <span class="mi">13337</span>
+    <span class="n">server</span> <span class="o">=</span> <span class="n">ThreadedServer</span><span class="p">((</span><span class="n">HOST</span><span class="p">,</span> <span class="n">PORT</span><span class="p">),</span> <span class="n">Task</span><span class="p">)</span>
+    <span class="n">server</span><span class="p">.</span><span class="n">allow_reuse_address</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="n">server</span><span class="p">.</span><span class="n">serve_forever</span><span class="p">()</span>
+</code></pre></div></div>
+
+<h2 id="analysis">Analysis</h2>
+<p>We see we are dealing with some kind of zero knowledge proofs based on bilinear pairings. We are given the values</p>
+
+\[[t]G_1, [t^2]G_2, [t^3]G_2, [t^4]G_2, [t^5]G_2, [t^6]G_2\]
+
+\[[at]G_1, [at^2]G_2, [at^3]G_2, [at^4]G_2, [at^5]G_2, [at^6]G_2\]
+
+<p>where $a,t$ are randomly sampled integers, and $G_2$ the group generator over the elliptic curve the library is using.
+Our task is to send a proof $(\text{Pic},\text{PiCa},\text{PiH})$ that satisfies the verify function, which checks the following:</p>
+
+\[e(\text{VKa}, \text{PiC}) = e(G_2, \text{PiCa})\]
+
+<p>and</p>
+
+\[e(G_2,\text{PiC}) = e(\text{VKz},\text{PiH})\]
+
+<p>where $e(\cdot,\cdot)$ is the pairing and $(\text{VKa}, \text{VKz}) = ([a]G_2, [Z(t)]G_2)$ is the verification key. So our task is to prove that we know the evaluation of</p>
+
+\[Z(t) = (t-1)(t-2)(t-3)(t-4) = t^4 - 10t^3 + 35t^2 -50t + 24\]
+
+<p>Let $(\text{Pic},\text{PiCa},\text{PiH}) = ([x]G_1, [y]G_1, [z]G_1)$, where $x,y,z$ are unknown integers. Now we look at the pairings in the verification function.</p>
+
+\[e(\text{VKa}, \text{PiC}) = e([a]G_2, [x]G_1) = e(G_2,G_1)^{ax}\]
+
+\[e(G_2, \text{PiCa}) = e(G_2, [y]G_1) = e(G_2,G_1)^y\]
+
+<p>and</p>
+
+\[e(G_2,\text{PiC}) = e(G_2, [x]G_1) = e(G_2,G_1)^x\]
+
+\[e(\text{VKz},\text{PiH}) = e([Z(t)]G_2, [z]G_1) = E(G_2,G_1)^{Z(t)z}\]
+
+<p>So we get the equations</p>
+
+\[ax = y\]
+
+\[x = Z(t)z\]
+
+<p>and set $x = Z(t), y = aZ(t), z = 1$. So our proof is $([Z(t)]G_1, [aZ(t)]G_1, G_1)$, which we can compute from the values we are given, using scalar multiplications and point additions.</p>
+<h2 id="solution-script">Solution script</h2>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">py_ecc</span> <span class="kn">import</span> <span class="n">bn128</span>
+
+<span class="n">G1</span><span class="p">,</span> <span class="n">FQ</span><span class="p">,</span> <span class="n">add</span><span class="p">,</span> <span class="n">curve_order</span><span class="p">,</span> <span class="n">multiply</span> <span class="o">=</span> <span class="n">bn128</span><span class="p">.</span><span class="n">G1</span><span class="p">,</span> <span class="n">bn128</span><span class="p">.</span><span class="n">FQ</span><span class="p">,</span> <span class="n">bn128</span><span class="p">.</span><span class="n">add</span><span class="p">,</span> <span class="n">bn128</span><span class="p">.</span><span class="n">curve_order</span><span class="p">,</span> <span class="n">bn128</span><span class="p">.</span><span class="n">multiply</span>
+
+<span class="k">def</span> <span class="nf">ev</span><span class="p">(</span><span class="n">xs</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">multiply</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">24</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">multiply</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">curve_order</span><span class="o">-</span><span class="mi">50</span><span class="p">))</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">multiply</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">35</span><span class="p">))</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">multiply</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">curve_order</span><span class="o">-</span><span class="mi">10</span><span class="p">))</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">xs</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+<span class="n">io</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="s">"47.254.47.63"</span><span class="p">,</span> <span class="mi">13337</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span> <span class="n">io</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+
+<span class="n">PK</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">io</span><span class="p">.</span><span class="n">recvline</span><span class="p">())</span>
+<span class="n">PK0</span> <span class="o">=</span> <span class="p">[(</span><span class="n">FQ</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">FQ</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">PK</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+<span class="n">PK1</span> <span class="o">=</span> <span class="p">[(</span><span class="n">FQ</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">FQ</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">PK</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+
+<span class="n">tup</span> <span class="o">=</span> <span class="p">(</span><span class="n">ev</span><span class="p">(</span><span class="n">PK0</span><span class="p">),</span> <span class="n">ev</span><span class="p">(</span><span class="n">PK1</span><span class="p">),</span> <span class="n">G1</span><span class="p">)</span>
+
+<span class="n">io</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="sa">b</span><span class="s">"proof</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">tup</span><span class="p">).</span><span class="n">encode</span><span class="p">())</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">io</span><span class="p">.</span><span class="n">recvall</span><span class="p">(</span><span class="mi">30</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">rwctf{How_do_you_feel_about_zero_knowledge_proof?}</code></p>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

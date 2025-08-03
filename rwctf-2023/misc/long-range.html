@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Long Range | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Long Range" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/rwctf-2023/misc/long-range.html" />
+<meta property="og:url" content="https://org.anize.rs/rwctf-2023/misc/long-range.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Long Range" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"Long Range","url":"https://org.anize.rs/rwctf-2023/misc/long-range.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="long-range">Long Range</h1>
+
+<p><strong>Authors:</strong> tritoke, dd
+<strong>Tags:</strong> misc, radio
+<strong>Description:</strong></p>
+<blockquote>
+  <p>In the Heat of the Night, Some RF signal was captured at 500.5MHz from Long Range.
+Attachment: sig.wav</p>
+</blockquote>
+
+<p>To start we are given just a single WAV file, opening this up in audacity shows us what looks to be a few small packets of data and one larger one.</p>
+
+<p><img src="/rwctf-2023/misc/long-range1.png" alt="" /></p>
+
+<p>On closer inspection we can see that the packets contain Frequency Modulation (FM) data - due to the squishing and stretching of the wave.</p>
+
+<p><img src="/rwctf-2023/misc/long-range2.png" alt="" /></p>
+
+<p>As we are told this is RF data, it is likely that each of these channels represents on part of the complex sample, i.e. one part is the real component and the other is the imaginary component.</p>
+
+<p>We can use GNU radio to read the file and visualise the complex samples.</p>
+
+<p><img src="/rwctf-2023/misc/long-range3.png" alt="" /></p>
+
+<p>Having a look at the constellation display shows a ring when a packet is being sent and a small cluster of dots in the center otherwise, this is more evidence that we are dealing with FM data.
+<img src="/rwctf-2023/misc/long-range4.png" alt="" /></p>
+
+<p>Lets FM-decode the data and see how it looks in audacity.</p>
+
+<p><img src="/rwctf-2023/misc/long-range5.png" alt="" /></p>
+
+<p><img src="/rwctf-2023/misc/long-range6.png" alt="" /></p>
+
+<p>Now this is some funky data, sawtooth waves mixed with reverse sawtooth waves, I didn’t recognise this protocol at all and it took some inspired research from my teammate zeski to find that it was LoRaWAN.
+This was confirmed by, umm, looking at the metadata of the file :/ 
+This also clears up why we saw what looked like FM earlier, LoRa uses Spread Spectrum Modulation which is built on top of FM.</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0"?&gt;</span>
+<span class="nt">&lt;SDR-XML-Root</span> <span class="na">xml:lang=</span><span class="s">"EN"</span> <span class="na">Description=</span><span class="s">"Saved recording data"</span> <span class="na">Created=</span><span class="s">"04-Jan-2023 13:03"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;Definition</span>
+        <span class="na">CurrentTimeUTC=</span><span class="s">"04-01-2023 13:03:07"</span>
+        <span class="na">Filename=</span><span class="s">"04-Jan-2023 210307.838 500.512MHz 000.wav"</span>
+        <span class="na">FirstFile=</span><span class="s">"04-Jan-2023 210307.838 500.512MHz 000.wav"</span>
+        <span class="na">Folder=</span><span class="s">"G:\chaitin\rw2022_lora"</span>
+        <span class="na">InternalTag=</span><span class="s">"63B5-790B-0347"</span>
+        <span class="na">PreviousFile=</span><span class="s">""</span>
+        <span class="na">RadioModel=</span><span class="s">"Airspy Mini"</span>
+        <span class="na">RadioSerial=</span><span class="s">""</span>
+        <span class="na">SoftwareName=</span><span class="s">"SDR Console"</span>
+        <span class="na">SoftwareVersion=</span><span class="s">"Version 3.0.28 build 2286"</span>
+        <span class="na">UTC=</span><span class="s">"04-01-2023 13:03:07"</span>
+        <span class="na">XMLLevel=</span><span class="s">"XMLLevel003"</span>
+        <span class="na">CreatedBy=</span><span class="s">"L on FXXKER"</span>
+        <span class="na">TimeZoneStatus=</span><span class="s">"0"</span>
+        <span class="na">TimeZoneInfo=</span><span class="s">"IP7//&lt;cut long base64 string...&gt;"</span>
+        <span class="na">DualMode=</span><span class="s">"0"</span>
+        <span class="na">Sequence=</span><span class="s">"0"</span>
+        <span class="na">ADFrequency=</span><span class="s">"0"</span>
+        <span class="na">BitsPerSample=</span><span class="s">"16"</span>
+        <span class="na">BytesPerSecond=</span><span class="s">"1500000"</span>
+        <span class="na">RadioCenterFreq=</span><span class="s">"500512500"</span>
+        <span class="na">SampleRate=</span><span class="s">"375000"</span>
+        <span class="na">UTCSeconds=</span><span class="s">"1672837387"</span>
+    <span class="nt">&gt;&lt;/Definition&gt;</span>
+<span class="nt">&lt;/SDR-XML-Root&gt;</span>
+</code></pre></div></div>
+
+<p>So we now know the data is LoRaWAN, a bit of googling turns up <a href="https://github.com/rpp0/gr-lora">rpp0/gr-lora</a>, lets spin up the docker container and get solving.</p>
+
+<p>Using the radio center frequency from the metadata and a bit of ✨ brute force ✨ we get the flag printed the debug log in hex:</p>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="s">"4e 31 70 57 65 6c 63 6f 6d 65 2c 20 42 65 20 41 20 52 57 43 54 46 65 72 21 20 72 77 63 74 66 7b 47 72 33 33 74 5f 46 72 30 6d 5f 4c 6f 52 34 5f 32 36 39 33 32 38 30 32 66 32 36 61 38 63 39 62 34 35 31 39 65 62 36 66 39 30 30 66 36 37 36 66 7d 83 c3"</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="nb">bytes</span><span class="p">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s">""</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">split</span><span class="p">())).</span><span class="n">decode</span><span class="p">())</span>
+<span class="sa">b</span><span class="s">'N1pWelcome, Be A RWCTFer! rwctf{Gr33t_Fr0m_LoR4_26932802f26a8c9b4519eb6f900f676f}</span><span class="se">\x83\xc3</span><span class="s">'</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">rwctf{Gr33t_Fr0m_LoR4_26932802f26a8c9b4519eb6f900f676f}</code></p>
+
+<p>Thanks to Real World CTF challenge, it was really interesting to learn more about LoRaWAN as it wasn’t something I’d looked at in the past.</p>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

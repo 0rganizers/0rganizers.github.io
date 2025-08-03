@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Commitment Issues | Organisers</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Commitment Issues" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CTF Team" />
+<meta property="og:description" content="CTF Team" />
+<link rel="canonical" href="https://org.anize.rs/dicectf-2022/crypto/commitment_issues.html" />
+<meta property="og:url" content="https://org.anize.rs/dicectf-2022/crypto/commitment_issues.html" />
+<meta property="og:site_name" content="Organisers" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Commitment Issues" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"CTF Team","headline":"Commitment Issues","url":"https://org.anize.rs/dicectf-2022/crypto/commitment_issues.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <meta property="og:image" content="https://org.anize.rs/assets/images/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- TODO <meta name="twitter:description" content="" /> -->
+    <meta name="twitter:title" content="Organisers" />
+    <meta name="twitter:site" content="@0rganizers" />
+    <!-- TODO <meta name="twitter:image" content="" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#040d21">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Hack monospace font -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/highlight.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+    <link rel="stylesheet" href="/assets/css/light.css?v=72a10f3b5424719665e31ae90a083fdf32243ce7">
+
+    <!-- legitimize current Mastodon profile via link verification -->
+    <link rel="me" href="https://infosec.exchange/@organizers" />
+
+
+    <script type="text/javascript">
+        function isLightThemeSelected() {
+          return document.cookie.match(/theme=light/i) != null
+        }
+
+        function setThemeFromCookie() {
+            var html = document.getElementsByTagName('html')[0]
+            html.className = isLightThemeSelected() ? 'light-theme' : 'dark-theme'
+            console.log('Loaded cookie: ' + document.cookie)
+        }
+
+        (function() {
+          setThemeFromCookie()
+        })();
+    </script>
+
+    <script type="text/javascript">
+        function getFootnoteContent(linkId) {
+            const fnId = linkId.replace(/^fnref/, 'fn');
+            return document.getElementById(fnId).querySelector("p").innerHTML;
+        }
+
+        function addFootnote(element, content) {
+            const footnote = document.createElement('div');
+            footnote.classList.add('footnote-box');
+            // Also add the footnote number
+            footnote.innerHTML = `<sup>${element.innerText}</sup> ${content}`;
+            footnote.querySelectorAll('a.reversefootnote').forEach((backlink) => {
+                footnote.removeChild(backlink);
+            });
+            element.insertAdjacentElement('afterend', footnote);
+            element.dataset.toggled = '1';
+        }
+
+        function removeFootnote(element) {
+            element.parentElement.removeChild(element.nextSibling);
+            element.dataset.toggled = '0';
+        }
+
+
+        window.addEventListener("load", function() {
+            document.querySelectorAll("a.footnote").forEach((el) => {
+                const sup = el.parentElement;
+                el.addEventListener("click", (event) => {
+                    const isOpen = Number.parseInt(sup.dataset.toggled || '0');
+                    if (!isOpen) {
+                        addFootnote(sup, getFootnoteContent(sup.id));
+                    } else {
+                        removeFootnote(sup);
+                    }
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        fonts: ["Gyre-Pagella"],
+        imageFont: null,
+        undefinedFamily: "'Arial Unicode MS', cmbright"
+      },
+      tex2jax: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script>
+  </head>
+  
+  <body> 
+    <header class="page-header-simple" role="banner">
+      
+      <div class="left-links"><a id="header-logo" href="/">Organi{s|z}ers</a></div>
+      <div class="right-links">
+        <a href="/writeups">Writeups</a>
+        <a href="/achievements">Achievements</a>
+      </div>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="commitment-issues">Commitment Issues</h1>
+
+<p><strong>Authors:</strong> Jack</p>
+
+<p><strong>Tags:</strong> crypto</p>
+
+<p><strong>Points:</strong> 272 (16 solves)</p>
+
+<p><strong>Challenge Author:</strong> gripingberry</p>
+
+<p><strong>Description:</strong></p>
+
+<blockquote>
+  <p>I created a new commitment scheme, but commitment is scary so I threw away the key.</p>
+</blockquote>
+
+<h2 id="challenge">Challenge</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randrange</span>
+<span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="n">getPrime</span><span class="p">,</span> <span class="n">inverse</span><span class="p">,</span> <span class="n">bytes_to_long</span><span class="p">,</span> <span class="n">GCD</span>
+
+<span class="n">flag</span> <span class="o">=</span> <span class="sa">b</span><span class="s">'dice{?????????????????????????}'</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="k">def</span> <span class="nf">get_prime</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+	<span class="n">p</span> <span class="o">=</span> <span class="n">getPrime</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+	<span class="k">while</span> <span class="n">GCD</span><span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+		<span class="n">p</span> <span class="o">=</span> <span class="n">getPrime</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">p</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">get_prime</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)</span>
+<span class="n">q</span> <span class="o">=</span> <span class="n">get_prime</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)</span>
+<span class="n">N</span> <span class="o">=</span> <span class="n">p</span><span class="o">*</span><span class="n">q</span>
+<span class="n">phi</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">q</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">e</span> <span class="o">=</span> <span class="mh">0xd4088c345ced64cbbf8444321ef2af8b</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">inverse</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">sign</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
+	<span class="n">m</span> <span class="o">=</span> <span class="n">bytes_to_long</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nb">pow</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">commit</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+	<span class="k">return</span> <span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span> <span class="o">%</span> <span class="n">N</span><span class="p">,</span> <span class="nb">pow</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">reveal</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+	<span class="k">assert</span> <span class="nb">pow</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span> <span class="o">==</span> <span class="n">c2</span>
+	<span class="k">return</span> <span class="p">(</span><span class="n">c1</span> <span class="o">-</span> <span class="n">key</span><span class="p">)</span> <span class="o">%</span> <span class="n">N</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">sign</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+<span class="n">c1</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="n">commit</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">'N = </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">'c1 = </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">'c2 = </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">c2</span><span class="p">)</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="solution">Solution</h2>
+
+<h3 id="reading-the-challenge">Reading the Challenge</h3>
+
+<p>This challenge is based on a custom commitment scheme for RSA signatures. Before diving into the solution, let’s break down what we’re given and try and identify the insecure part of the scheme.</p>
+
+<p>The RSA modulus $N=pq$ has 2048 bits, and is the product of two 1024 bit primes, which are generated such that $n = 5$ is not a factor of $(p-1)$ or $(q-1)$. From this alone, we will not be able to factor $N$.</p>
+
+<p>The public exponent is unusual: <code class="language-plaintext highlighter-rouge">e = 0xd4088c345ced64cbbf8444321ef2af8b</code>, but it’s prime and not so large as to cause much suspicion. So far, so good (or bad for finding a solution, i suppose…).</p>
+
+<p>We are given the length of the <code class="language-plaintext highlighter-rouge">flag</code> , which is 31 bytes or 248 bits long. The signature of the flag is $s = m^d \pmod N$, where $m$ is not padded before signing. This means that $m$ is relatively small compared to the modulus (Coppersmith should start being a thought we have now). However, we don’t have the value of the signature, only the commitment.</p>
+
+<p>The commitment gives us two values, $c_1$ and $c_2$. Let’s look at how the commitment is made.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">commit</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+	<span class="k">return</span> <span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span> <span class="o">%</span> <span class="n">N</span><span class="p">,</span> <span class="nb">pow</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">sign</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+<span class="n">c1</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="n">commit</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>First a random number $r$ is generated from <code class="language-plaintext highlighter-rouge">r = randrange(1, N)</code> as the <code class="language-plaintext highlighter-rouge">key</code>. The flag is signed and so we are left with two integers $(r,s)$ both approximately of size $N$. The commitment is made by adding together these integers modulo $N$:</p>
+
+\[c_1 = (s + r) \pmod N.\]
+
+<p>We can understand $r$ here as effectively being a OTP, obscuring the signature $s$. We cannot recover $s$ from $c_1$ without knowing $r$ and we cannot recover $r$ without knowing $s$.</p>
+
+<p>The second part of the commitment depends only on the random number $r$ and is given by</p>
+
+\[c_2 = r^5 \pmod N.\]
+
+<p>Obtaining $r$ from $c_2$ is as hard as breaking RSA with the public key $(e=5,N)$. If $r$ was small, we could try taking the fifth root, but as it of the size of $N$, we cannot break $c_2$ to recover $r$.</p>
+
+<p>So… either the challenge is impossible, or there’s a way to use our knowledge of $(c_1,c_2)$ together to recover the flag.</p>
+
+<h3 id="combining-commitments">Combining Commitments</h3>
+
+<p>Let’s write down what we know algebraically:</p>
+
+\[\begin{aligned}
+s &amp;= m^d  &amp;&amp;\pmod N, \\
+c_1 &amp;= s + r &amp;&amp;\pmod N, \\
+c_2 &amp;= r^5 &amp;&amp;\pmod N.
+\end{aligned}\]
+
+<p>Additionally, we know that $m$ is small with respect to $N$, so if we could write down a polynomial $g(m) = 0 \pmod N$, we could use Coppersmith’s small roots to recover $m$ and hence the flag!</p>
+
+<p><strong>Note</strong>: The following solution was thought up by my teammate, <a href="https://twitter.com/esrever_25519">Esrever</a>, so all credit to him.</p>
+
+<p>Consider the polynomial in the ring $R = (\mathbb{Z}/N\mathbb{Z})[X]$:</p>
+
+\[f(X) = (c_1 - X)^e \pmod N,\]
+
+<p>we have the great property that $f(r) = m$. However, written like this, the polynomial will be enormous, as $e$ is a (moderately) large prime [Maybe this is the reason $e$ was chosen to be in the form we see in the challenge].</p>
+
+<p>Esrever’s great idea was to work in the quotient ring $K = R[X] / (X^5 - c_2)$, using the additional information we get from $c_2$. This allows us to take the $e$ degree polynomial $f(X)$ and recover a (at most) degree four polynomial by repeatedly substituting in $X^5 = c_2$.</p>
+
+<p>Taking powers of the polynomial, we have that</p>
+
+\[m^k = f^k(r) = (c_1 - r)^{e\cdot k} \pmod N\]
+
+<p>The hope was that by taking a set of these polynomials, we could write down a linear combination of $m^k$ such that all $r$ cancel, leaving a univariate polynomial in $m$. This is exactly what we need to find if we hope to solve using small roots.</p>
+
+<p>We were able to accomplish this with a bit of linear algebra. Let’s go through step by step.</p>
+
+<h3 id="linear-algebra-to-the-rescue">Linear Algebra to the Rescue</h3>
+
+<p>First let us write the $k^{\text{th}}$ power of $f(X)$ as $f^k(X)$ with coefficients $b_{ki}$:</p>
+
+\[f^k(X) = \sum_{i=0}^{4} b_{ki} \cdot X^i\]
+
+<p>Taking $k \in \{1,\ldots 5 \}$ we can write down five degree four polynomials using a $5\times5$ matrix and column vector:</p>
+
+\[\mathbf{M} = 
+\begin{pmatrix} 
+b_{10} &amp; b_{11} &amp; b_{12} &amp; b_{13} &amp;  b_{14} \\ 
+b_{20} &amp; b_{21} &amp; b_{22} &amp; b_{32} &amp;  b_{24} \\
+b_{30} &amp; b_{31} &amp; b_{32} &amp; b_{33} &amp;  b_{34} \\
+b_{40} &amp; b_{41} &amp; b_{42} &amp; b_{43} &amp;  b_{44} \\
+b_{50} &amp; b_{51} &amp; b_{52} &amp; b_{53} &amp;  b_{54} \\
+\end{pmatrix}
+\quad 
+\mathbf{x} = 
+\begin{pmatrix}
+X^0 \\
+X^1 \\
+X^2 \\
+X^3 \\
+X^4 \\
+\end{pmatrix}.\]
+
+<p>With these, our polynomials can be recovered from matrix multiplication:</p>
+
+\[\mathbf{F} = \mathbf{M}(\mathbf{x}) = 
+\begin{pmatrix}
+f^1(X) \\
+f^2(X) \\
+f^3(X) \\
+f^4(X) \\
+f^5(X) \\
+\end{pmatrix}\]
+
+<p>To solve the challenge, our goal is to find a vector $\mathbf{a} = (\alpha_1, \alpha_2, \alpha_3, \alpha_4, \alpha_5)^\top$ such that</p>
+
+\[\mathbf{M}^\top(\mathbf{a}) = (1,0,0,0,0)^\top.\]
+
+<p>This is equivalent to finding simultaneous solutions to</p>
+
+\[\sum_{k=1}^5 \alpha_k \cdot b_{k0} = 1, \quad \sum_{k=1}^5 \alpha_k \cdot b_{kj} = 0, \quad j \in \{1,\ldots 4\}\]
+
+<p>Practically, finding this vector $\mathbf{a}$, allows us to derive the linear combination</p>
+
+\[g(m) = \sum_{i=1}^5 \alpha_i f^i(X) = \sum_{i=1}^5 \alpha_i \cdot m^i.\]
+
+<p>with no dependency on the variable $X$, allowing us to understand $g(m)$ as a univariate polynomial in $m$, precisely what we need for small roots!!</p>
+
+<p>Recovering $\mathbf{a}$ is possible as long as $\mathbf{M}$ has an inverse, as we can write</p>
+
+\[\mathbf{a} = (\mathbf{M}^\top)^{-1} (1,0,0,0,0)^\top\]
+
+<p>Using SageMath, this is as easy as</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">M</span> <span class="o">=</span> <span class="p">...</span> <span class="c1"># Matrix of coefficients
+</span><span class="n">v</span> <span class="o">=</span> <span class="n">vector</span><span class="p">(</span><span class="n">Zmod</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">M</span><span class="p">.</span><span class="n">transpose</span><span class="p">().</span><span class="n">solve_right</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>With the polynomial $g(m)$ recovered, we can apply SageMath’s <code class="language-plaintext highlighter-rouge">.small_roots()</code> method on our univariate polynomial and recover the flag!</p>
+
+<h2 id="implementation">Implementation</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">##################
+# Challenge Data #
+##################
+</span>
+<span class="n">N</span>  <span class="o">=</span> <span class="mh">0xba8cb3257c0c83edf4f56f5b7e139d3d6ac8adf71618b5f16a02d61b63426c2c275ce631a0927b2725c6cc7bdbe30cd8a8494bc7c7f6601bcee5d005b86016e79919e22da4c431cec16be1ee72c056723fbbec1543c70bff8042630c5a9c23f390e2221bed075be6a6ac71ad89a3905f6c706b4fb6605c08f154ff8b8e28445a7be24cb184cb0f648db5c70dc3581419b165414395ae4282285c04d6a00a0ce8c06a678181c3a3c37b426824a5a5528ee532bdd90f1f28b7ec65e6658cb463e867eb5280bda80cbdb066cbdb4019a6a2305a03fd29825158ce32487651d9bfa675f2a6b31b7d05e7bd74d0f366cbfb0eb711a57e56e6db6d6f1969d52bf1b27b</span>
+<span class="n">e</span>  <span class="o">=</span> <span class="mh">0xd4088c345ced64cbbf8444321ef2af8b</span>
+<span class="n">c1</span> <span class="o">=</span> <span class="mh">0x75240fcc256f1e2fc347f75bba11a271514dd6c4e58814e1cb20913195db3bd0440c2ca47a72efee41b0f9a2674f6f46a335fd7e54ba8cd1625daeaaaa45cc9550c566f6f302b7c4c3a4694c0f5bb05cd461b5ca9017f2eb0e5f60fb0c65e0a67f3a1674d74990fd594de692951d4eed32eac543f193b70777b14e86cf8fa1927fe27535e727613f9e4cd00acb8fab336894caa43ad40a99b222236afc219397620ca766cef2fe47d53b07e302410063eae3d0bf0a9d67793237281e0bfdd48255b58b2c1f8674a21754cf62fab0ba56557fa276241ce99140473483f3e5772fcb75b206b3e7dfb756005cec2c19a3cb7fa17a4d17f5edd10a8673607047a0d1</span>
+<span class="n">c2</span> <span class="o">=</span> <span class="mh">0xdb8f645b98f71b93f248442cfc871f9410be7efee5cff548f2626d12a81ee58c1a65096a042db31a051904d7746a56147cc02958480f3b5d5234b738a1fb01dc8bf1dffad7f045cac803fa44f51cbf8abc74a17ee3d0b9ed59c844a23274345c16ba56d43f17d16d303bb1541ee1c15b9c984708a4a002d10188ccc5829940dd7f76107760550fac5c8ab532ff9f034f4fc6aab5ecc15d5512a84288d6fbe4b2d58ab6e326500c046580420d0a1b474deca052ebd93aaa2ef972aceba7e6fa75b3234463a68db78fff85c3a1673881dcb7452390a538dfa92e7ff61f57edf48662991b8dd251c0474b59c6f73d4a23fe9191ac8e52c8c409cf4902eeaa71714</span>
+
+<span class="c1">##################
+#    Solution    #
+##################
+</span>
+<span class="n">R</span><span class="p">.</span><span class="o">&lt;</span><span class="n">X</span><span class="o">&gt;</span> <span class="o">=</span> <span class="n">PolynomialRing</span><span class="p">(</span><span class="n">Zmod</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
+<span class="n">R</span><span class="p">.</span><span class="o">&lt;</span><span class="n">X</span><span class="o">&gt;</span> <span class="o">=</span> <span class="n">R</span><span class="p">.</span><span class="n">quo</span><span class="p">(</span><span class="n">X</span><span class="o">^</span><span class="mi">5</span> <span class="o">-</span> <span class="n">c2</span><span class="p">)</span>
+
+<span class="n">f1</span> <span class="o">=</span> <span class="p">(</span><span class="n">c1</span> <span class="o">-</span> <span class="n">X</span><span class="p">)</span><span class="o">^</span><span class="n">e</span>
+<span class="n">f2</span> <span class="o">=</span> <span class="n">f1</span><span class="o">^</span><span class="mi">2</span>
+<span class="n">f3</span> <span class="o">=</span> <span class="n">f1</span><span class="o">^</span><span class="mi">3</span>
+<span class="n">f4</span> <span class="o">=</span> <span class="n">f1</span><span class="o">^</span><span class="mi">4</span>
+<span class="n">f5</span> <span class="o">=</span> <span class="n">f1</span><span class="o">^</span><span class="mi">5</span>
+
+<span class="n">M</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">(</span><span class="n">Zmod</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> 
+    <span class="p">[</span><span class="n">f1</span><span class="p">.</span><span class="n">lift</span><span class="p">().</span><span class="n">coefficients</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">f2</span><span class="p">.</span><span class="n">lift</span><span class="p">().</span><span class="n">coefficients</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">f3</span><span class="p">.</span><span class="n">lift</span><span class="p">().</span><span class="n">coefficients</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">f4</span><span class="p">.</span><span class="n">lift</span><span class="p">().</span><span class="n">coefficients</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">f5</span><span class="p">.</span><span class="n">lift</span><span class="p">().</span><span class="n">coefficients</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="bp">False</span><span class="p">)]).</span><span class="n">transpose</span><span class="p">()</span>
+
+<span class="n">v</span> <span class="o">=</span> <span class="n">vector</span><span class="p">(</span><span class="n">Zmod</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">sol</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">M</span><span class="p">.</span><span class="n">solve_right</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+
+<span class="n">K</span><span class="p">.</span><span class="o">&lt;</span><span class="n">m</span><span class="o">&gt;</span> <span class="o">=</span> <span class="n">PolynomialRing</span><span class="p">(</span><span class="n">Zmod</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">implementation</span><span class="o">=</span><span class="s">'NTL'</span><span class="p">)</span>
+<span class="n">g</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sol</span><span class="p">):</span>
+    <span class="n">g</span> <span class="o">+=</span> <span class="n">v</span><span class="o">*</span><span class="n">m</span><span class="o">^</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">flag</span> <span class="o">=</span> <span class="n">g</span><span class="p">.</span><span class="n">monic</span><span class="p">().</span><span class="n">small_roots</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="mi">31</span><span class="o">*</span><span class="mi">8</span><span class="p">),</span> <span class="n">beta</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">flag</span><span class="p">).</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">31</span><span class="p">,</span> <span class="s">'big'</span><span class="p">))</span>
+</code></pre></div></div>
+
+<h2 id="flag">Flag</h2>
+
+<p><code class="language-plaintext highlighter-rouge">dice{wh4t!!-wh0_g4ve_u-thE-k3y}</code></p>
+
+
+
+
+<!--       <footer class="site-footer">
+        <a href="https://twitter.com/0rganizers">Twitter</a> | <a id="changeTheme" class="btn-toggle">Dark-Mode</a>
+      </footer> -->
+
+      <div class="lever-meme">
+        <div id="lever" class="lever-off"></div>
+      </div>
+
+      <div class="twitter">
+        <a href="https://twitter.com/0rganizers"><img src="/assets/images/twitter.svg"></a>
+      </div>
+
+      <script>
+        let leverCount = 0;
+        let manic = false;
+
+        function resetLever() {
+            leverCount = 0;
+            setTimeout(resetLever, 1750);
+        }
+
+        resetLever();
+
+        document.getElementById('lever')
+        .addEventListener('click', function (event) {
+          if(leverCount > 10){
+            manic = true;
+            document.getElementById("lever").classList.add('lever-manic');
+            document.getElementById("header-logo").classList.add('rainbow');
+          }
+
+          if(!manic){
+            document.getElementById("lever").classList.toggle('lever-on');
+            ++leverCount;
+          }
+        });
+
+
+      </script>
+
+      <script>
+      function updateThemeToggleFooter() {
+        let elem = document.querySelector('#lever');
+        // elem.innerHTML = isLightThemeSelected() ? 'Dark Mode' : 'Light Mode'
+      }
+
+      (function() {
+        updateThemeToggleFooter()
+      })();
+
+      function togglePageContentLightDark() {
+          var html = document.getElementsByTagName('html')[0]
+          var currentClass = html.className
+          var newClass = html.className == 'dark-theme' ? 'light-theme' : 'dark-theme'
+          html.className = newClass
+
+          document.cookie = 'theme=' + (newClass == 'light-theme' ? 'light' : 'dark') + '; SameSite=Strict; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+          console.log('Cookies are now: ' + document.cookie)
+
+          updateThemeToggleFooter()
+      }
+
+      const btn = document.querySelector("#lever");
+      btn.addEventListener("click", function() {
+        togglePageContentLightDark();
+      });
+      </script>
+    </main>
+  </body>
+</html>
